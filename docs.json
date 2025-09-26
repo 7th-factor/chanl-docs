@@ -90,18 +90,87 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Getting Started",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Authentication",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/auth/exchange",
+              "api-reference/auth/refresh",
+              "api-reference/auth/validate",
+              "api-reference/auth/switch-workspace",
+              "api-reference/auth/revoke",
+              "api-reference/auth/keys"
+            ]
+          },
+          {
+            "group": "Workspaces",
+            "pages": [
+              "api-reference/workspaces/list",
+              "api-reference/workspaces/create",
+              "api-reference/workspaces/get",
+              "api-reference/workspaces/update",
+              "api-reference/workspaces/delete",
+              "api-reference/workspaces/members",
+              "api-reference/workspaces/settings",
+              "api-reference/workspaces/stats"
+            ]
+          },
+          {
+            "group": "Personas",
+            "pages": [
+              "api-reference/personas/list",
+              "api-reference/personas/create",
+              "api-reference/personas/get",
+              "api-reference/personas/update",
+              "api-reference/personas/delete",
+              "api-reference/personas/defaults",
+              "api-reference/personas/stats"
+            ]
+          },
+          {
+            "group": "Scenarios",
+            "pages": [
+              "api-reference/scenarios/list",
+              "api-reference/scenarios/create",
+              "api-reference/scenarios/get",
+              "api-reference/scenarios/update",
+              "api-reference/scenarios/delete",
+              "api-reference/scenarios/execute",
+              "api-reference/scenarios/clone",
+              "api-reference/scenarios/validate",
+              "api-reference/scenarios/stats"
+            ]
+          },
+          {
+            "group": "Schedules",
+            "pages": [
+              "api-reference/schedules/list",
+              "api-reference/schedules/create",
+              "api-reference/schedules/get",
+              "api-reference/schedules/update",
+              "api-reference/schedules/delete",
+              "api-reference/schedules/activate",
+              "api-reference/schedules/deactivate",
+              "api-reference/schedules/trigger",
+              "api-reference/schedules/runs",
+              "api-reference/schedules/stats"
+            ]
+          },
+          {
+            "group": "Simulations",
+            "pages": [
+              "api-reference/simulations/list",
+              "api-reference/simulations/get",
+              "api-reference/simulations/delete",
+              "api-reference/simulations/retry",
+              "api-reference/simulations/analysis",
+              "api-reference/simulations/audio",
+              "api-reference/simulations/transcription",
+              "api-reference/simulations/stats"
             ]
           }
         ]
