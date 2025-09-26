@@ -1,0 +1,59 @@
+---
+title: "Schedules"
+description: "Automated execution of simulation scenarios"
+---
+
+# Schedules
+
+Schedules are programmed runs of simulations that can be configured in Scenarios. They provide automated testing capabilities to ensure consistent evaluation of your AI agents.
+
+## Key Components
+
+### Schedule Information
+- **Name** - Inherited from the associated Scenario
+- **Periodicity** - How often the simulation runs
+- **Last Run Date** - Timestamp of most recent execution
+- **Next Run Date** - Calculated based on periodicity and last run
+- **Amount of Runs** - Total number of executions completed
+- **Active** - Whether the schedule is currently enabled
+
+## Schedule Management
+
+### Enabling/Disabling
+Schedules can be temporarily disabled without deletion. When disabled:
+- Scheduled simulations are skipped
+- No new runs are triggered
+- Schedule remains configured for easy re-activation
+
+### Monitoring
+Track schedule performance through:
+- Run history and timestamps
+- Success/failure rates
+- Average execution times
+- Resource usage patterns
+
+## Automation Benefits
+
+### Consistent Testing
+- Regular evaluation of agent performance
+- Automated regression testing
+- Continuous quality monitoring
+
+### Performance Tracking
+- Trend analysis over time
+- Impact assessment of agent changes
+- Baseline performance establishment
+
+### Resource Optimization
+- Distribute testing load across time periods
+- Avoid peak usage conflicts
+- Efficient resource utilization
+
+## Best Practices
+
+- Set appropriate frequencies based on agent update cycles
+- Monitor schedule performance and adjust as needed
+- Use descriptive naming for easy identification
+- Disable schedules during maintenance windows
+- Review and clean up unused schedules regularly
+- Coordinate schedules to avoid resource conflicts

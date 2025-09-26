@@ -11,6 +11,45 @@
   "navigation": {
     "tabs": [
       {
+        "tab": "Chanl Platform",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "chanl/overview"
+            ]
+          },
+          {
+            "group": "🧪 Test",
+            "pages": [
+              "chanl/test/scenarios",
+              "chanl/test/personas",
+              "chanl/test/schedules",
+              "chanl/test/simulations"
+            ]
+          },
+          {
+            "group": "👁️ Observe",
+            "pages": [
+              "chanl/observe/analytics",
+              "chanl/observe/live-calls",
+              "chanl/observe/call-logs",
+              "chanl/observe/alerts",
+              "chanl/observe/scorecards"
+            ]
+          },
+          {
+            "group": "⚡ Optimize",
+            "pages": [
+              "chanl/optimize/agents",
+              "chanl/optimize/prompts",
+              "chanl/optimize/tools",
+              "chanl/optimize/fine-tuning"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Guides",
         "groups": [
           {
@@ -69,48 +108,24 @@
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
+      "anchors": []
     }
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    "dark": "/logo/light.svg"
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {

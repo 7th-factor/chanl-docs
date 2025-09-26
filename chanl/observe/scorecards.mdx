@@ -1,0 +1,115 @@
+---
+title: "Scorecards"
+description: "Quality evaluation framework for call assessment"
+---
+
+# Scorecards
+
+**Scorecards** are the primary method for evaluating conversation quality, providing structured assessment criteria through categories and specific evaluation criteria. They can be attached to scenarios for automated testing or applied to individual calls for quality review.
+
+## Key Components
+
+### Basic Information
+- **Name** - Descriptive scorecard identifier
+- **Description** - Purpose and scope of evaluation
+
+### Structure
+- **Categories** - Major evaluation areas (Many, at least one required)
+- **Criteria** - Specific assessment points within categories
+
+## Category Configuration
+
+### Category Details
+- **Name** - Category identifier (e.g., "Customer Service", "Compliance")
+- **Weight** - Percentage contribution to overall score (0-100%)
+- **Description** - What this category evaluates
+
+<Warning>
+Total category weights cannot exceed 100%
+</Warning>
+
+### Criteria Details
+- **Name** - Specific evaluation point
+- **Weight** - Percentage within the category (0-100%)
+- **Type** - Evaluation method
+- **Description** - Detailed assessment instructions
+
+<Warning>
+Total criteria weights within a category cannot exceed 100%
+</Warning>
+
+## Criteria Types
+
+### Yes/No Evaluation
+Binary assessment for clear compliance or quality standards:
+- "Did the agent provide required disclosures?"
+- "Was the customer's issue resolved?"
+- "Did the conversation end professionally?"
+
+### Quantity Scoring
+Numerical assessment for measurable elements:
+- Response time in seconds
+- Number of clarifying questions asked
+- Customer satisfaction rating (1-10)
+- Call duration appropriateness
+
+### Scale Rating
+Subjective assessment on defined scales:
+- Communication clarity (1-5)
+- Professionalism level (Poor/Fair/Good/Excellent)
+- Problem-solving effectiveness (1-10)
+
+### Custom Evaluation
+Flexible assessment for specific needs:
+- Open-text quality notes
+- Multi-dimensional scoring
+- Contextual evaluations
+
+## Common Scorecard Categories
+
+### Customer Service
+- **Communication Quality** - Clarity, tone, professionalism
+- **Problem Resolution** - Effectiveness, efficiency, completeness
+- **Customer Experience** - Satisfaction, ease of interaction
+
+### Sales Performance
+- **Needs Discovery** - Question quality, listening skills
+- **Product Knowledge** - Accuracy, relevance, depth
+- **Closing Effectiveness** - Persuasion, objection handling
+
+### Compliance
+- **Regulatory Requirements** - Legal compliance, disclosures
+- **Company Policies** - Adherence to internal standards
+- **Data Handling** - Privacy, security, confidentiality
+
+### Technical Support
+- **Issue Diagnosis** - Problem identification, analysis
+- **Solution Quality** - Accuracy, completeness, clarity
+- **Follow-up** - Verification, documentation, escalation
+
+## Usage Scenarios
+
+### Automated Testing
+- Attach scorecards to scenarios for consistent evaluation
+- Generate scores for all simulation runs
+- Compare agent performance across scenarios
+
+### Manual Review
+- Apply scorecards to specific calls in Call Logs
+- Conduct quality assurance reviews
+- Training and coaching assessments
+
+### Comparative Analysis
+- Use consistent scorecards across different agents
+- Track performance improvements over time
+- Benchmark against industry standards
+
+## Best Practices
+
+- Design scorecards with clear, measurable criteria
+- Balance objective and subjective evaluation elements
+- Test scorecards with sample conversations before deployment
+- Regularly review and update criteria based on business needs
+- Ensure weights accurately reflect business priorities
+- Train evaluators on consistent scoring methods
+- Use multiple scorecards for different conversation types

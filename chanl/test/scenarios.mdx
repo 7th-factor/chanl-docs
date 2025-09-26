@@ -1,0 +1,57 @@
+---
+title: "Scenarios"
+description: "Define test situations and conditions for AI agent evaluation"
+---
+
+# Scenarios
+
+**Scenarios** consist of a situation (base scenario prompt) that will happen between a group of **Personas** and **Agents**, resulting in **N** simulations, where **N** is the number of combinations of **Personas** and **Agents**.
+
+<Info>
+For example: 2 *Personas* × 5 *Agents* = 10 *Simulations*
+</Info>
+
+## Key Components
+
+### Basic Information
+- **Name** - Descriptive scenario identifier
+- **Prompt** - Base situation description
+- **Prompt Variables** - Dynamic elements in the scenario
+  - *Name* - Variable identifier
+  - *Type* - Data type (string, number, etc.)
+  - *Default Value* - Fallback value
+
+### Configuration
+- **Personas** - Customer behavior profiles (Many, at least one)
+- **Target Agents** - AI agents to test (Many, at least one)
+- **Scorecard** - Evaluation criteria (1 required)
+- **Schedule** - Execution timing
+
+## Scheduling Options
+
+### Frequency
+- **Once** - Single execution (can be re-run manually)
+- **Daily** - Runs every day
+- **Weekly** - Runs weekly
+- **Monthly** - Runs monthly
+
+### End Conditions
+- **Never** - Runs indefinitely according to frequency
+- **End Date** - Stops after specified date
+- **After N Runs** - Stops after specified number of executions
+
+## Prompt Composition
+
+The full scenario prompt is created by merging:
+1. **Scenario prompt** - Base situation
+2. **Persona prompt** - Customer behavior context
+
+This combination creates a complete context for each simulation, ensuring consistent yet varied testing conditions.
+
+## Best Practices
+
+- Use clear, specific scenario names
+- Include relevant prompt variables for flexibility
+- Test with multiple personas to cover behavior variations
+- Set appropriate schedules based on agent update frequency
+- Choose scorecards that align with your quality objectives
