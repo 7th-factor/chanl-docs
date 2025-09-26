@@ -151,13 +151,7 @@
               "api-reference/schedules/list",
               "api-reference/schedules/create",
               "api-reference/schedules/get",
-              "api-reference/schedules/update",
-              "api-reference/schedules/delete",
-              "api-reference/schedules/activate",
-              "api-reference/schedules/deactivate",
-              "api-reference/schedules/trigger",
-              "api-reference/schedules/runs",
-              "api-reference/schedules/stats"
+              "api-reference/schedules/activate"
             ]
           },
           {
@@ -165,12 +159,8 @@
             "pages": [
               "api-reference/simulations/list",
               "api-reference/simulations/get",
-              "api-reference/simulations/delete",
-              "api-reference/simulations/retry",
-              "api-reference/simulations/analysis",
               "api-reference/simulations/audio",
-              "api-reference/simulations/transcription",
-              "api-reference/simulations/stats"
+              "api-reference/simulations/transcription"
             ]
           }
         ]
