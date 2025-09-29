@@ -153,5 +153,8 @@
     "socials": {
       "linkedin": "https://www.linkedin.com/company/chanl-ai"
     }
+  },
+  "icons": {
+    "library": "lucide"
   }
 }
