@@ -1,50 +1,243 @@
 ---
 title: "Chanl Overview"
-description: "Comprehensive testing, observation, and optimization platform for AI agents"
+description: "Test, monitor, and optimize your AI voice agents with confidence"
+icon: "sparkles"
 ---
 
-# Chanl Platform Overview
+# Welcome to Chanl
 
-Chanl is a comprehensive platform for testing, observing, and optimizing AI agents through structured scenarios and real-time monitoring.
+Chanl helps you build reliable AI voice agents by making it easy to test them before they talk to customers, monitor them while they work, and continuously improve their performance based on real data.
+
+## Why Chanl?
+
+If you're building AI voice agents for customer service, sales, or support, you face three critical challenges:
+
+1. **Testing is hard** - How do you know your agent will handle every type of customer before going live?
+2. **Monitoring is complex** - Once live, how do you catch issues in real-time before they impact customers?
+3. **Improvement is guesswork** - Without data, how do you know what to fix and whether changes actually help?
+
+Chanl solves these problems by giving you a complete platform to test, observe, and optimize your AI agents throughout their lifecycle.
+
+## How Chanl Works
+
+Think of Chanl as your AI agent quality assurance system. Here's the workflow:
+
+### 1. Test Your Agents Before They Go Live
+
+Create realistic test scenarios by combining:
+- **Scenarios** - The situations your agent needs to handle (e.g., "angry customer requesting refund")
+- **Personas** - Different customer personalities and behaviors (e.g., "frustrated customer" or "price-sensitive buyer")
+- **Scorecards** - Your quality standards for evaluating performance
+
+Run automated simulations that test every persona-agent combination, giving you confidence before launch.
+
+<Info>
+**Example**: With 5 personas and 3 agent variants, Chanl automatically runs 15 simulations and scores each one against your quality criteria.
+</Info>
+
+### 2. Monitor Everything in Real-Time
+
+Once your agents are live, Chanl watches every conversation:
+- **Live Call Monitoring** - See ongoing calls and intervene when needed
+- **Automated Alerts** - Get notified immediately when something goes wrong
+- **Analytics Dashboard** - Track performance trends and identify patterns
+
+### 3. Optimize Based on Real Data
+
+Use insights from tests and real calls to improve:
+- **Prompt Library** - Test different agent instructions and track what works
+- **Fine-Tuning** - Turn successful conversations into training data
+- **Tool Management** - Add capabilities and integrations your agents need
+
+## The Three Core Workflows
+
+<CardGroup cols={3}>
+  <Card title="Test" icon="waypoints" href="/chanl/test/scenarios">
+    Build automated test scenarios to validate agent behavior before deployment
+  </Card>
+  <Card title="Observe" icon="chart-no-axes-combined" href="/chanl/observe/analytics">
+    Monitor live calls and analyze historical performance with real-time alerts
+  </Card>
+  <Card title="Optimize" icon="bot" href="/chanl/optimize/agents">
+    Improve agent performance using data-driven insights and continuous refinement
+  </Card>
+</CardGroup>
+
+## Quick Start Guide
+
+Here's how to get your first agent tested and monitored in Chanl:
+
+### Step 1: Connect Your Agent
+
+```bash
+# Connect your VAPI or Bland agent
+curl -X POST https://api.chanl.ai/v1/agents/connect \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "vapi",
+    "agent_id": "your-agent-id"
+  }'
+```
+
+Chanl automatically syncs your agent configuration, including prompts and tools.
+
+### Step 2: Create Test Personas
+
+Define the types of customers your agent needs to handle:
+
+<AccordionGroup>
+  <Accordion title="Frustrated Customer" icon="user">
+    A customer who is upset and needs quick resolution. Uses short responses and may interrupt.
+  </Accordion>
+  <Accordion title="Detail-Oriented Customer" icon="user-check">
+    Asks many specific questions and needs thorough explanations before making decisions.
+  </Accordion>
+  <Accordion title="Price-Sensitive Buyer" icon="users">
+    Primarily concerned with cost and value. Compares options and negotiates.
+  </Accordion>
+</AccordionGroup>
+
+You can create these in the UI or via API - [see Personas documentation](/chanl/test/personas).
+
+### Step 3: Design Your First Scenario
+
+Create a test scenario that combines your personas with your agent:
+
+```javascript
+{
+  "name": "Refund Request Handling",
+  "prompt": "Customer purchased a product 2 weeks ago and wants a refund because it doesn't meet their expectations.",
+  "personas": ["frustrated", "detail-oriented"],
+  "agents": ["your-agent-id"],
+  "scorecard": "customer-service-quality"
+}
+```
+
+This will run 2 simulations (2 personas × 1 agent) automatically.
+
+### Step 4: Review Results
+
+Check your simulation scores in the Analytics dashboard or via API:
+
+```bash
+curl https://api.chanl.ai/v1/simulations?scenario_id=SCENARIO_ID \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Each simulation includes:
+- **Score** - Overall quality rating based on your scorecard
+- **Transcript** - Full conversation text
+- **Audio** - Recording of the interaction
+- **Analysis** - AI-powered insights on what went well and what needs improvement
+
+### Step 5: Set Up Monitoring
+
+Enable live monitoring and alerts for your production agent:
+
+<Steps>
+  <Step title="Configure Alerts">
+    Set up automated alerts for compliance issues, customer frustration, or quality drops
+  </Step>
+  <Step title="Enable Live Monitoring">
+    Access the Live Calls dashboard to watch ongoing conversations
+  </Step>
+  <Step title="Review Analytics">
+    Check daily performance trends and identify optimization opportunities
+  </Step>
+</Steps>
+
+## Common Use Cases
+
+### For Call Center BPOs
+
+**Challenge**: Need to validate AI agents can handle high-volume customer service before replacing human agents.
+
+**Solution**: Use Chanl to:
+- Test agents against hundreds of customer scenarios automatically
+- Monitor live calls with real-time alerts for issues
+- Generate compliance reports for quality assurance
+- Compare agent performance across different configurations
+
+### For Developers
+
+**Challenge**: Building custom AI voice agents but lack tools to test and debug conversation flows.
+
+**Solution**: Use Chanl's API to:
+- Integrate testing into your CI/CD pipeline
+- Programmatically create scenarios and personas
+- Fetch simulation results for automated quality checks
+- Monitor production agents and get alerts via webhooks
+
+```javascript
+// Example: Automated testing in your pipeline
+const chanl = require('@chanl/sdk');
+
+await chanl.scenarios.create({
+  name: 'PR #123 - New refund flow',
+  personas: ['frustrated', 'analytical'],
+  agents: ['staging-agent'],
+  scorecard: 'customer-service'
+});
+
+const results = await chanl.simulations.waitForResults(scenarioId);
+if (results.averageScore < 85) {
+  throw new Error('Agent quality below threshold');
+}
+```
 
 ## Platform Architecture
 
-The platform follows a hierarchical structure where high-level features are built using foundational components:
+Understanding how Chanl components work together:
 
-- **Scenarios** are built using **Personas**, **Agents**, and **Scorecards**
-- **Simulations** are the result of running scenarios
-- **Analytics** provide insights across all components
+```mermaid
+graph TD
+    A[Personas] --> B[Scenarios]
+    C[Agents] --> B
+    D[Scorecards] --> B
+    B --> E[Simulations]
+    E --> F[Analytics]
+    G[Live Calls] --> F
+    F --> H[Insights]
+    H --> I[Optimization]
+    I --> C
+```
 
-## Core Workflow Categories
+**Key Relationships**:
+- **Scenarios** combine Personas, Agents, and Scorecards to define tests
+- **Simulations** are the results when you run a Scenario
+- **Analytics** aggregate data from both Simulations and Live Calls
+- **Insights** from Analytics feed back into Agent optimization
 
-### Test
-Build and execute comprehensive testing scenarios:
-- [**Scenarios**](/chanl/test/scenarios) - Define test situations and conditions
-- [**Personas**](/chanl/test/personas) - Create customer behavior profiles
-- [**Schedules**](/chanl/test/schedules) - Automate test execution
-- [**Simulations**](/chanl/test/simulations) - Review test results
+## What's Next?
 
-### Observe
-Monitor and analyze performance in real-time:
-- [**Analytics**](/chanl/observe/analytics) - Main dashboard and metrics
-- [**Live Calls**](/chanl/observe/live-calls) - Real-time call monitoring
-- [**Call Logs**](/chanl/observe/call-logs) - Historical call analysis
-- [**Alerts**](/chanl/observe/alerts) - Automated notifications
-- [**Scorecards**](/chanl/observe/scorecards) - Quality evaluation framework
+Choose your path based on what you need right now:
 
-### Optimize
-Improve agent performance and capabilities:
-- [**Agents**](/chanl/optimize/agents) - Manage and configure AI agents
-- [**Prompts**](/chanl/optimize/prompts) - Prompt library and management
-- [**Tools**](/chanl/optimize/tools) - Agent action capabilities
-- [**Fine Tuning**](/chanl/optimize/fine-tuning) - Model improvement through feedback
+<CardGroup cols={2}>
+  <Card title="Start Testing" icon="waypoints" href="/chanl/test/scenarios">
+    Create your first test scenario and run simulations
+  </Card>
+  <Card title="Monitor Live Calls" icon="eye" href="/chanl/observe/live-calls">
+    Set up real-time monitoring for your production agents
+  </Card>
+  <Card title="Explore the API" icon="code" href="/api-reference/introduction">
+    Integrate Chanl into your development workflow
+  </Card>
+  <Card title="Build Better Prompts" icon="sparkles" href="/chanl/optimize/prompts">
+    Use the prompt library to improve agent behavior
+  </Card>
+</CardGroup>
 
-## Getting Started
+## Need Help?
 
-1. **Create Personas** - Define customer behavior patterns
-2. **Configure Agents** - Set up your AI agents with prompts and tools
-3. **Design Scenarios** - Create test situations using personas and agents
-4. **Set Up Scorecards** - Define quality evaluation criteria
-5. **Run Simulations** - Execute tests and gather results
-6. **Analyze Results** - Use analytics to identify improvements
-7. **Optimize** - Update prompts, tools, and configurations based on insights
+<CardGroup cols={3}>
+  <Card title="Documentation" icon="book" href="/chanl/test/scenarios">
+    Explore detailed guides for every feature
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Complete API documentation with examples
+  </Card>
+  <Card title="Support" icon="life-ring" href="https://www.linkedin.com/company/chanl-ai">
+    Contact our team for assistance
+  </Card>
+</CardGroup>
