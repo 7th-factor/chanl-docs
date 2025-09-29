@@ -1,0 +1,39 @@
+---
+title: 'List Schedules'
+openapi: 'GET /api/v1/workspaces/{workspace_id}/schedules'
+---
+
+Get all automated schedules in a workspace.
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.chanl.ai/api/v1/workspaces/ws_123/schedules" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "schedules": [
+      {
+        "id": "schedule_123",
+        "name": "Daily Customer Service Test",
+        "scenarioId": "scenario_456",
+        "periodicity": "daily",
+        "isActive": true,
+        "nextRun": "2024-01-16T10:00:00Z",
+        "lastRun": "2024-01-15T10:00:00Z",
+        "created_at": "2024-01-01T10:00:00Z"
+      }
+    ]
+  }
+}
+```
+
+</ResponseExample>

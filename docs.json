@@ -20,7 +20,7 @@
             ]
           },
           {
-            "group": "🧪 Test",
+            "group": "Test",
             "pages": [
               "chanl/test/scenarios",
               "chanl/test/personas",
@@ -29,7 +29,7 @@
             ]
           },
           {
-            "group": "👁️ Observe",
+            "group": "Observe",
             "pages": [
               "chanl/observe/analytics",
               "chanl/observe/live-calls",
@@ -39,7 +39,7 @@
             ]
           },
           {
-            "group": "⚡ Optimize",
+            "group": "Optimize",
             "pages": [
               "chanl/optimize/agents",
               "chanl/optimize/prompts",

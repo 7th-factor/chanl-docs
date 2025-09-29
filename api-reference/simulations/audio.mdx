@@ -1,0 +1,16 @@
+---
+title: 'Get Simulation Audio'
+openapi: 'GET /api/v1/workspaces/{workspace_id}/simulations/{id}/audio'
+---
+
+Download the audio recording for a simulation.
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.chanl.ai/api/v1/workspaces/ws_123/simulations/sim_123456/audio" \
+  -H "Authorization: Bearer <access_token>" \
+  -o "simulation_audio.wav"
+```
+
+</RequestExample>

@@ -1,0 +1,19 @@
+---
+title: 'Clone Scenario'
+openapi: 'POST /api/v1/workspaces/{workspace_id}/scenarios/{id}/clone'
+---
+
+Create a copy of an existing scenario.
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://api.chanl.ai/api/v1/workspaces/ws_123/scenarios/scenario_456/clone" \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Cloned Billing Scenario - Modified"
+  }'
+```
+
+</RequestExample>
