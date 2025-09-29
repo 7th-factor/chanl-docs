@@ -1,0 +1,93 @@
+---
+title: 'Create Workspace'
+openapi: 'POST /api/v1/workspaces'
+---
+
+Create a new workspace for organizing analytics and team collaboration.
+
+The user creating the workspace will automatically become the owner with full administrative privileges.
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://api.chanl.ai/api/v1/workspaces" \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Support Team Analytics",
+    "slug": "support-team",
+    "description": "Analytics workspace for customer support team"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.chanl.ai/api/v1/workspaces', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ' + accessToken,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    name: 'Support Team Analytics',
+    slug: 'support-team',
+    description: 'Analytics workspace for customer support team'
+  })
+});
+
+const { data } = await response.json();
+console.log('New workspace:', data.workspace);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.chanl.ai/api/v1/workspaces',
+    headers={'Authorization': f'Bearer {access_token}'},
+    json={
+        'name': 'Support Team Analytics',
+        'slug': 'support-team',
+        'description': 'Analytics workspace for customer support team'
+    }
+)
+
+workspace = response.json()['data']['workspace']
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "workspace": {
+      "id": "ws_789",
+      "name": "Support Team Analytics",
+      "slug": "support-team",
+      "description": "Analytics workspace for customer support team",
+      "role": "owner",
+      "created_at": "2024-01-15T10:30:00Z",
+      "updated_at": "2024-01-15T10:30:00Z",
+      "member_count": 1,
+      "settings": {
+        "timezone": "America/New_York",
+        "retention_days": 90
+      }
+    }
+  }
+}
+```
+
+```json Error Response
+{
+  "success": false,
+  "error": {
+    "code": "SLUG_ALREADY_EXISTS",
+    "message": "A workspace with this slug already exists"
+  }
+}
+```
+
+</ResponseExample>

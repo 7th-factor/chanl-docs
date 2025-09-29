@@ -1,0 +1,281 @@
+---
+title: 'Workspace Members'
+openapi: 'GET /api/v1/workspaces/{workspace_id}/members'
+---
+
+Manage workspace members, their roles, and permissions.
+
+Members can be invited, have their roles updated, or be removed from workspaces by administrators and owners.
+
+## List Members
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.chanl.ai/api/v1/workspaces/ws_123/members" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+```javascript JavaScript
+const response = await fetch(`https://api.chanl.ai/api/v1/workspaces/${workspaceId}/members`, {
+  headers: {
+    'Authorization': 'Bearer ' + accessToken
+  }
+});
+
+const { data } = await response.json();
+console.log('Members:', data.members);
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    f'https://api.chanl.ai/api/v1/workspaces/{workspace_id}/members',
+    headers={'Authorization': f'Bearer {access_token}'}
+)
+
+members = response.json()['data']['members']
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json List Members Response
+{
+  "success": true,
+  "data": {
+    "members": [
+      {
+        "id": "user_123",
+        "name": "John Doe",
+        "email": "john@acme.com",
+        "role": "owner",
+        "joined_at": "2024-01-01T10:00:00Z",
+        "last_active": "2024-01-15T09:30:00Z",
+        "permissions": ["admin", "read", "write", "delete"]
+      },
+      {
+        "id": "user_456",
+        "name": "Jane Smith",
+        "email": "jane@acme.com",
+        "role": "admin",
+        "joined_at": "2024-01-05T14:20:00Z",
+        "last_active": "2024-01-15T08:45:00Z",
+        "permissions": ["read", "write", "delete"]
+      },
+      {
+        "id": "user_789",
+        "name": "Bob Wilson",
+        "email": "bob@acme.com",
+        "role": "member",
+        "joined_at": "2024-01-10T11:15:00Z",
+        "last_active": "2024-01-14T16:20:00Z",
+        "permissions": ["read", "write"]
+      }
+    ],
+    "pagination": {
+      "total": 3,
+      "page": 1,
+      "limit": 50
+    }
+  }
+}
+```
+
+</ResponseExample>
+
+---
+
+## Invite Member
+
+<RequestExample>
+
+```bash cURL
+curl -X POST "https://api.chanl.ai/api/v1/workspaces/ws_123/members" \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "newuser@acme.com",
+    "role": "member",
+    "send_invitation": true
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch(`https://api.chanl.ai/api/v1/workspaces/${workspaceId}/members`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ' + accessToken,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: 'newuser@acme.com',
+    role: 'member',
+    send_invitation: true
+  })
+});
+
+const { data } = await response.json();
+console.log('Member invited:', data.member);
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    f'https://api.chanl.ai/api/v1/workspaces/{workspace_id}/members',
+    headers={'Authorization': f'Bearer {access_token}'},
+    json={
+        'email': 'newuser@acme.com',
+        'role': 'member',
+        'send_invitation': True
+    }
+)
+
+member = response.json()['data']['member']
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Invite Member Response
+{
+  "success": true,
+  "data": {
+    "member": {
+      "id": "user_012",
+      "email": "newuser@acme.com",
+      "role": "member",
+      "status": "invited",
+      "invited_at": "2024-01-15T10:30:00Z",
+      "invitation_expires_at": "2024-01-22T10:30:00Z"
+    }
+  }
+}
+```
+
+</ResponseExample>
+
+---
+
+## Update Member Role
+
+<RequestExample>
+
+```bash cURL
+curl -X PUT "https://api.chanl.ai/api/v1/workspaces/ws_123/members/user_789" \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role": "admin"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch(`https://api.chanl.ai/api/v1/workspaces/${workspaceId}/members/${userId}`, {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'Bearer ' + accessToken,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    role: 'admin'
+  })
+});
+
+const { data } = await response.json();
+console.log('Member role updated:', data.member);
+```
+
+```python Python
+import requests
+
+response = requests.put(
+    f'https://api.chanl.ai/api/v1/workspaces/{workspace_id}/members/{user_id}',
+    headers={'Authorization': f'Bearer {access_token}'},
+    json={'role': 'admin'}
+)
+
+member = response.json()['data']['member']
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Update Role Response
+{
+  "success": true,
+  "data": {
+    "member": {
+      "id": "user_789",
+      "name": "Bob Wilson",
+      "email": "bob@acme.com",
+      "role": "admin",
+      "permissions": ["read", "write", "delete"],
+      "updated_at": "2024-01-15T10:30:00Z"
+    }
+  }
+}
+```
+
+</ResponseExample>
+
+---
+
+## Remove Member
+
+<RequestExample>
+
+```bash cURL
+curl -X DELETE "https://api.chanl.ai/api/v1/workspaces/ws_123/members/user_789" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+```javascript JavaScript
+const response = await fetch(`https://api.chanl.ai/api/v1/workspaces/${workspaceId}/members/${userId}`, {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'Bearer ' + accessToken
+  }
+});
+
+const { data } = await response.json();
+console.log('Member removed:', data.message);
+```
+
+```python Python
+import requests
+
+response = requests.delete(
+    f'https://api.chanl.ai/api/v1/workspaces/{workspace_id}/members/{user_id}',
+    headers={'Authorization': f'Bearer {access_token}'}
+)
+
+message = response.json()['data']['message']
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Remove Member Response
+{
+  "success": true,
+  "data": {
+    "message": "Member removed from workspace successfully"
+  }
+}
+```
+
+</ResponseExample>
+
+## Member Roles
+
+- **Owner**: Full access including billing and workspace deletion
+- **Admin**: Manage members, settings, and all workspace resources
+- **Member**: Create and manage personas, scenarios, view analytics
+- **Viewer**: Read-only access to analytics and simulation results

@@ -1,33 +1,108 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: 'Chanl Analytics API'
+description: 'Call analytics and AI-powered conversation intelligence API'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# Chanl Analytics API
 
-## Welcome
+The Chanl Analytics API provides comprehensive call analytics, real-time monitoring, and AI-powered insights for voice conversations across multiple platforms including VAPI, Twilio, and custom integrations.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Base URLs
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+- **Production**: `https://api.chanl.ai`
+- **Development**: `http://localhost:8989`
+
+## Key Features
+
+- **Multi-tenant Architecture** - All operations are scoped to workspaces
+- **Real-time Analytics** - Live call monitoring and insights
+- **AI-Powered Scoring** - Automated conversation quality evaluation
+- **Webhook Support** - Real-time event notifications
+- **Multiple Provider Support** - VAPI, Twilio, and custom integrations
+
+## API Overview
+
+The API is organized into six main sections:
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="/api-reference/auth/exchange">
+    JWT tokens, API keys, and workspace switching
+  </Card>
+  <Card title="Workspaces" icon="building" href="/api-reference/workspaces/list">
+    Multi-tenant workspace management and settings
+  </Card>
+  <Card title="Personas" icon="users" href="/api-reference/personas/list">
+    Customer behavior profiles for testing
+  </Card>
+  <Card title="Scenarios" icon="play" href="/api-reference/scenarios/list">
+    Test scenario creation and management
+  </Card>
+  <Card title="Schedules" icon="calendar" href="/api-reference/schedules/list">
+    Automated test scheduling and execution
+  </Card>
+  <Card title="Simulations" icon="chart-line" href="/api-reference/simulations/list">
+    Test results, analysis, and insights
+  </Card>
+</CardGroup>
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+The API supports two authentication methods:
+
+### JWT Bearer Tokens
+For user authentication via your chosen identity provider:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
+{
+  "headers": {
+    "Authorization": "Bearer <jwt_token>"
   }
-]
+}
 ```
+
+### API Keys
+For programmatic access using workspace-specific keys:
+
+```json
+{
+  "headers": {
+    "X-API-Key": "<api_key>"
+  }
+}
+```
+
+## Rate Limiting
+
+API requests are rate-limited per workspace to ensure fair usage and system stability. Rate limit headers are included in all responses:
+
+- `X-RateLimit-Limit` - Requests per time window
+- `X-RateLimit-Remaining` - Remaining requests in current window
+- `X-RateLimit-Reset` - Time when the rate limit resets
+
+## Error Handling
+
+The API uses standard HTTP status codes and returns detailed error information:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid request parameters",
+    "details": {
+      "field": "email",
+      "issue": "Invalid email format"
+    }
+  }
+}
+```
+
+## OpenAPI Specification
+
+<Card
+  title="View Full API Specification"
+  icon="code"
+  href="/openapi.yaml"
+>
+  Complete OpenAPI 3.0.3 specification with all endpoints, schemas, and examples
+</Card>

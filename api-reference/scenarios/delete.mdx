@@ -1,0 +1,37 @@
+---
+title: 'Delete Scenario'
+openapi: 'DELETE /api/v1/workspaces/{workspace_id}/scenarios/{id}'
+---
+
+Permanently delete a scenario and its associated schedules.
+
+<Warning>
+This will also delete all schedules associated with this scenario.
+</Warning>
+
+<RequestExample>
+
+```bash cURL
+curl -X DELETE "https://api.chanl.ai/api/v1/workspaces/ws_123/scenarios/scenario_456" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "message": "Scenario deleted successfully",
+    "deleted_at": "2024-01-15T10:30:00Z",
+    "impact": {
+      "schedules_deleted": 2,
+      "simulations_preserved": 156
+    }
+  }
+}
+```
+
+</ResponseExample>

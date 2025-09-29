@@ -1,0 +1,51 @@
+---
+title: 'Get Scenario'
+openapi: 'GET /api/v1/workspaces/{workspace_id}/scenarios/{id}'
+---
+
+Retrieve detailed information about a specific scenario including usage statistics.
+
+<RequestExample>
+
+```bash cURL
+curl -X GET "https://api.chanl.ai/api/v1/workspaces/ws_123/scenarios/scenario_456" \
+  -H "Authorization: Bearer <access_token>"
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json Success Response
+{
+  "success": true,
+  "data": {
+    "scenario": {
+      "id": "scenario_456",
+      "name": "Customer Service Inquiry",
+      "prompt": "You are calling customer service about a billing issue with your account.",
+      "promptVariables": [
+        {
+          "name": "charge_amount",
+          "type": "string",
+          "defaultValue": "$29.99"
+        }
+      ],
+      "personas": ["persona_123", "persona_456"],
+      "targetAgents": ["agent_789", "agent_012"],
+      "scorecard": "scorecard_345",
+      "tags": ["billing", "customer-service"],
+      "created_at": "2024-01-01T10:00:00Z",
+      "updated_at": "2024-01-15T09:30:00Z",
+      "stats": {
+        "total_simulations": 156,
+        "avg_score": 84.2,
+        "success_rate": 94.3,
+        "last_run": "2024-01-15T08:45:00Z"
+      }
+    }
+  }
+}
+```
+
+</ResponseExample>

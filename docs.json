@@ -1,48 +1,50 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "aspen",
   "name": "Mint Starter Kit",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#000000",
+    "light": "#FFFFFF",
+    "dark": "#000000"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Chanl Platform",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Overview",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "chanl/overview"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Test",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "chanl/test/scenarios",
+              "chanl/test/personas",
+              "chanl/test/schedules",
+              "chanl/test/simulations"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Observe",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "chanl/observe/analytics",
+              "chanl/observe/live-calls",
+              "chanl/observe/call-logs",
+              "chanl/observe/alerts",
+              "chanl/observe/scorecards"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Optimize",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "chanl/optimize/agents",
+              "chanl/optimize/prompts",
+              "chanl/optimize/tools",
+              "chanl/optimize/fine-tuning"
             ]
           }
         ]
@@ -51,66 +53,101 @@
         "tab": "API reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Getting Started",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Authentication",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/auth/exchange",
+              "api-reference/auth/refresh",
+              "api-reference/auth/validate",
+              "api-reference/auth/switch-workspace",
+              "api-reference/auth/revoke",
+              "api-reference/auth/keys"
+            ]
+          },
+          {
+            "group": "Workspaces",
+            "pages": [
+              "api-reference/workspaces/list",
+              "api-reference/workspaces/create",
+              "api-reference/workspaces/get",
+              "api-reference/workspaces/update",
+              "api-reference/workspaces/delete",
+              "api-reference/workspaces/members",
+              "api-reference/workspaces/settings",
+              "api-reference/workspaces/stats"
+            ]
+          },
+          {
+            "group": "Personas",
+            "pages": [
+              "api-reference/personas/list",
+              "api-reference/personas/create",
+              "api-reference/personas/get",
+              "api-reference/personas/update",
+              "api-reference/personas/delete",
+              "api-reference/personas/defaults",
+              "api-reference/personas/stats"
+            ]
+          },
+          {
+            "group": "Scenarios",
+            "pages": [
+              "api-reference/scenarios/list",
+              "api-reference/scenarios/create",
+              "api-reference/scenarios/get",
+              "api-reference/scenarios/update",
+              "api-reference/scenarios/delete",
+              "api-reference/scenarios/execute",
+              "api-reference/scenarios/clone",
+              "api-reference/scenarios/validate",
+              "api-reference/scenarios/stats"
+            ]
+          },
+          {
+            "group": "Schedules",
+            "pages": [
+              "api-reference/schedules/list",
+              "api-reference/schedules/create",
+              "api-reference/schedules/get",
+              "api-reference/schedules/activate"
+            ]
+          },
+          {
+            "group": "Simulations",
+            "pages": [
+              "api-reference/simulations/list",
+              "api-reference/simulations/get",
+              "api-reference/simulations/audio",
+              "api-reference/simulations/transcription"
             ]
           }
         ]
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
+      "anchors": []
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    "light": "/logo/dark.svg",
+    "dark": "/logo/light.svg"
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
