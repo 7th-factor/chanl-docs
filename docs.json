@@ -61,12 +61,10 @@
           {
             "group": "Authentication",
             "pages": [
-              "api-reference/auth/exchange",
               "api-reference/auth/refresh",
               "api-reference/auth/validate",
               "api-reference/auth/switch-workspace",
-              "api-reference/auth/revoke",
-              "api-reference/auth/keys"
+              "api-reference/auth/revoke"
             ]
           },
           {
