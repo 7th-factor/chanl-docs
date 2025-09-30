@@ -38,9 +38,97 @@ Each combination runs as a separate simulation, giving you comprehensive test co
 
 ## Creating Your First Scenario
 
-### Step 1: Define the Situation
+Chanl provides both a visual UI wizard and an API for creating scenarios. Here's how to do it:
 
-Start with a clear description of what's happening in this test:
+<Tabs>
+  <Tab title="Via UI">
+    The scenario creation wizard guides you through 6 steps:
+
+    ### Step 1: Define the Scenario
+
+    Give your scenario a name and describe the situation you want to test. You can use variables to make scenarios reusable.
+
+    <img src="/images/scenario creation stages/Stage1.png" alt="Scenario definition with name, tags, prompt description and variables" />
+
+    **Key elements:**
+    - **Name**: Descriptive title (e.g., "Order Tracking")
+    - **Tags**: Organize scenarios by category
+    - **Prompt**: Describe the customer situation
+    - **Variables**: Make scenarios reusable with placeholders like `{{customer_name}}`
+
+    ### Step 2: Select Personas
+
+    Choose which customer personalities to test against your agent.
+
+    <img src="/images/scenario creation stages/Stage2.png" alt="Persona selection showing various customer types with different emotions and speech styles" />
+
+    Pick diverse personas to ensure comprehensive testing:
+    - Different emotional states (angry, friendly, stressed)
+    - Various speech patterns (fast, slow, mumbled)
+    - Multiple accents and languages
+
+    ### Step 3: Choose Target Agents
+
+    Select which agents to test with this scenario.
+
+    <img src="/images/scenario creation stages/Stage3.png" alt="Agent selection showing connected agents from VAPI and custom providers" />
+
+    You can test:
+    - Production vs staging agents
+    - Different prompt versions
+    - Various AI models (GPT-4, Claude, etc.)
+
+    ### Step 4: Select Score Criteria
+
+    Pick the scorecard that defines quality standards for evaluation.
+
+    <img src="/images/scenario creation stages/Stage4.png" alt="Scorecard selection showing various evaluation criteria options" />
+
+    Choose scorecards based on your goals:
+    - Customer service quality
+    - Sales effectiveness
+    - Compliance requirements
+
+    ### Step 5: Set Schedule
+
+    Configure how often this scenario should run automatically.
+
+    <img src="/images/scenario creation stages/Stage5.png" alt="Schedule configuration with frequency options and time settings" />
+
+    **Options:**
+    - **Once**: Run immediately, manual reruns
+    - **Daily**: Continuous regression testing
+    - **Weekly/Monthly**: Periodic quality checks
+    - **Stop condition**: Never, after date, or after N runs
+
+    ### Step 6: Preview & Launch
+
+    Review your configuration before running the simulations.
+
+    <img src="/images/scenario creation stages/Stage6.png" alt="Preview showing all simulation combinations that will be created" />
+
+    The preview shows exactly how many simulations will run:
+    - **2 personas × 1 agent × 1 scorecard = 2 simulations**
+
+    Click "Publish & Run" to start testing!
+
+    ### Managing Scenarios
+
+    After creation, view all your scenarios in one place:
+
+    <img src="/images/scenario creation stages/List.png" alt="Scenarios dashboard showing list of scenarios with scores and statuses" />
+
+    **Dashboard features:**
+    - Total runs and average scores
+    - Active vs completed scenarios
+    - Quick access to results
+    - Edit or rerun scenarios
+
+  </Tab>
+  <Tab title="Via API">
+    ### Step 1: Define the Situation
+
+    Start with a clear description of what's happening in this test:
 
 ```json
 {
@@ -91,25 +179,18 @@ Now you can run the same scenario with different products and issues without cre
 
 Choose which customer behaviors to test:
 
-<Tabs>
-  <Tab title="Via UI">
-    Select personas from your library in the scenario builder. Start with at least 2-3 different personality types.
-  </Tab>
-  <Tab title="Via API">
-    ```bash
-    curl -X POST https://api.chanl.ai/v1/scenarios \
-      -H "Authorization: Bearer YOUR_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{
-        "name": "Refund Request",
-        "prompt": "Customer wants refund for defective product",
-        "personas": ["frustrated", "analytical", "confused"],
-        "agents": ["agent-123"],
-        "scorecard": "service-quality"
-      }'
-    ```
-  </Tab>
-</Tabs>
+```bash
+curl -X POST https://api.chanl.ai/v1/scenarios \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Refund Request",
+    "prompt": "Customer wants refund for defective product",
+    "personas": ["frustrated", "analytical", "confused"],
+    "agents": ["agent-123"],
+    "scorecard": "service-quality"
+  }'
+```
 
 ### Step 4: Choose Agents to Test
 
@@ -121,9 +202,14 @@ Select which agent versions or configurations to test:
 ### Step 5: Assign a Scorecard
 
 Pick evaluation criteria that match your test goals:
-- **Customer Service** - Empathy, problem resolution, professionalism
-- **Sales** - Needs discovery, objection handling, closing
-- **Compliance** - Required disclosures, policy adherence
+
+**Customer Service** - Empathy, problem resolution, professionalism
+
+**Sales** - Needs discovery, objection handling, closing
+
+**Compliance** - Required disclosures, policy adherence
+  </Tab>
+</Tabs>
 
 ## Scheduling Automated Tests
 
