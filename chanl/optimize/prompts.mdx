@@ -1,155 +1,657 @@
 ---
 title: "Prompts"
-description: "Prompt library and management system"
+description: "Build and manage effective agent instructions using a library of proven prompts"
 icon: "sparkles"
 ---
 
 # Prompts
 
-**Prompts** provide a centralized library for managing agent instructions and behavioral guidelines. This system allows you to maintain, organize, and reuse effective prompts across your workspace, including access to a curated library of high-performing prompts.
+Your agent's prompt is its brain—the instructions that shape how it talks, thinks, and helps customers. Chanl's prompt library helps you build, test, and share effective prompts that actually work.
 
-## Key Components
+## Why Prompt Management Matters
 
-### Basic Information
-- **Name** - Descriptive prompt identifier
-- **Prompt** - Complete instruction text
-- **Tags** - Categorization and filtering labels
+Writing a good agent prompt is hard. Managing dozens of them across multiple agents is harder. The prompt library helps you:
+- **Find what works** - Access proven prompts from the community
+- **Test before deploying** - Validate new prompts with scenarios
+- **Track improvements** - See how prompt changes affect performance
+- **Reuse across agents** - Don't reinvent the wheel
 
-### Organization
-- **Categories** - Functional groupings
-- **Version History** - Change tracking
-- **Performance Data** - Usage and success metrics
+<Info>
+**Example**: You need a customer service prompt. Instead of starting from scratch, grab the "Empathetic Support Agent" from the library, customize it for your business, test with 5 scenarios, and deploy in 20 minutes.
+</Info>
 
-## Prompt Categories
+## How Prompts Work
 
-### By Function
-- **Customer Service** - Support and assistance prompts
-- **Sales** - Lead generation and conversion
-- **Technical Support** - Problem-solving and troubleshooting
-- **General Conversation** - Basic interaction patterns
+A prompt tells your agent:
+- **Who it is** - Identity and role (e.g., "You are a helpful customer service agent")
+- **How to talk** - Tone, style, personality
+- **What to do** - Goals, tasks, procedures
+- **What not to do** - Boundaries, restrictions
 
-### By Style
-- **Professional** - Formal business communication
-- **Friendly** - Warm, approachable interactions
-- **Technical** - Detailed, specification-focused
-- **Concise** - Brief, efficient responses
+```
+Good Prompt → Consistent Behavior → Better Customer Experiences
+```
 
-### By Industry
-- **Healthcare** - Medical and health-related interactions
-- **Finance** - Financial services and banking
-- **Retail** - Sales and customer service
-- **Technology** - Software and technical support
+## Accessing the Prompt Library
 
-## Library Types
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Prompts** in the sidebar to see:
+    - Your workspace prompts (custom ones you've created)
+    - Global library (curated, high-performing prompts)
+    - Filter by category, industry, or tags
+    - View performance metrics for each prompt
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    # List all available prompts
+    curl https://api.chanl.ai/v1/prompts \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
 
-### Workspace Library
-Your organization's custom prompts:
-- Internally developed instructions
-- Company-specific behaviors
-- Customized industry adaptations
-- Proprietary conversation flows
+    Response:
+    ```json
+    {
+      "prompts": [
+        {
+          "id": "prompt_abc123",
+          "name": "Empathetic Customer Service",
+          "category": "customer-service",
+          "source": "global",
+          "tags": ["empathy", "support", "high-performance"],
+          "avgScore": 91.3,
+          "usageCount": 487
+        }
+      ]
+    }
+    ```
+  </Tab>
+</Tabs>
 
-### Global Library
-Curated high-performance prompts:
-- Proven effective across multiple organizations
-- Industry best practices
-- Optimized for common use cases
-- Regularly updated based on performance data
+## Prompt Library Categories
 
-## Tagging System
+### Customer Service Prompts
 
-### Functional Tags
-- `customer-service`
-- `sales`
-- `technical-support`
-- `escalation`
-- `greeting`
-- `closing`
+<AccordionGroup>
+  <Accordion title="Empathetic Support Agent">
+    **Best for**: Customer service calls where empathy matters
 
-### Quality Tags
-- `high-performance`
-- `tested`
-- `optimized`
-- `experimental`
-- `deprecated`
+    **Core instructions**:
+    - Acknowledge customer emotions first
+    - Use phrases like "I understand" and "I can see why"
+    - Focus on resolution, not just response
+    - End with confirmation of satisfaction
 
-### Industry Tags
-- `healthcare`
-- `finance`
-- `retail`
-- `technology`
-- `education`
+    **Performance**: 91% average score across 500+ simulations
 
-## Prompt Development
+    ```bash
+    curl https://api.chanl.ai/v1/prompts/empathetic-support \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Accordion>
 
-### Best Practices
-- **Clear Instructions** - Specific, actionable guidance
-- **Consistent Tone** - Maintain voice throughout
-- **Context Awareness** - Consider conversation state
-- **Error Handling** - Instructions for edge cases
+  <Accordion title="Efficient Problem Solver">
+    **Best for**: High-volume support requiring quick resolutions
 
-### Testing and Validation
-- Test prompts with diverse scenarios
-- Measure performance against scorecards
-- A/B test different versions
-- Gather feedback from simulations
+    **Core instructions**:
+    - Get to the problem immediately
+    - Use closed questions for faster qualification
+    - Provide step-by-step solutions
+    - Minimize small talk
 
-### Optimization Process
-1. **Initial Creation** - Draft based on requirements
-2. **Testing** - Validate with simulations
-3. **Refinement** - Improve based on results
-4. **Production** - Deploy to live agents
-5. **Monitoring** - Track real-world performance
-6. **Iteration** - Continuous improvement
+    **Performance**: 87% average score, 30% faster than baseline
+  </Accordion>
 
-## Version Management
+  <Accordion title="Technical Troubleshooter">
+    **Best for**: Complex technical support issues
 
-### Change Tracking
-- Document prompt modifications
-- Track performance impact of changes
-- Maintain rollback capabilities
-- Preserve successful versions
+    **Core instructions**:
+    - Ask diagnostic questions systematically
+    - Explain technical concepts simply
+    - Verify each step before moving forward
+    - Document resolution for customer
 
-### Deployment Management
-- Staged rollouts for prompt updates
-- A/B testing infrastructure
-- Performance monitoring
-- Quick rollback procedures
+    **Performance**: 89% average score, 15% lower escalation rate
+  </Accordion>
+</AccordionGroup>
 
-## Performance Analytics
+### Sales Prompts
 
-### Success Metrics
-- Scorecard performance across simulations
-- Real conversation outcomes
-- Customer satisfaction correlation
-- Error and escalation rates
+<AccordionGroup>
+  <Accordion title="Consultative Sales Agent">
+    **Best for**: Solution-oriented sales conversations
 
-### Comparative Analysis
-- Performance between prompt versions
-- Effectiveness across different scenarios
-- Agent-specific performance variations
-- Industry benchmark comparisons
+    **Core instructions**:
+    - Start with needs discovery
+    - Ask about pain points and goals
+    - Present solutions, not just features
+    - Handle objections with empathy
 
-## Integration with Agents
+    **Performance**: 84% average score, 23% higher conversion
+  </Accordion>
 
-### Assignment Process
-- Link prompts to specific agents
-- Support for multiple prompt variants
-- Dynamic prompt selection based on context
-- Real-time prompt updates
+  <Accordion title="Direct Sales Closer">
+    **Best for**: Transactional sales with clear offerings
 
-### Customization Options
-- Agent-specific modifications
-- Scenario-based adaptations
-- Dynamic variable insertion
-- Context-aware adjustments
+    **Core instructions**:
+    - Lead with value proposition
+    - Create urgency appropriately
+    - Ask for commitment multiple times
+    - Address price concerns directly
+
+    **Performance**: 81% average score, fastest time-to-close
+  </Accordion>
+</AccordionGroup>
+
+### Compliance-Focused Prompts
+
+<AccordionGroup>
+  <Accordion title="TCPA Compliant Outbound">
+    **Best for**: Outbound sales calls requiring regulatory compliance
+
+    **Core instructions**:
+    - Start with identification and purpose
+    - Provide call recording disclosure
+    - Obtain verbal consent before continuing
+    - Document opt-out requests immediately
+
+    **Performance**: 96% compliance rate across audits
+  </Accordion>
+
+  <Accordion title="HIPAA Healthcare Agent">
+    **Best for**: Healthcare interactions handling patient information
+
+    **Core instructions**:
+    - Verify identity before discussing details
+    - Never mention PHI in recordings without consent
+    - Follow data minimization principles
+    - Provide privacy notices as required
+
+    **Performance**: 98% compliance rate
+  </Accordion>
+</AccordionGroup>
+
+## Creating Your Own Prompts
+
+### Start with a Template
+
+Customize an existing prompt instead of starting from scratch:
+
+<Tabs>
+  <Tab title="Via UI">
+    1. Find a prompt similar to what you need
+    2. Click "Duplicate to Workspace"
+    3. Customize for your business
+    4. Test with scenarios
+    5. Save to your library
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    # Duplicate and customize a prompt
+    curl -X POST https://api.chanl.ai/v1/prompts \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "basePromptId": "empathetic-support",
+        "name": "Acme Customer Service Agent",
+        "content": "You are a helpful customer service agent for Acme Corp...",
+        "tags": ["customer-service", "acme", "production"]
+      }'
+    ```
+  </Tab>
+</Tabs>
+
+### Writing an Effective Prompt
+
+Follow this structure:
+
+```
+1. Identity & Role
+   "You are [role] for [company]..."
+
+2. Core Personality
+   "You are [traits: empathetic, professional, efficient]..."
+
+3. Primary Goal
+   "Your goal is to [main objective]..."
+
+4. Key Behaviors
+   - Always [important behavior]
+   - Never [prohibited behavior]
+   - When [situation], do [action]
+
+5. Communication Style
+   "Use [tone] language. [Length] responses. [Style] explanations."
+
+6. Escalation Rules
+   "Transfer to human when [conditions]..."
+
+7. Compliance Requirements
+   "You must [regulatory requirement]..."
+```
+
+### Example: Custom Support Prompt
+
+```markdown
+You are a customer service agent for TechCo, a B2B software company.
+
+You are empathetic, knowledgeable, and solution-focused. You care about helping customers succeed with our product.
+
+Your goal is to resolve customer issues quickly while maintaining a positive relationship.
+
+Key behaviors:
+- Acknowledge frustration before jumping to solutions
+- Ask clarifying questions to understand the root cause
+- Provide step-by-step instructions
+- Confirm resolution before ending call
+- Never blame the customer or make excuses
+
+Communication style:
+Use conversational, professional language. Keep responses under 3 sentences unless providing detailed instructions. Explain technical concepts in simple terms.
+
+Escalation rules:
+Transfer to human when:
+- Customer explicitly requests it
+- Issue requires code changes or engineering
+- Customer is threatening legal action
+- You've attempted 3 solutions without success
+
+Tools available:
+- lookup_account: Get customer account details
+- check_service_status: Verify system status
+- create_ticket: Log issues for engineering
+
+Always look up the account before discussing specific issues.
+```
+
+## Testing Prompts
+
+Before deploying a new prompt, test it:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Create test scenario for new prompt
+async function testPrompt(promptId, agentId) {
+  // Apply prompt to agent
+  await chanl.agents.updatePrompt(agentId, promptId);
+
+  // Run test scenarios
+  const scenario = await chanl.scenarios.create({
+    name: `Prompt Test: ${promptId}`,
+    prompt: 'Customer has billing question about recent charge',
+    personas: ['polite', 'frustrated', 'confused'],
+    agents: [agentId],
+    scorecard: 'customer-service-quality'
+  });
+
+  // Wait for results
+  const results = await chanl.scenarios.waitForCompletion(scenario.id);
+
+  return {
+    avgScore: results.avgScore,
+    strengths: results.topCategories,
+    weaknesses: results.bottomCategories,
+    recommendation: results.avgScore >= 85 ? 'Deploy' : 'Needs improvement'
+  };
+}
+
+// Test new prompt
+const results = await testPrompt('prompt_new123', 'agent_abc');
+console.log(results);
+/*
+{
+  avgScore: 87,
+  strengths: ['Communication', 'Empathy'],
+  weaknesses: ['Problem Resolution'],
+  recommendation: 'Deploy'
+}
+*/
+```
+
+## A/B Testing Prompts
+
+Compare two prompts to find the better one:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+async function comparePrompts(promptA, promptB, agentId) {
+  // Create two test agents with different prompts
+  const agentA = await chanl.agents.duplicate(agentId, {
+    name: 'Test Agent A',
+    promptId: promptA
+  });
+
+  const agentB = await chanl.agents.duplicate(agentId, {
+    name: 'Test Agent B',
+    promptId: promptB
+  });
+
+  // Run same scenarios on both
+  const comparison = await chanl.scenarios.create({
+    name: 'Prompt A/B Test',
+    prompt: 'Customer service scenarios',
+    personas: ['polite', 'frustrated', 'analytical'],
+    agents: [agentA.id, agentB.id],
+    scorecard: 'customer-service'
+  });
+
+  const results = await chanl.scenarios.waitForCompletion(comparison.id);
+
+  return {
+    winner: results.agents[agentA.id].avgScore > results.agents[agentB.id].avgScore ? 'A' : 'B',
+    scoreA: results.agents[agentA.id].avgScore,
+    scoreB: results.agents[agentB.id].avgScore,
+    difference: Math.abs(results.agents[agentA.id].avgScore - results.agents[agentB.id].avgScore)
+  };
+}
+
+const results = await comparePrompts('prompt_v1', 'prompt_v2', 'agent_abc');
+console.log(`Winner: Prompt ${results.winner}`);
+console.log(`Score difference: ${results.difference} points`);
+```
+
+## Tracking Prompt Performance
+
+Monitor how prompts perform over time:
+
+```bash
+# Get performance metrics for a prompt
+curl https://api.chanl.ai/v1/prompts/prompt_abc123/analytics?days=30 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response shows comprehensive performance data:
+```json
+{
+  "promptId": "prompt_abc123",
+  "name": "Empathetic Support Agent",
+  "timeRange": "30 days",
+  "usage": {
+    "totalCalls": 1247,
+    "totalSimulations": 89,
+    "activeAgents": 5
+  },
+  "performance": {
+    "avgScore": 88.3,
+    "trend": "improving",
+    "scoresByCategory": {
+      "Communication": 92,
+      "Problem Resolution": 87,
+      "Compliance": 91
+    }
+  },
+  "comparison": {
+    "vsWorkspaceAvg": "+6.2",
+    "vsGlobalAvg": "+3.1"
+  },
+  "topScenarios": [
+    "Billing inquiry - 94 avg score",
+    "Refund request - 89 avg score"
+  ],
+  "strugglingScenarios": [
+    "Technical troubleshooting - 78 avg score"
+  ]
+}
+```
+
+## Prompt Variables
+
+Make prompts reusable with variables:
+
+```javascript
+// Create prompt with variables
+const prompt = await chanl.prompts.create({
+  name: 'Customizable Support Agent',
+  content: `You are a customer service agent for {{company_name}}.
+
+Your primary goal is to {{primary_goal}}.
+
+When greeting customers, say "{{greeting}}"
+
+Use a {{tone}} tone throughout the conversation.
+
+Company-specific info:
+- Return policy: {{return_policy}}
+- Support hours: {{support_hours}}
+- Escalation number: {{escalation_number}}`,
+  variables: [
+    {
+      name: 'company_name',
+      type: 'string',
+      required: true
+    },
+    {
+      name: 'primary_goal',
+      type: 'string',
+      default: 'resolve customer issues quickly and professionally'
+    },
+    {
+      name: 'tone',
+      type: 'enum',
+      options: ['professional', 'friendly', 'casual'],
+      default: 'professional'
+    }
+  ]
+});
+
+// Use prompt with custom values
+await chanl.agents.updatePrompt('agent_abc123', prompt.id, {
+  variables: {
+    company_name: 'Acme Corp',
+    primary_goal: 'help customers get the most value from our product',
+    greeting: 'Thanks for calling Acme! How can I help you today?',
+    tone: 'friendly',
+    return_policy: '30 days, no questions asked',
+    support_hours: '24/7',
+    escalation_number: '1-800-555-0123'
+  }
+});
+```
+
+## Version Control
+
+Track prompt changes over time:
+
+```bash
+# View prompt history
+curl https://api.chanl.ai/v1/prompts/prompt_abc123/versions \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "versions": [
+    {
+      "version": "v3",
+      "createdAt": "2024-01-15T10:00:00Z",
+      "createdBy": "user@company.com",
+      "changes": "Added explicit escalation criteria",
+      "avgScore": 88.3,
+      "status": "active"
+    },
+    {
+      "version": "v2",
+      "createdAt": "2024-01-10T14:30:00Z",
+      "createdBy": "user@company.com",
+      "changes": "Simplified language, reduced jargon",
+      "avgScore": 85.1,
+      "status": "archived"
+    },
+    {
+      "version": "v1",
+      "createdAt": "2024-01-01T09:00:00Z",
+      "createdBy": "user@company.com",
+      "changes": "Initial version",
+      "avgScore": 82.4,
+      "status": "archived"
+    }
+  ]
+}
+```
+
+### Rollback to Previous Version
+
+```bash
+curl -X POST https://api.chanl.ai/v1/prompts/prompt_abc123/rollback \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "version": "v2"
+  }'
+```
+
+## Sharing Prompts
+
+### Within Your Workspace
+
+Make prompts available to your team:
+
+```bash
+# Create shared prompt
+curl -X POST https://api.chanl.ai/v1/prompts \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Team Support Agent",
+    "content": "You are a helpful support agent...",
+    "visibility": "workspace",
+    "tags": ["support", "shared", "approved"]
+  }'
+```
+
+### Contributing to Global Library
+
+Submit high-performing prompts to help the community:
+
+```bash
+# Submit prompt for global library
+curl -X POST https://api.chanl.ai/v1/prompts/prompt_abc123/submit-global \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "category": "customer-service",
+    "description": "Empathetic support agent optimized for frustrated customers",
+    "performanceData": {
+      "avgScore": 91.3,
+      "totalTests": 487,
+      "industries": ["retail", "technology"]
+    }
+  }'
+```
 
 ## Best Practices
 
-- Maintain a clear naming convention for easy identification
-- Use tags consistently for effective organization
-- Test prompts thoroughly before production deployment
-- Keep performance data for continuous improvement
-- Share successful prompts across teams
-- Regular review and cleanup of unused prompts
-- Document the purpose and context for each prompt
+<Steps>
+  <Step title="Start with Proven Prompts">
+    Don't reinvent the wheel. Use library prompts as starting points and customize for your needs.
+  </Step>
+
+  <Step title="Test Before Production">
+    Always run scenarios before deploying a new prompt. Test with diverse personas and edge cases.
+  </Step>
+
+  <Step title="Make One Change at a Time">
+    When optimizing prompts, change one thing at a time so you know what improved performance.
+  </Step>
+
+  <Step title="Use Clear, Specific Language">
+    Vague instructions like "be helpful" don't work. Specify exact behaviors: "Ask 3 questions to diagnose the issue."
+  </Step>
+
+  <Step title="Include Examples">
+    Show the agent what good looks like with example conversations or phrases.
+  </Step>
+
+  <Step title="Monitor Performance">
+    Track prompt scores over time. If performance drops, investigate what changed.
+  </Step>
+
+  <Step title="Version Everything">
+    Document why you made changes. Makes it easy to understand what worked and what didn't.
+  </Step>
+</Steps>
+
+## Common Prompt Patterns
+
+### Adding Personality
+
+```
+❌ "Be friendly"
+✅ "Use a warm, conversational tone. Include phrases like 'I'd be happy to help' and 'Great question!' Start with enthusiasm."
+```
+
+### Handling Difficult Customers
+
+```
+❌ "Deal with angry customers"
+✅ "When customer expresses frustration:
+1. Acknowledge their feeling: 'I understand this is frustrating'
+2. Apologize if appropriate: 'I'm sorry this happened'
+3. Focus on solution: 'Let me help fix this right away'
+4. Never get defensive or blame them"
+```
+
+### Setting Boundaries
+
+```
+❌ "Don't do things outside your scope"
+✅ "You can: [list specific capabilities]
+You cannot: [list limitations]
+When asked to do something you cannot do, respond: 'I'm not able to do that, but I can connect you with someone who can. Would you like me to transfer you?'"
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Prompt not improving scores">
+    **Problem**: Made changes but scores aren't getting better
+
+    **Investigate**:
+    - Review failing transcripts - is agent following instructions?
+    - Check if prompt is too long or complex
+    - Test with fewer personas to isolate issues
+    - Compare against baseline prompt performance
+    - Verify scorecard criteria align with prompt goals
+  </Accordion>
+
+  <Accordion title="Inconsistent agent behavior">
+    **Problem**: Agent follows prompt sometimes but not always
+
+    **Solutions**:
+    - Make instructions more explicit and direct
+    - Lower model temperature (0.5-0.7)
+    - Add examples of desired behavior
+    - Remove conflicting instructions
+    - Put most important rules first
+  </Accordion>
+
+  <Accordion title="Agent ignoring parts of prompt">
+    **Problem**: Agent follows some instructions but skips others
+
+    **Solutions**:
+    - Shorten prompt (very long prompts get ignored)
+    - Emphasize critical rules: "ALWAYS [behavior]" or "NEVER [behavior]"
+    - Move important instructions to beginning
+    - Test if multiple instructions conflict
+    - Consider splitting complex behavior across multiple prompts
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Manage Agents" href="/chanl/optimize/agents">
+    Apply your prompts to agents and test them
+  </Card>
+  <Card title="Run Scenarios" href="/chanl/test/scenarios">
+    Validate prompt performance with test scenarios
+  </Card>
+  <Card title="Add Tools" href="/chanl/optimize/tools">
+    Give your agents capabilities to match prompt instructions
+  </Card>
+  <Card title="Fine-Tune Models" href="/chanl/optimize/fine-tuning">
+    Train custom models on conversations with best prompts
+  </Card>
+</CardGroup>

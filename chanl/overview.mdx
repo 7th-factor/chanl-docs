@@ -87,13 +87,13 @@ Chanl automatically syncs your agent configuration, including prompts and tools.
 Define the types of customers your agent needs to handle:
 
 <AccordionGroup>
-  <Accordion title="Frustrated Customer" icon="user">
+  <Accordion title="Frustrated Customer">
     A customer who is upset and needs quick resolution. Uses short responses and may interrupt.
   </Accordion>
-  <Accordion title="Detail-Oriented Customer" icon="user-check">
+  <Accordion title="Detail-Oriented Customer">
     Asks many specific questions and needs thorough explanations before making decisions.
   </Accordion>
-  <Accordion title="Price-Sensitive Buyer" icon="users">
+  <Accordion title="Price-Sensitive Buyer">
     Primarily concerned with cost and value. Compares options and negotiates.
   </Accordion>
 </AccordionGroup>
@@ -164,17 +164,17 @@ Enable live monitoring and alerts for your production agent:
 **Challenge**: Building custom AI voice agents but lack tools to test and debug conversation flows.
 
 **Solution**: Use Chanl's API to:
-- Integrate testing into your CI/CD pipeline
 - Programmatically create scenarios and personas
-- Fetch simulation results for automated quality checks
+- Automate testing workflows
+- Fetch simulation results for quality validation
 - Monitor production agents and get alerts via webhooks
 
 ```javascript
-// Example: Automated testing in your pipeline
+// Example: Automated quality validation
 const chanl = require('@chanl/sdk');
 
 await chanl.scenarios.create({
-  name: 'PR #123 - New refund flow',
+  name: 'Refund Flow Test',
   personas: ['frustrated', 'analytical'],
   agents: ['staging-agent'],
   scorecard: 'customer-service'

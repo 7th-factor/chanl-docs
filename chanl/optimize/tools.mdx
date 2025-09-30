@@ -1,142 +1,755 @@
 ---
 title: "Tools"
-description: "Agent action capabilities and integrations"
+description: "Give your agents superpowers with integrations, APIs, and custom capabilities"
 icon: "wrench"
 ---
 
 # Tools
 
-**Tools** define the actions that agents can take during conversations, extending their capabilities beyond simple text responses. This system manages integrations, APIs, and specialized functions that enhance agent effectiveness.
+Tools are how your agent actually gets things done. Without tools, your agent can only talk. With tools, it can look up orders, schedule appointments, create tickets, and take real action.
 
-## Key Components
+## Why Tools Matter
 
-### Basic Information
-- **Name** - Tool identifier and display name
-- **Description** - Purpose and functionality overview
-- **Type** - Tool category and implementation method
+A prompt tells your agent what to do. Tools let it actually do it. Tools help you:
+- **Take action** - Create tickets, update CRMs, process refunds
+- **Access data** - Look up customer info, check order status, verify accounts
+- **Integrate systems** - Connect to your existing business tools
+- **Extend capabilities** - Give agents new powers as your needs evolve
 
-### Configuration
-- **Parameters** - Required and optional inputs
-- **Authentication** - Security credentials and access control
-- **Error Handling** - Fallback behaviors and error responses
+<Info>
+**Example**: Customer asks "Where's my order?" Without tools, agent says "I can't check that." With a `lookup_order` tool, agent retrieves the actual tracking info and provides it immediately.
+</Info>
 
-## Tool Types
+## How Tools Work
 
-### API Requests
-External service integrations for data access and actions:
-- **REST APIs** - Standard HTTP-based services
-- **GraphQL** - Query-based data retrieval
-- **Webhooks** - Real-time event notifications
-- **Database Queries** - Direct data access
+Your agent decides when to use tools based on its prompt and the conversation:
 
-### MCP (Model Context Protocol)
-Advanced context management and memory systems:
-- **Context Preservation** - Maintain conversation state
-- **Memory Management** - Long-term information storage
-- **State Synchronization** - Multi-session consistency
-- **Context Sharing** - Cross-agent information sharing
+```
+Customer: "What's my order status?"
+↓
+Agent thinks: "I need to look up their order"
+↓
+Agent calls: lookup_order(order_id="12345")
+↓
+Tool returns: {status: "shipped", tracking: "1Z999..."}
+↓
+Agent responds: "Your order shipped yesterday! Tracking number is 1Z999..."
+```
 
-### Routing and Escalation
-Call management and transfer capabilities:
-- **Human Transfer** - Escalation to live agents
-- **Department Routing** - Specialized team transfers
-- **Callback Scheduling** - Appointment and follow-up systems
-- **Conference Calls** - Multi-party conversation management
+The agent automatically chooses which tool to use and what parameters to pass.
 
-### Data and Analytics
-Information processing and analysis tools:
-- **Customer Lookup** - CRM and database queries
-- **Real-time Analytics** - Performance and sentiment analysis
-- **Report Generation** - Automated documentation
-- **Data Validation** - Information verification
+## Common Tool Types
 
-## Configuration Management
+<CardGroup cols={2}>
+  <Card title="API Requests">
+    Call external services to retrieve or update data
 
-### Authentication Settings
-- **API Keys** - Service access credentials
-- **OAuth** - Secure authorization flows
-- **Basic Auth** - Username/password authentication
-- **Custom Headers** - Specialized authentication methods
+    **Examples**: CRM lookup, payment processing, inventory check
+  </Card>
+  <Card title="Database Queries">
+    Fetch information from your databases
 
-### Parameter Configuration
-- **Required Fields** - Mandatory input parameters
-- **Optional Fields** - Additional configuration options
-- **Default Values** - Fallback parameter settings
-- **Validation Rules** - Input format and range constraints
+    **Examples**: Customer records, order history, account details
+  </Card>
+  <Card title="Action Tools">
+    Perform operations like creating records or triggering workflows
 
-### Response Handling
-- **Success Processing** - Normal response handling
-- **Error Management** - Failure response processing
-- **Timeout Handling** - Long-running request management
-- **Rate Limiting** - API usage optimization
+    **Examples**: Create ticket, schedule callback, process refund
+  </Card>
+  <Card title="Routing Tools">
+    Transfer calls or escalate to humans
 
-## Tool Categories
+    **Examples**: Transfer to sales, escalate to manager
+  </Card>
+</CardGroup>
 
-### Customer Service
-- **Ticket Creation** - Support request generation
-- **Knowledge Base Search** - Information retrieval
-- **Status Checking** - Order and service status
-- **Appointment Scheduling** - Calendar integration
+## Creating Your First Tool
 
-### Sales and Marketing
-- **Lead Qualification** - Prospect evaluation
-- **Product Catalog** - Inventory and pricing lookup
-- **Quote Generation** - Pricing and proposal creation
-- **CRM Updates** - Customer record management
+<Tabs>
+  <Tab title="Via UI">
+    1. Navigate to **Tools** in the sidebar
+    2. Click "Create Tool"
+    3. Choose tool type (API, Database, etc.)
+    4. Configure authentication
+    5. Define parameters
+    6. Test with sample data
+    7. Activate for use
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/tools \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "lookup_order",
+        "description": "Retrieves order status and tracking information using order ID",
+        "type": "api",
+        "config": {
+          "method": "GET",
+          "url": "https://api.yourcompany.com/orders/{orderId}",
+          "auth": {
+            "type": "bearer",
+            "token": "YOUR_API_TOKEN"
+          },
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "parameters": [
+          {
+            "name": "orderId",
+            "type": "string",
+            "description": "The customer's order ID",
+            "required": true
+          }
+        ],
+        "responseMapping": {
+          "status": "data.status",
+          "trackingNumber": "data.tracking.number",
+          "estimatedDelivery": "data.tracking.estimatedDelivery"
+        }
+      }'
+    ```
+  </Tab>
+</Tabs>
 
-### Technical Support
-- **System Diagnostics** - Automated troubleshooting
-- **Log Analysis** - Problem identification
-- **Remote Access** - System interaction capabilities
-- **Documentation Search** - Technical resource lookup
+## Tool Configuration
 
-### Financial Services
-- **Account Lookup** - Balance and transaction history
-- **Payment Processing** - Transaction handling
-- **Credit Checks** - Financial verification
-- **Fraud Detection** - Security monitoring
+### Authentication
 
-## Integration Best Practices
+Secure your tool connections:
 
-### Security
-- Use secure authentication methods
-- Implement proper error handling to avoid data leaks
-- Regular credential rotation and access review
-- Monitor tool usage for unusual patterns
+<AccordionGroup>
+  <Accordion title="Bearer Token">
+    Most common for APIs:
 
-### Performance
-- Optimize API calls for response time
-- Implement caching for frequently accessed data
-- Use async operations for non-blocking tools
-- Monitor and alert on tool performance issues
+    ```json
+    {
+      "auth": {
+        "type": "bearer",
+        "token": "YOUR_API_TOKEN"
+      }
+    }
+    ```
+  </Accordion>
 
-### Reliability
-- Implement fallback mechanisms for tool failures
-- Test tools thoroughly in various scenarios
-- Maintain tool documentation and troubleshooting guides
-- Regular testing and validation of integrations
+  <Accordion title="API Key">
+    Simple key-based authentication:
 
-## Tool Management
+    ```json
+    {
+      "auth": {
+        "type": "api_key",
+        "key": "YOUR_API_KEY",
+        "location": "header",
+        "paramName": "X-API-Key"
+      }
+    }
+    ```
+  </Accordion>
 
-### Lifecycle Management
-1. **Development** - Tool creation and initial testing
-2. **Testing** - Validation with agent scenarios
-3. **Deployment** - Production release and monitoring
-4. **Maintenance** - Updates, optimization, and support
-5. **Retirement** - Deprecation and replacement planning
+  <Accordion title="OAuth 2.0">
+    For services requiring OAuth:
 
-### Performance Monitoring
-- **Usage Analytics** - Tool utilization statistics
-- **Performance Metrics** - Response times and success rates
-- **Error Tracking** - Failure analysis and resolution
-- **Cost Management** - API usage and expense monitoring
+    ```json
+    {
+      "auth": {
+        "type": "oauth2",
+        "clientId": "YOUR_CLIENT_ID",
+        "clientSecret": "YOUR_CLIENT_SECRET",
+        "tokenUrl": "https://api.service.com/oauth/token",
+        "scope": "read write"
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Basic Auth">
+    Username and password:
+
+    ```json
+    {
+      "auth": {
+        "type": "basic",
+        "username": "YOUR_USERNAME",
+        "password": "YOUR_PASSWORD"
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Parameters
+
+Define what information the tool needs:
+
+```json
+{
+  "parameters": [
+    {
+      "name": "customerId",
+      "type": "string",
+      "description": "Unique customer identifier",
+      "required": true
+    },
+    {
+      "name": "includeHistory",
+      "type": "boolean",
+      "description": "Include purchase history in response",
+      "required": false,
+      "default": false
+    },
+    {
+      "name": "limit",
+      "type": "number",
+      "description": "Maximum number of records to return",
+      "required": false,
+      "default": 10,
+      "min": 1,
+      "max": 100
+    }
+  ]
+}
+```
+
+### Error Handling
+
+Tell the agent what to do when tools fail:
+
+```json
+{
+  "errorHandling": {
+    "onTimeout": {
+      "fallbackMessage": "I'm having trouble accessing that information right now. Let me transfer you to someone who can help.",
+      "action": "escalate"
+    },
+    "onAuthError": {
+      "fallbackMessage": "I'm experiencing a technical issue. Please try again in a moment.",
+      "action": "retry",
+      "maxRetries": 2
+    },
+    "onNotFound": {
+      "fallbackMessage": "I couldn't find that information. Can you verify the details you provided?",
+      "action": "ask_for_clarification"
+    }
+  }
+}
+```
+
+## Example Tools
+
+### Customer Lookup Tool
+
+```bash
+curl -X POST https://api.chanl.ai/v1/tools \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "lookup_customer",
+    "description": "Retrieves customer account information including contact details and account status",
+    "type": "api",
+    "config": {
+      "method": "GET",
+      "url": "https://crm.yourcompany.com/api/customers/{customerId}",
+      "auth": {
+        "type": "bearer",
+        "token": "YOUR_CRM_API_TOKEN"
+      }
+    },
+    "parameters": [
+      {
+        "name": "customerId",
+        "type": "string",
+        "description": "Customer ID or email address",
+        "required": true
+      }
+    ],
+    "responseMapping": {
+      "name": "data.name",
+      "email": "data.email",
+      "phone": "data.phone",
+      "accountStatus": "data.status",
+      "tier": "data.subscription.tier"
+    }
+  }'
+```
+
+### Create Support Ticket Tool
+
+```bash
+curl -X POST https://api.chanl.ai/v1/tools \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "create_ticket",
+    "description": "Creates a support ticket in the ticketing system",
+    "type": "api",
+    "config": {
+      "method": "POST",
+      "url": "https://support.yourcompany.com/api/tickets",
+      "auth": {
+        "type": "api_key",
+        "key": "YOUR_SUPPORT_API_KEY",
+        "location": "header",
+        "paramName": "X-API-Key"
+      }
+    },
+    "parameters": [
+      {
+        "name": "customerId",
+        "type": "string",
+        "description": "Customer identifier",
+        "required": true
+      },
+      {
+        "name": "subject",
+        "type": "string",
+        "description": "Brief description of issue",
+        "required": true
+      },
+      {
+        "name": "description",
+        "type": "string",
+        "description": "Detailed issue description",
+        "required": true
+      },
+      {
+        "name": "priority",
+        "type": "string",
+        "description": "Ticket priority",
+        "required": false,
+        "default": "normal",
+        "enum": ["low", "normal", "high", "urgent"]
+      }
+    ],
+    "responseMapping": {
+      "ticketId": "ticket.id",
+      "ticketNumber": "ticket.number",
+      "createdAt": "ticket.created_at"
+    }
+  }'
+```
+
+### Process Refund Tool
+
+```bash
+curl -X POST https://api.chanl.ai/v1/tools \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "process_refund",
+    "description": "Initiates a refund for an order. Requires manager approval for amounts over $100.",
+    "type": "api",
+    "config": {
+      "method": "POST",
+      "url": "https://payments.yourcompany.com/api/refunds",
+      "auth": {
+        "type": "bearer",
+        "token": "YOUR_PAYMENT_API_TOKEN"
+      }
+    },
+    "parameters": [
+      {
+        "name": "orderId",
+        "type": "string",
+        "description": "Order to refund",
+        "required": true
+      },
+      {
+        "name": "amount",
+        "type": "number",
+        "description": "Refund amount in dollars",
+        "required": true,
+        "min": 0.01
+      },
+      {
+        "name": "reason",
+        "type": "string",
+        "description": "Reason for refund",
+        "required": true,
+        "enum": ["defective", "wrong_item", "not_as_described", "customer_request"]
+      }
+    ],
+    "rules": [
+      {
+        "condition": "amount > 100",
+        "action": "require_approval",
+        "message": "Refunds over $100 require manager approval. Let me transfer you."
+      }
+    ]
+  }'
+```
+
+## Assigning Tools to Agents
+
+Give your agent access to specific tools:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Add tools to an agent
+await chanl.agents.update('agent_abc123', {
+  tools: [
+    'lookup_customer',
+    'lookup_order',
+    'create_ticket',
+    'process_refund'
+  ]
+});
+
+// Update agent prompt to mention tools
+await chanl.agents.updatePrompt('agent_abc123', {
+  content: `You are a customer service agent.
+
+Tools available:
+- lookup_customer: Get customer account details
+- lookup_order: Check order status and tracking
+- create_ticket: Log issues for technical team
+- process_refund: Initiate refunds (under $100 only)
+
+Always use lookup_customer at the start of calls to personalize the conversation.
+When customers ask about orders, use lookup_order to provide accurate info.
+Create tickets for technical issues you can't resolve.
+For refunds over $100, transfer to a manager.`
+});
+```
+
+## Testing Tools
+
+Test tools before giving them to agents:
+
+<Tabs>
+  <Tab title="Via UI">
+    1. Navigate to the tool in **Tools** section
+    2. Click "Test Tool"
+    3. Enter sample parameters
+    4. Review response
+    5. Verify error handling works
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    # Test tool with sample data
+    curl -X POST https://api.chanl.ai/v1/tools/lookup_order/test \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "parameters": {
+          "orderId": "TEST-12345"
+        }
+      }'
+    ```
+
+    Response:
+    ```json
+    {
+      "success": true,
+      "responseTime": 234,
+      "result": {
+        "status": "shipped",
+        "trackingNumber": "1Z999AA10123456784",
+        "estimatedDelivery": "2024-01-18"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Testing in Scenarios
+
+Validate tools work correctly in agent conversations:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Create scenario that requires tools
+const scenario = await chanl.scenarios.create({
+  name: 'Tool Validation - Order Lookup',
+  prompt: 'Customer asks about order status for order #12345',
+  personas: ['polite-customer'],
+  agents: ['agent_abc123'],
+  scorecard: 'customer-service',
+  expectedBehavior: {
+    toolCalls: ['lookup_order'],
+    providesTrackingInfo: true
+  }
+});
+
+const results = await chanl.scenarios.waitForCompletion(scenario.id);
+
+// Check if tool was used correctly
+if (results.simulations[0].toolCalls.includes('lookup_order')) {
+  console.log('✅ Agent used lookup_order tool');
+} else {
+  console.log('❌ Agent did not use tool');
+}
+```
+
+## Monitoring Tool Performance
+
+Track how tools are performing:
+
+```bash
+# Get tool analytics
+curl https://api.chanl.ai/v1/tools/lookup_order/analytics?days=7 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response shows detailed metrics:
+```json
+{
+  "toolId": "lookup_order",
+  "name": "lookup_order",
+  "timeRange": "7 days",
+  "usage": {
+    "totalCalls": 1847,
+    "uniqueAgents": 5,
+    "avgCallsPerDay": 264
+  },
+  "performance": {
+    "successRate": 97.3,
+    "avgResponseTime": 234,
+    "p95ResponseTime": 412,
+    "timeoutRate": 0.8,
+    "errorRate": 2.7
+  },
+  "errors": [
+    {
+      "type": "not_found",
+      "count": 32,
+      "percentage": 1.7,
+      "message": "Order not found"
+    },
+    {
+      "type": "timeout",
+      "count": 15,
+      "percentage": 0.8,
+      "message": "Request timed out"
+    }
+  ],
+  "recommendations": [
+    "Success rate excellent (>95%)",
+    "Response time good (<500ms)",
+    "Consider handling 'not_found' errors more gracefully"
+  ]
+}
+```
+
+### Setting Performance Alerts
+
+Get notified when tools have issues:
+
+```bash
+curl -X POST https://api.chanl.ai/v1/alerts \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Order Lookup Tool Failure",
+    "condition": {
+      "type": "tool_performance",
+      "toolId": "lookup_order",
+      "metric": "success_rate",
+      "operator": "less_than",
+      "threshold": 95,
+      "timeWindow": "5m"
+    },
+    "severity": "high",
+    "notifications": {
+      "email": ["ops@company.com"],
+      "slack": {
+        "channel": "#ai-alerts"
+      }
+    }
+  }'
+```
+
+## Advanced Tool Patterns
+
+### Conditional Tool Usage
+
+Tools that require specific conditions:
+
+```json
+{
+  "name": "emergency_escalate",
+  "description": "Immediately transfers to emergency response team",
+  "type": "routing",
+  "conditions": [
+    {
+      "check": "sentiment == 'extremely_negative'",
+      "action": "allow"
+    },
+    {
+      "check": "contains_keywords(['emergency', 'urgent', 'critical'])",
+      "action": "allow"
+    }
+  ],
+  "config": {
+    "transferTo": "emergency-team",
+    "priority": "critical"
+  }
+}
+```
+
+### Chained Tools
+
+Tools that call multiple services:
+
+```json
+{
+  "name": "full_customer_context",
+  "description": "Retrieves complete customer information from multiple systems",
+  "type": "composite",
+  "steps": [
+    {
+      "tool": "lookup_customer",
+      "params": ["customerId"]
+    },
+    {
+      "tool": "lookup_recent_orders",
+      "params": ["customerId"],
+      "dependsOn": "lookup_customer"
+    },
+    {
+      "tool": "lookup_support_history",
+      "params": ["customerId"],
+      "dependsOn": "lookup_customer"
+    }
+  ],
+  "aggregateResults": true
+}
+```
+
+### Dynamic Parameters
+
+Tools with parameters based on conversation context:
+
+```json
+{
+  "name": "create_personalized_offer",
+  "description": "Generates custom offer based on customer tier and history",
+  "type": "api",
+  "config": {
+    "method": "POST",
+    "url": "https://api.yourcompany.com/offers/generate"
+  },
+  "parameters": [
+    {
+      "name": "customerId",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "discountPercentage",
+      "type": "number",
+      "required": true,
+      "dynamicValue": {
+        "basedOn": "customer.tier",
+        "mapping": {
+          "bronze": 5,
+          "silver": 10,
+          "gold": 15,
+          "platinum": 20
+        }
+      }
+    }
+  ]
+}
+```
 
 ## Best Practices
 
-- Design tools with clear, specific purposes
-- Implement comprehensive error handling and fallbacks
-- Test tools with various input scenarios and edge cases
-- Document tool capabilities and limitations clearly
-- Monitor tool performance and usage patterns regularly
-- Maintain security best practices for all integrations
-- Keep tools updated with latest API versions and features
+<Steps>
+  <Step title="Write Clear Descriptions">
+    Tools descriptions tell the agent when to use them. Be specific: "Retrieves order status and tracking" not "Gets order info"
+  </Step>
+
+  <Step title="Handle Errors Gracefully">
+    Always define what happens when tools fail. Don't leave the agent stuck saying "Error occurred"
+  </Step>
+
+  <Step title="Test with Real Data">
+    Use production-like test data. Don't just test happy paths—try edge cases and errors too
+  </Step>
+
+  <Step title="Monitor Performance">
+    Track success rates and response times. Tools that are slow or unreliable hurt customer experience
+  </Step>
+
+  <Step title="Secure Your Credentials">
+    Never hardcode API keys. Use secure storage and rotate credentials regularly
+  </Step>
+
+  <Step title="Update Agent Prompts">
+    When you add tools, update prompts to tell agents when and how to use them
+  </Step>
+
+  <Step title="Version Your Tools">
+    Track changes to tool configurations. Makes it easy to rollback if something breaks
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent not using tools">
+    **Problem**: Agent has tools available but isn't using them
+
+    **Solutions**:
+    - Check tool description is clear and specific
+    - Update agent prompt to explicitly mention when to use tool
+    - Verify tool is actually assigned to agent
+    - Test if tool works when called directly
+    - Review conversation - maybe tool isn't relevant to request
+  </Accordion>
+
+  <Accordion title="Tool timing out">
+    **Problem**: Tool calls frequently timeout
+
+    **Solutions**:
+    - Increase timeout threshold (default is usually 10s)
+    - Optimize API endpoint performance
+    - Check network connectivity between Chanl and your API
+    - Consider using async tools for slow operations
+    - Add caching for frequently requested data
+  </Accordion>
+
+  <Accordion title="High error rate">
+    **Problem**: Tool failing frequently
+
+    **Investigate**:
+    - Review error logs to identify specific failures
+    - Verify API credentials are still valid
+    - Check if API endpoint URL changed
+    - Test API directly outside of Chanl
+    - Verify parameter formats match API expectations
+    - Check if rate limits are being exceeded
+  </Accordion>
+
+  <Accordion title="Wrong parameters passed">
+    **Problem**: Agent passing incorrect values to tool
+
+    **Solutions**:
+    - Make parameter descriptions more explicit
+    - Add validation rules (min/max, regex patterns)
+    - Update agent prompt with examples of correct usage
+    - Use enums for parameters with limited options
+    - Add pre-call validation in tool configuration
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Configure Agents" href="/chanl/optimize/agents">
+    Assign tools to your agents
+  </Card>
+  <Card title="Improve Prompts" href="/chanl/optimize/prompts">
+    Update prompts to use tools effectively
+  </Card>
+  <Card title="Test with Scenarios" href="/chanl/test/scenarios">
+    Validate tools work in real conversations
+  </Card>
+  <Card title="Fine-Tune Models" href="/chanl/optimize/fine-tuning">
+    Train agents to use tools more effectively
+  </Card>
+</CardGroup>

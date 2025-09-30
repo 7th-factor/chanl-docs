@@ -1,97 +1,160 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Welcome to Chanl"
+description: "Test, monitor, and optimize your AI voice agents with confidence"
 ---
 
-## Setting up
+# Welcome to Chanl
 
-Get your documentation site up and running in minutes.
+Chanl helps you build reliable AI voice agents by making it easy to test them before they talk to customers, monitor them while they work, and continuously improve their performance based on real data.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+## Why Chanl?
 
-## Make it yours
+Building AI voice agents is one thing. Knowing they actually work is another. Chanl solves the three biggest challenges you face:
 
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={3}>
+  <Card title="Testing is Hard" icon="flask">
+    How do you know your agent handles every customer type before going live?
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Monitoring is Complex" icon="eye">
+    Once live, how do you catch issues in real-time before they impact customers?
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Improvement is Guesswork" icon="chart-line">
+    Without data, how do you know what to fix and if changes actually help?
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Quick Start
 
-Everything you need to create world-class documentation.
+Get up and running in minutes:
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+<Steps>
+  <Step title="Connect Your Agent">
+    Sync your VAPI, Bland, or custom agent to Chanl
 
-## Need inspiration?
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/agents/connect \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{"provider": "vapi", "agent_id": "your-agent-id"}'
+    ```
+  </Step>
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+  <Step title="Create Test Personas">
+    Define the customer types your agent needs to handle
+
+    Examples: frustrated customer, detail-oriented buyer, price-sensitive prospect
+  </Step>
+
+  <Step title="Run Your First Scenario">
+    Test your agent against multiple personas automatically
+
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/scenarios \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "name": "Refund Request Test",
+        "personas": ["frustrated", "analytical"],
+        "agents": ["your-agent-id"],
+        "scorecard": "customer-service"
+      }'
+    ```
+  </Step>
+
+  <Step title="Review Results">
+    Get scores, transcripts, and insights for every test conversation
+  </Step>
+</Steps>
+
+## The Chanl Workflow
+
+<CardGroup cols={3}>
+  <Card title="Test" icon="waypoints" href="/chanl/test/scenarios">
+    Build automated test scenarios to validate agent behavior before deployment
+
+    **Key Features:**
+    - Multiple persona testing
+    - Automated scheduling
+    - Quality scorecards
+  </Card>
+
+  <Card title="Observe" icon="chart-no-axes-combined" href="/chanl/observe/analytics">
+    Monitor live calls and analyze historical performance with real-time alerts
+
+    **Key Features:**
+    - Live call monitoring
+    - Automated alerts
+    - Performance analytics
+  </Card>
+
+  <Card title="Optimize" icon="bot" href="/chanl/optimize/agents">
+    Improve agent performance using data-driven insights and continuous refinement
+
+    **Key Features:**
+    - Prompt library
+    - Tool management
+    - Fine-tuning
+  </Card>
+</CardGroup>
+
+## Common Use Cases
+
+<Tabs>
+  <Tab title="Call Center BPOs">
+    **Challenge**: Need to validate AI agents can handle high-volume customer service before replacing human agents.
+
+    **Solution with Chanl:**
+    - Test agents against hundreds of customer scenarios automatically
+    - Monitor live calls with real-time alerts for issues
+    - Generate compliance reports for quality assurance
+    - Compare agent performance across different configurations
+
+    [Learn more →](/chanl/overview#for-call-center-bpos)
+  </Tab>
+
+  <Tab title="Developers">
+    **Challenge**: Building custom AI voice agents but lack tools to test and debug conversation flows.
+
+    **Solution with Chanl:**
+    - Programmatically create scenarios and personas via API
+    - Automate testing workflows
+    - Fetch simulation results for quality validation
+    - Monitor production agents and get alerts via webhooks
+
+    [Learn more →](/chanl/overview#for-developers)
+  </Tab>
+</Tabs>
+
+## Explore the Platform
+
+<CardGroup cols={2}>
+  <Card title="Platform Overview" icon="sparkles" href="/chanl/overview">
+    Learn how Chanl works and understand the core concepts
+  </Card>
+
+  <Card title="Test Scenarios" icon="waypoints" href="/chanl/test/scenarios">
+    Create automated test situations to validate your agents
+  </Card>
+
+  <Card title="Live Monitoring" icon="eye" href="/chanl/observe/live-calls">
+    Watch your agents in action and intervene when needed
+  </Card>
+
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Complete API documentation for developers
+  </Card>
+</CardGroup>
+
+## Resources
+
+<CardGroup cols={3}>
+  <Card title="Documentation" icon="book" href="/chanl/overview">
+    Complete guides for every feature
+  </Card>
+
+  <Card title="API Reference" icon="terminal" href="/api-reference/introduction">
+    REST API docs with code examples
+  </Card>
+
+  <Card title="Support" icon="life-ring" href="https://www.linkedin.com/company/chanl-ai">
+    Get help from our team
+  </Card>
+</CardGroup>

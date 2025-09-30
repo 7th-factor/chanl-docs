@@ -1,67 +1,462 @@
 ---
 title: "Personas"
-description: "Simplified customer behaviors for realistic testing scenarios"
+description: "Create realistic customer behaviors to test how your AI agents perform with different personality types"
 icon: "users"
 ---
 
-# Personas
+# Test Personas
 
-Personas are simplified customer behaviors that represent different types of interactions your AI agents might encounter.
+Personas are customer behavior profiles that simulate how different people interact with your AI agents. They're the "actors" in your test scenarios, helping you validate that your agents can handle every type of customer they'll encounter.
+
+## Why Personas Matter
+
+Your AI agent might work perfectly with polite, patient customers—but what about:
+- The frustrated customer who's already called three times?
+- The elderly person who needs extra time and clear explanations?
+- The skeptical buyer who questions every claim?
+- The rushed executive who wants answers in 30 seconds?
+
+Personas let you test all these scenarios before going live, so you're confident your agent can handle anyone.
+
+## How Personas Work
+
+Think of a persona as a character profile that defines:
+- **Mood** - Are they frustrated, confused, analytical, or friendly?
+- **Communication style** - Do they interrupt, ask detailed questions, or give one-word answers?
+- **Background context** - What's their situation and what do they need?
+- **Language** - What language do they speak?
+- **Environment** - Are they in a noisy cafe or quiet office?
+
+When you run a test scenario, the persona determines how the simulated customer behaves during the conversation.
 
 <Info>
-Example: "Angry Karen" - represents frustrated customers with specific communication patterns
+**Example**: A "Frustrated Customer" persona might interrupt frequently, use shorter sentences, and express dissatisfaction early in the conversation.
 </Info>
 
-## Key Components
+## Creating Your First Persona
 
-### Basic Information
-- **Name** - Descriptive persona identifier
-- **Language** - Primary communication language
-- **Prompt** - Behavioral description and instructions
+### Basic Persona Structure
 
-### Behavioral Attributes
-- **Mood** - Emotional state and attitude (used as tags)
-- **Background Noise** - Environmental audio conditions
+```json
+{
+  "name": "Frustrated Customer - Karen",
+  "language": "en-US",
+  "prompt": "You are a customer who has been experiencing problems with a product for 2 weeks. You've already called support twice with no resolution. You're frustrated and impatient. You tend to interrupt and want a quick solution, not a long explanation. You may escalate to asking for a manager if not satisfied quickly.",
+  "mood": ["frustrated", "impatient"],
+  "backgroundNoise": "office"
+}
+```
 
-## Common Persona Types
+### Via API
 
-### Customer Service Scenarios
-- **Frustrated Customer** - High emotion, needs quick resolution
-- **Confused Customer** - Needs detailed explanations
-- **Impatient Customer** - Values speed over detail
-- **Detail-Oriented Customer** - Asks many specific questions
+<Tabs>
+  <Tab title="cURL">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/personas \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "Frustrated Customer",
+        "language": "en-US",
+        "prompt": "You are an upset customer who has been waiting 2 weeks for a refund. You are impatient and want immediate answers. You interrupt frequently and may threaten to leave a bad review.",
+        "mood": ["frustrated", "impatient"],
+        "backgroundNoise": "none"
+      }'
+    ```
+  </Tab>
+  <Tab title="JavaScript">
+    ```javascript
+    const chanl = require('@chanl/sdk');
 
-### Sales Scenarios
-- **Price-Sensitive Buyer** - Focuses on cost and value
-- **Feature-Focused Buyer** - Interested in capabilities
-- **Skeptical Prospect** - Needs convincing and proof
-- **Ready-to-Buy** - Quick decision maker
+    const persona = await chanl.personas.create({
+      name: "Frustrated Customer",
+      language: "en-US",
+      prompt: "You are upset about a delayed refund...",
+      mood: ["frustrated", "impatient"],
+      backgroundNoise: "none"
+    });
+    ```
+  </Tab>
+  <Tab title="Python">
+    ```python
+    from chanl import Client
+
+    client = Client(api_key="YOUR_API_KEY")
+
+    persona = client.personas.create(
+        name="Frustrated Customer",
+        language="en-US",
+        prompt="You are upset about a delayed refund...",
+        mood=["frustrated", "impatient"],
+        background_noise="none"
+    )
+    ```
+  </Tab>
+</Tabs>
+
+## Essential Persona Library
+
+Start with these core personas that cover most customer interactions:
+
+### Customer Service Personas
+
+<AccordionGroup>
+  <Accordion title="Frustrated Customer">
+    **Use when**: Testing de-escalation and problem-solving
+
+    ```json
+    {
+      "name": "Frustrated Karen",
+      "prompt": "You've had a problem for 2 weeks with no resolution. You're impatient, interrupt frequently, and want immediate action. You may ask for a manager if not satisfied quickly.",
+      "mood": ["frustrated", "urgent"]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Confused Customer">
+    **Use when**: Testing clarity and patience
+
+    ```json
+    {
+      "name": "Confused Customer",
+      "prompt": "You don't fully understand how to use the product. You ask for clarification multiple times and need step-by-step guidance. You appreciate patience and clear explanations.",
+      "mood": ["confused", "uncertain"]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Detail-Oriented Customer">
+    **Use when**: Testing thoroughness and accuracy
+
+    ```json
+    {
+      "name": "Analytical Customer",
+      "prompt": "You ask specific technical questions and want detailed answers. You verify information and may fact-check responses. You appreciate precision and completeness.",
+      "mood": ["analytical", "methodical"]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Rushed Customer">
+    **Use when**: Testing efficiency and conciseness
+
+    ```json
+    {
+      "name": "Busy Executive",
+      "prompt": "You're on a tight schedule and need quick, concise answers. You get impatient with long explanations. You want actionable solutions immediately.",
+      "mood": ["rushed", "impatient"]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Sales Personas
+
+<AccordionGroup>
+  <Accordion title="Price-Sensitive Buyer">
+    **Use when**: Testing objection handling and value communication
+
+    ```json
+    {
+      "name": "Budget-Conscious Buyer",
+      "prompt": "You're interested in the product but very focused on price. You compare with competitors and negotiate for discounts. You need to be convinced of value before purchasing.",
+      "mood": ["skeptical", "price-conscious"]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Skeptical Prospect">
+    **Use when**: Testing credibility and proof points
+
+    ```json
+    {
+      "name": "Skeptical Buyer",
+      "prompt": "You question claims and want proof. You've been burned before and are cautious. You ask for references, reviews, and guarantees before committing.",
+      "mood": ["skeptical", "cautious"]
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Ready-to-Buy">
+    **Use when**: Testing closing efficiency
+
+    ```json
+    {
+      "name": "Qualified Buyer",
+      "prompt": "You've done your research and are ready to purchase. You ask specific questions about implementation and next steps. You appreciate efficiency in closing the deal.",
+      "mood": ["decisive", "ready"]
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
 
 ## Mood Tags
 
-Moods help categorize and filter personas for specific testing needs:
-- `frustrated`
-- `confused`
-- `impatient`
-- `analytical`
-- `friendly`
-- `skeptical`
-- `urgent`
+Use mood tags to categorize and filter personas:
+
+<CardGroup cols={3}>
+  <Card title="Emotional States" icon="face-meh">
+    - `frustrated`
+    - `angry`
+    - `anxious`
+    - `happy`
+    - `neutral`
+  </Card>
+  <Card title="Communication Style" icon="comment">
+    - `talkative`
+    - `concise`
+    - `rambling`
+    - `interrupted`
+  </Card>
+  <Card title="Decision Making" icon="brain">
+    - `analytical`
+    - `impulsive`
+    - `skeptical`
+    - `decisive`
+    - `uncertain`
+  </Card>
+</CardGroup>
 
 ## Background Noise Options
 
 Simulate realistic call environments:
-- **None** - Clear audio conditions
-- **Office** - Typical workplace background
-- **Street** - Urban outdoor environment
-- **Cafe** - Social environment with chatter
-- **Custom** - Specific audio conditions
+
+<Tabs>
+  <Tab title="None">
+    ```json
+    "backgroundNoise": "none"
+    ```
+    Clear audio - good for baseline testing
+  </Tab>
+  <Tab title="Office">
+    ```json
+    "backgroundNoise": "office"
+    ```
+    Keyboard typing, quiet conversations
+  </Tab>
+  <Tab title="Street">
+    ```json
+    "backgroundNoise": "street"
+    ```
+    Traffic, sirens, urban noise
+  </Tab>
+  <Tab title="Cafe">
+    ```json
+    "backgroundNoise": "cafe"
+    ```
+    Chatter, espresso machine, music
+  </Tab>
+  <Tab title="Home">
+    ```json
+    "backgroundNoise": "home"
+    ```
+    Kids, TV in background, doorbell
+  </Tab>
+</Tabs>
+
+<Warning>
+Background noise testing helps validate your agent can handle real-world audio conditions, not just perfect studio quality.
+</Warning>
+
+## Writing Effective Persona Prompts
+
+### Good Prompts Are Specific
+
+❌ **Too vague**: "You're an angry customer"
+
+✅ **Specific and actionable**:
+```
+You're a customer who ordered a product 3 weeks ago that never arrived.
+You've called twice before with no resolution. You're frustrated and
+considering disputing the charge. You want a refund immediately, not
+excuses. You tend to interrupt and speak quickly when upset.
+```
+
+### Include Context
+
+Give the persona a backstory:
+
+```json
+{
+  "prompt": "You're a 65-year-old retiree trying to set up your new smartphone. Technology is not your strength. You need very clear, step-by-step instructions without technical jargon. You're patient but get flustered if instructions are too fast or complex. You appreciate when the agent checks if you're following along."
+}
+```
+
+### Define Communication Patterns
+
+Specify how they speak:
+
+```json
+{
+  "prompt": "You're a busy CEO taking a quick call between meetings. You have 5 minutes maximum. You interrupt long explanations and say things like 'get to the point' or 'what's the bottom line?' You speak in short, direct sentences."
+}
+```
+
+## Persona Variations for Testing
+
+Create persona variants to test edge cases:
+
+### Language Variants
+
+```json
+[
+  {
+    "name": "Spanish-Speaking Customer",
+    "language": "es-MX",
+    "prompt": "Eres un cliente que prefiere español..."
+  },
+  {
+    "name": "French-Speaking Customer",
+    "language": "fr-FR",
+    "prompt": "Vous êtes un client qui préfère le français..."
+  }
+]
+```
+
+### Age/Demographic Variants
+
+```json
+[
+  {
+    "name": "Gen Z Customer - Tech Savvy",
+    "prompt": "You're 22, extremely comfortable with technology. You use abbreviations and expect fast, efficient service. You might reference social media or online reviews."
+  },
+  {
+    "name": "Elderly Customer - Needs Patience",
+    "prompt": "You're 78 and not very familiar with technology. You need clear, slow explanations without jargon. You appreciate patience and may ask the same question multiple times."
+  }
+]
+```
+
+### Situational Variants
+
+```json
+[
+  {
+    "name": "First-Time Customer",
+    "prompt": "This is your first interaction with the company. You're unfamiliar with their processes and have basic questions. You're evaluating if you want to do business with them."
+  },
+  {
+    "name": "VIP Customer",
+    "prompt": "You've been a customer for 5 years and spend $50k annually. You expect priority treatment and have high standards. You're disappointed when things go wrong."
+  }
+]
+```
 
 ## Best Practices
 
-- Create personas based on real customer interactions
-- Use specific, actionable behavioral descriptions
-- Include relevant emotional context in prompts
-- Test personas across different scenarios
-- Update personas based on simulation results
-- Maintain a diverse library covering various customer types
+<Steps>
+  <Step title="Start with Real Interactions">
+    Base personas on actual customer calls. Listen to recordings and identify common personality types.
+  </Step>
+
+  <Step title="Test Extremes">
+    Don't just create "normal" personas. Test the most difficult and easiest customers to find your agent's limits.
+  </Step>
+
+  <Step title="Update Based on Results">
+    If scenarios show your agent struggling with certain behaviors, create more personas in that area.
+  </Step>
+
+  <Step title="Keep a Diverse Library">
+    Aim for 10-15 core personas covering different moods, communication styles, and situations.
+  </Step>
+
+  <Step title="Use Descriptive Names">
+    Name personas clearly: "Frustrated - No Refund Received" not "Persona 1"
+  </Step>
+</Steps>
+
+## Bulk Creating Personas
+
+For developers who want to set up a complete persona library quickly:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+const personaTemplates = [
+  {
+    name: "Frustrated Customer",
+    prompt: "You're upset about a problem that hasn't been resolved...",
+    mood: ["frustrated", "impatient"]
+  },
+  {
+    name: "Confused Customer",
+    prompt: "You don't understand how to use the product...",
+    mood: ["confused", "patient"]
+  },
+  {
+    name: "Price-Sensitive Buyer",
+    prompt: "You're very focused on getting the best price...",
+    mood: ["skeptical", "analytical"]
+  },
+  // ... more personas
+];
+
+async function setupPersonas() {
+  const created = await Promise.all(
+    personaTemplates.map(template =>
+      chanl.personas.create({
+        ...template,
+        language: "en-US",
+        backgroundNoise: "none"
+      })
+    )
+  );
+
+  console.log(`✅ Created ${created.length} personas`);
+  return created;
+}
+
+setupPersonas();
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Persona not behaving as expected">
+    **Problem**: Simulated customer doesn't follow the persona prompt
+
+    **Solutions**:
+    - Make the prompt more specific and directive
+    - Add clear examples of desired behavior
+    - Use stronger language like "You MUST..." for critical behaviors
+    - Test the persona in multiple scenarios to verify consistency
+  </Accordion>
+
+  <Accordion title="All personas sound similar">
+    **Problem**: Different personas producing similar conversations
+
+    **Solutions**:
+    - Emphasize unique traits more strongly in prompts
+    - Add specific phrases or speech patterns for each persona
+    - Include emotional context and backstory
+    - Test personas side-by-side to verify differences
+  </Accordion>
+
+  <Accordion title="Language/accent issues">
+    **Problem**: Persona not speaking in specified language or accent
+
+    **Solutions**:
+    - Verify language code is correct (e.g., "es-MX" not "spanish")
+    - Write the entire prompt in the target language
+    - Test with native speakers to validate authenticity
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Create Scenarios" icon="waypoints" href="/chanl/test/scenarios">
+    Use your personas in test scenarios
+  </Card>
+  <Card title="Review Simulations" icon="play" href="/chanl/test/simulations">
+    See how personas performed in tests
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/personas/create">
+    Complete API documentation for personas
+  </Card>
+  <Card title="Default Personas" icon="users-gear" href="/api-reference/personas/defaults">
+    Explore pre-built persona templates
+  </Card>
+</CardGroup>

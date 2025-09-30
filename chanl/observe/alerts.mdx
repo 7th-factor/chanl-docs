@@ -1,112 +1,586 @@
 ---
 title: "Alerts"
-description: "Automated monitoring and notifications for call quality and compliance"
+description: "Get notified immediately when agents need attention or quality drops"
 icon: "bell"
 ---
 
-# Alerts
+# Automated Alerts
 
-**Alerts** provide automated monitoring of conversations to track out-of-the-ordinary behaviors, compliance issues, and quality concerns. They help maintain high standards and ensure your AI agents perform consistently.
+Alerts automatically notify you when something goes wrong with your AI agents—whether it's a quality issue, compliance violation, or technical problem. Instead of manually monitoring every call, let alerts catch issues for you.
 
-## Key Components
+## Why Alerts Matter
 
-### Alert Configuration
-- **Name** - Descriptive alert identifier
-- **Trigger Condition** - Detailed prompt explaining what to monitor
-- **Severity Level** - Urgency and importance of the alert
+You can't watch every conversation. Alerts help you:
+- **Catch problems immediately** - Get notified within seconds
+- **Focus on what matters** - Only review flagged calls, not every single one
+- **Prevent escalations** - Fix issues before customers get more frustrated
+- **Ensure compliance** - Know immediately when regulations aren't followed
 
-### Notification Settings
-- **Notification Channels** - Where to send alerts
-  - SMS notifications
-  - Email alerts
-  - Slack integration
-  - Webhook endpoints
-- **Frequency** - How often to send notifications
-- **Escalation Rules** - When to escalate to higher levels
+<Info>
+**Example**: An alert notifies you that Agent V1 has missed the required call recording disclosure in 3 calls today. You fix the prompt immediately before more violations occur.
+</Info>
 
-## Common Alert Types
+## How Alerts Work
 
-### Compliance Monitoring
-- Regulatory requirement violations
-- Script adherence failures
-- Required disclosure omissions
-- Data handling concerns
+You define conditions to monitor (e.g., "score drops below 70"), and Chanl watches all calls for those conditions. When triggered, you're notified via your chosen channel.
 
-### Quality Assurance
-- Customer satisfaction indicators
-- Response time thresholds
-- Conversation flow issues
-- Agent behavior concerns
+```
+Call happens → Monitored by alert rules → Condition met → Notification sent
+```
 
-### Performance Metrics
-- Score threshold violations
-- Success rate drops
-- Error rate increases
-- Timeout occurrences
+## Creating Alerts
 
-### Security Concerns
-- Sensitive data exposure
-- Unauthorized access attempts
-- Suspicious activity patterns
-- System integrity issues
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Alerts** and click "Create Alert":
+    1. Name your alert
+    2. Define the condition to monitor
+    3. Set severity level
+    4. Choose notification channels
+    5. Activate the alert
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/alerts \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "Low Quality Score Alert",
+        "condition": {
+          "type": "score_threshold",
+          "threshold": 70,
+          "operator": "less_than"
+        },
+        "severity": "high",
+        "notifications": {
+          "email": ["team@company.com"],
+          "slack": {
+            "webhook": "https://hooks.slack.com/...",
+            "channel": "#ai-alerts"
+          }
+        },
+        "agents": ["agent-v1", "agent-v2"],
+        "active": true
+      }'
+    ```
+  </Tab>
+</Tabs>
 
-## Trigger Conditions
+## Alert Types
 
-### Natural Language Detection
-Use descriptive prompts to identify:
-- Emotional escalation patterns
-- Specific keyword usage
-- Conversation tone changes
-- Customer frustration indicators
+### Quality Alerts
 
-### Quantitative Thresholds
-Set numerical limits for:
-- Call duration limits
-- Response time maximums
-- Score minimums
-- Error rate ceilings
+Monitor agent performance quality:
 
-### Pattern Recognition
-Monitor for:
-- Recurring issue types
-- Behavioral anomalies
-- Unusual conversation flows
-- System performance patterns
+<AccordionGroup>
+  <Accordion title="Score Drop">
+    Triggers when call quality score falls below threshold.
+
+    ```json
+    {
+      "name": "Quality Drop Alert",
+      "condition": {
+        "type": "score_threshold",
+        "threshold": 75,
+        "operator": "less_than"
+      },
+      "severity": "medium"
+    }
+    ```
+
+    **When to use**: Catch underperforming conversations immediately
+  </Accordion>
+
+  <Accordion title="Customer Frustration">
+    Detects negative sentiment or frustration indicators.
+
+    ```json
+    {
+      "name": "Customer Frustration Detected",
+      "condition": {
+        "type": "sentiment",
+        "value": "negative",
+        "confidence": 0.8
+      },
+      "severity": "high"
+    }
+    ```
+
+    **When to use**: Identify calls that may need human intervention
+  </Accordion>
+
+  <Accordion title="Long Call Duration">
+    Triggers when calls exceed expected length.
+
+    ```json
+    {
+      "name": "Call Taking Too Long",
+      "condition": {
+        "type": "duration",
+        "threshold": 600,
+        "operator": "greater_than"
+      },
+      "severity": "medium"
+    }
+    ```
+
+    **When to use**: Find agents stuck or unable to resolve issues
+  </Accordion>
+</AccordionGroup>
+
+### Compliance Alerts
+
+Ensure regulatory requirements are met:
+
+<AccordionGroup>
+  <Accordion title="Missing Disclosure">
+    Triggers when required disclosures aren't provided.
+
+    ```json
+    {
+      "name": "Missing Call Recording Disclosure",
+      "condition": {
+        "type": "required_phrase",
+        "phrase": "This call may be recorded",
+        "location": "first_30_seconds",
+        "must_include": true
+      },
+      "severity": "critical"
+    }
+    ```
+
+    **When to use**: Regulatory compliance monitoring
+  </Accordion>
+
+  <Accordion title="Policy Violation">
+    Detects when agents violate company policies.
+
+    ```json
+    {
+      "name": "Refund Policy Violation",
+      "condition": {
+        "type": "custom_rule",
+        "prompt": "Agent offered refund outside 30-day policy window without manager approval"
+      },
+      "severity": "high"
+    }
+    ```
+
+    **When to use**: Prevent unauthorized exceptions
+  </Accordion>
+
+  <Accordion title="Data Privacy Issue">
+    Alerts when sensitive data is mishandled.
+
+    ```json
+    {
+      "name": "PII Exposure Risk",
+      "condition": {
+        "type": "sensitive_data",
+        "detect": ["ssn", "credit_card", "password"],
+        "action": "mentioned_in_clear"
+      },
+      "severity": "critical"
+    }
+    ```
+
+    **When to use**: Protect customer privacy
+  </Accordion>
+</AccordionGroup>
+
+### Technical Alerts
+
+Monitor system health and errors:
+
+<AccordionGroup>
+  <Accordion title="Tool Failure">
+    Triggers when agent tools fail to execute.
+
+    ```json
+    {
+      "name": "CRM Tool Failure",
+      "condition": {
+        "type": "tool_error",
+        "toolName": "lookup_customer",
+        "consecutiveFailures": 3
+      },
+      "severity": "high"
+    }
+    ```
+
+    **When to use**: Detect integration issues early
+  </Accordion>
+
+  <Accordion title="Timeout">
+    Alerts when agent takes too long to respond.
+
+    ```json
+    {
+      "name": "Agent Response Timeout",
+      "condition": {
+        "type": "response_time",
+        "threshold": 10,
+        "operator": "greater_than"
+      },
+      "severity": "high"
+    }
+    ```
+
+    **When to use**: Identify performance bottlenecks
+  </Accordion>
+
+  <Accordion title="High Error Rate">
+    Triggers when errors occur frequently.
+
+    ```json
+    {
+      "name": "Elevated Error Rate",
+      "condition": {
+        "type": "error_rate",
+        "threshold": 0.1,
+        "timeWindow": "1h",
+        "operator": "greater_than"
+      },
+      "severity": "critical"
+    }
+    ```
+
+    **When to use**: Detect system-wide problems
+  </Accordion>
+</AccordionGroup>
 
 ## Notification Channels
 
-### Real-time Notifications
-- **SMS** - Immediate mobile alerts for critical issues
-- **Slack** - Team channel notifications with context
-- **Email** - Detailed alerts with full information
-- **Push Notifications** - Mobile app alerts
+### Email Notifications
 
-### Integration Options
-- **Webhook** - Custom system integrations
-- **API** - Programmatic alert handling
-- **Dashboard** - Visual alert management
-- **Reporting** - Scheduled alert summaries
+```json
+{
+  "notifications": {
+    "email": {
+      "recipients": [
+        "team@company.com",
+        "oncall@company.com"
+      ],
+      "subject": "Alert: {{alert_name}}",
+      "includeCallLink": true,
+      "includeTranscript": true
+    }
+  }
+}
+```
 
-## Alert Management
+### Slack Integration
 
-### Response Workflows
-- Automatic acknowledgment systems
-- Escalation procedures
-- Response tracking
-- Resolution documentation
+```json
+{
+  "notifications": {
+    "slack": {
+      "webhook": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+      "channel": "#ai-agent-alerts",
+      "mentionOnCritical": "@oncall",
+      "includeActions": true
+    }
+  }
+}
+```
 
-### Analysis and Optimization
-- Alert frequency analysis
-- False positive identification
-- Threshold optimization
-- Effectiveness measurement
+The Slack notification includes:
+- Alert details
+- Call information
+- Quick action buttons (View Call, Transfer, Dismiss)
+- Link to full analysis
+
+### Webhook Integration
+
+```json
+{
+  "notifications": {
+    "webhook": {
+      "url": "https://your-system.com/chanl-alerts",
+      "method": "POST",
+      "headers": {
+        "Authorization": "Bearer YOUR_TOKEN",
+        "X-Source": "chanl"
+      },
+      "payload": {
+        "alertId": "{{alert_id}}",
+        "callId": "{{call_id}}",
+        "severity": "{{severity}}",
+        "timestamp": "{{timestamp}}"
+      }
+    }
+  }
+}
+```
+
+### SMS Notifications
+
+```json
+{
+  "notifications": {
+    "sms": {
+      "numbers": ["+1234567890"],
+      "onlyForSeverity": ["critical"],
+      "message": "Alert: {{alert_name}} - Call: {{call_id}}"
+    }
+  }
+}
+```
+
+<Warning>
+SMS notifications should be reserved for critical alerts only to avoid alert fatigue.
+</Warning>
+
+## Alert Severity Levels
+
+<CardGroup cols={3}>
+  <Card title="Low">
+    Minor issues that don't require immediate action. Review when convenient.
+
+    **Examples**: Slightly low score, minor inconsistency
+  </Card>
+  <Card title="Medium">
+    Issues that should be addressed soon. Review within hours.
+
+    **Examples**: Score below 70, customer mild frustration
+  </Card>
+  <Card title="High">
+    Problems requiring prompt attention. Review within minutes.
+
+    **Examples**: Major compliance miss, angry customer
+  </Card>
+  <Card title="Critical">
+    Urgent issues needing immediate action. Review immediately.
+
+    **Examples**: Data breach risk, complete system failure
+  </Card>
+</CardGroup>
+
+## Managing Alert Noise
+
+### Throttling
+
+Prevent alert spam by setting cooldown periods:
+
+```json
+{
+  "throttling": {
+    "enabled": true,
+    "cooldownMinutes": 15,
+    "maxAlertsPerHour": 10
+  }
+}
+```
+
+This prevents the same alert from triggering more than once every 15 minutes.
+
+### Grouping
+
+Combine similar alerts into batches:
+
+```json
+{
+  "grouping": {
+    "enabled": true,
+    "timeWindow": "5m",
+    "maxGroupSize": 5,
+    "notificationFormat": "{{count}} calls triggered '{{alert_name}}' in last 5 minutes"
+  }
+}
+```
+
+Instead of 5 separate notifications, you get one: "5 calls triggered 'Low Quality Score' in last 5 minutes."
+
+### Scheduled Silence
+
+Disable alerts during specific times:
+
+```json
+{
+  "silenceSchedule": {
+    "enabled": true,
+    "windows": [
+      {
+        "days": ["saturday", "sunday"],
+        "startTime": "00:00",
+        "endTime": "23:59"
+      }
+    ]
+  }
+}
+```
+
+## Viewing Triggered Alerts
+
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Alerts** to see:
+    - List of recent alerts
+    - Filter by severity or agent
+    - Click alert to view associated call
+    - Mark as resolved or dismiss
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    # Get recent alerts
+    curl https://api.chanl.ai/v1/alerts/triggered \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "timeRange": "24h",
+        "severity": ["high", "critical"]
+      }'
+    ```
+
+    Response:
+    ```json
+    {
+      "alerts": [
+        {
+          "id": "alert_trigger_123",
+          "alertId": "alert_abc",
+          "alertName": "Low Quality Score",
+          "callId": "call_xyz",
+          "triggeredAt": "2024-01-15T10:30:00Z",
+          "severity": "high",
+          "resolved": false,
+          "details": {
+            "score": 68,
+            "threshold": 70,
+            "agent": "agent-v1"
+          }
+        }
+      ],
+      "total": 23
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Alert Analytics
+
+Track alert patterns over time:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Get alert frequency by type
+const analytics = await chanl.alerts.analytics({
+  timeRange: '30d',
+  groupBy: 'alert_type'
+});
+
+console.log(analytics);
+/*
+{
+  period: "30 days",
+  totalAlerts: 147,
+  byType: [
+    {
+      type: "quality_drop",
+      count: 67,
+      percentage: 45.6,
+      trend: "decreasing"
+    },
+    {
+      type: "compliance_issue",
+      count: 42,
+      percentage: 28.6,
+      trend: "stable"
+    },
+    {
+      type: "tool_failure",
+      count: 38,
+      percentage: 25.8,
+      trend: "increasing"
+    }
+  ]
+}
+*/
+```
 
 ## Best Practices
 
-- Start with broad alerts and refine based on results
-- Use clear, specific trigger condition descriptions
-- Set appropriate notification channels for different alert types
-- Regularly review and update alert thresholds
-- Document alert responses for continuous improvement
-- Balance sensitivity with false positive rates
-- Test alerts thoroughly before deployment
+<Steps>
+  <Step title="Start with Critical Alerts">
+    Begin with compliance and critical quality alerts. Add more as you understand patterns.
+  </Step>
+
+  <Step title="Set Appropriate Thresholds">
+    Don't make thresholds too sensitive. Test and adjust based on actual alert volume.
+  </Step>
+
+  <Step title="Use Throttling">
+    Always enable throttling to prevent alert fatigue from repeated similar issues.
+  </Step>
+
+  <Step title="Review and Refine">
+    Weekly review which alerts are useful vs noisy. Disable or adjust unhelpful ones.
+  </Step>
+
+  <Step title="Document Response Procedures">
+    Create runbooks for each critical alert type so team knows exactly what to do.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Not receiving alerts">
+    **Problem**: Alerts configured but no notifications arriving
+
+    **Solutions**:
+    - Verify alert is marked as "active"
+    - Check notification channels are configured correctly
+    - Test with webhook/email validator
+    - Confirm calls are actually triggering conditions
+    - Check spam folder for email notifications
+  </Accordion>
+
+  <Accordion title="Too many alerts">
+    **Problem**: Being overwhelmed with alert notifications
+
+    **Solutions**:
+    - Enable throttling with appropriate cooldown
+    - Increase severity thresholds
+    - Use alert grouping to batch notifications
+    - Review if conditions are too broad
+    - Disable low-value alerts
+  </Accordion>
+
+  <Accordion title="Alerts triggering incorrectly">
+    **Problem**: Getting alerts for false positives
+
+    **Solutions**:
+    - Review condition logic - may be too broad
+    - Adjust thresholds based on actual data
+    - Add additional conditions to narrow scope
+    - Test alert with historical calls first
+  </Accordion>
+
+  <Accordion title="Slack notifications failing">
+    **Problem**: Slack alerts not appearing
+
+    **Solutions**:
+    - Verify webhook URL is still valid
+    - Check Slack app permissions
+    - Confirm channel exists and bot has access
+    - Test webhook with curl to isolate issue
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Live Calls" href="/chanl/observe/live-calls">
+    Monitor calls that triggered alerts in real-time
+  </Card>
+  <Card title="Call Logs" href="/chanl/observe/call-logs">
+    Review historical alert patterns
+  </Card>
+  <Card title="Analytics" href="/chanl/observe/analytics">
+    See alert trends and frequency
+  </Card>
+  <Card title="Improve Agents" href="/chanl/optimize/agents">
+    Fix issues causing repeated alerts
+  </Card>
+</CardGroup>
