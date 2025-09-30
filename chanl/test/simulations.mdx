@@ -1,84 +1,548 @@
 ---
 title: "Simulations"
-description: "Results and analysis from scenario execution"
+description: "Review and analyze test results to improve your AI agent performance"
 icon: "play"
 ---
 
 # Simulations
 
-**Simulations** are the results of scenario runs, providing detailed insights into how your AI agents performed during testing interactions.
+Simulations are the results of your test scenarios—complete with recordings, transcripts, scores, and AI-powered insights. They show you exactly how your agent performed and what needs improvement.
 
-## Key Components
+## What Are Simulations?
 
-### Identification
-- **Name** - Follows format: `Scenario_Persona_Agent_Timestamp`
-- **Date** - When the simulation was executed
-- **Status** - Current state of the simulation
+When you run a scenario, Chanl creates simulations for every combination of persona and agent you've configured:
 
-### Content
-- **Audio** - Complete recording of the interaction
-- **Transcription** - Text version of the conversation
-- **Analysis** - AI-powered evaluation and insights
+```
+Scenario: "Refund Request"
+Personas: [Frustrated, Analytical]
+Agents: [Agent V1, Agent V2]
 
-### Evaluation
-- **Score** - Numerical rating based on scorecard criteria
-- **Status** - Execution state
+Results in 4 simulations:
+1. Frustrated + Agent V1
+2. Frustrated + Agent V2
+3. Analytical + Agent V1
+4. Analytical + Agent V2
+```
 
-## Status Types
+Each simulation is a complete test conversation with scoring and analysis.
 
-### Completed
-- Simulation finished successfully
-- All data collected and processed
-- Score and analysis available
+## Simulation Components
 
-### In-Progress
-- Simulation currently running
-- Real-time monitoring available
-- Partial data may be accessible
+Every simulation includes:
 
-### Scheduled
-- Queued for future execution
-- Part of automated schedule
-- Waiting for resources or timing
+<CardGroup cols={2}>
+  <Card title="Audio Recording" icon="waveform">
+    Full conversation audio you can listen to
+  </Card>
+  <Card title="Transcript" icon="file-lines">
+    Complete text of the conversation
+  </Card>
+  <Card title="Score & Analysis" icon="chart-bar">
+    Quality rating based on your scorecard criteria
+  </Card>
+  <Card title="AI Insights" icon="lightbulb">
+    Automated recommendations for improvement
+  </Card>
+</CardGroup>
 
-## Analysis Components
+## Viewing Simulation Results
 
-### Performance Metrics
-- Scorecard-based evaluation
-- Criteria-specific scores
-- Overall performance rating
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Simulations** in the sidebar to see:
+    - List of all simulations
+    - Filter by scenario, persona, agent, or date
+    - Quick view of scores and status
+    - Click any simulation for detailed view
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    # List all simulations
+    curl https://api.chanl.ai/v1/simulations \
+      -H "Authorization: Bearer YOUR_API_KEY"
 
-### Conversation Analysis
-- Turn-by-turn breakdown
-- Key interaction points
-- Success/failure identification
+    # Get specific simulation
+    curl https://api.chanl.ai/v1/simulations/sim_123 \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
 
-### Improvement Insights
-- Areas for optimization
-- Specific recommendations
-- Comparative analysis with other simulations
+    Response:
+    ```json
+    {
+      "id": "sim_123",
+      "name": "RefundRequest_Frustrated_AgentV1_2024-01-15",
+      "scenario": "Refund Request",
+      "persona": "Frustrated Customer",
+      "agent": "Agent V1",
+      "status": "completed",
+      "score": 78,
+      "duration": 245,
+      "timestamp": "2024-01-15T10:30:00Z",
+      "audio_url": "https://...",
+      "transcript_url": "https://..."
+    }
+    ```
+  </Tab>
+</Tabs>
 
-## Using Simulation Data
+## Simulation Naming Convention
 
-### Quality Assessment
-- Compare scores across agents and scenarios
-- Identify performance patterns
-- Track improvement over time
+Simulations are automatically named using this format:
 
-### Agent Optimization
-- Analyze conversation flows
-- Identify common failure points
-- Extract successful interaction patterns
+```
+{Scenario}_{Persona}_{Agent}_{Timestamp}
 
-### Training Data Generation
-- Use high-quality interactions for fine-tuning
-- Create examples for prompt improvement
-- Build conversation templates
+Examples:
+- RefundRequest_Frustrated_AgentV1_2024-01-15-10-30
+- PriceObjection_Skeptical_AgentV2_2024-01-15-14-22
+```
+
+This makes it easy to identify and compare simulations.
+
+## Simulation Status Types
+
+<AccordionGroup>
+  <Accordion title="Completed">
+    Simulation finished successfully with full results available.
+
+    **What you can do**:
+    - Listen to audio
+    - Read transcript
+    - Review score and analysis
+    - Use as training data
+  </Accordion>
+
+  <Accordion title="In Progress">
+    Simulation currently running.
+
+    **What you can do**:
+    - Monitor in real-time (if enabled)
+    - Wait for completion
+    - Estimated time remaining shown
+  </Accordion>
+
+  <Accordion title="Scheduled">
+    Queued for future execution as part of scheduled test.
+
+    **What you can do**:
+    - View scheduled time
+    - Cancel if needed
+    - Edit scenario before execution
+  </Accordion>
+
+  <Accordion title="Failed">
+    Simulation encountered an error and couldn't complete.
+
+    **What you can do**:
+    - View error details
+    - Retry simulation
+    - Contact support if issue persists
+  </Accordion>
+</AccordionGroup>
+
+## Understanding Simulation Scores
+
+Scores are calculated based on the scorecard you assigned to the scenario.
+
+### Score Breakdown
+
+```json
+{
+  "overallScore": 82,
+  "categories": [
+    {
+      "name": "Communication Quality",
+      "weight": 30,
+      "score": 88,
+      "criteria": [
+        {
+          "name": "Empathy",
+          "score": 90,
+          "notes": "Agent showed good understanding of customer frustration"
+        },
+        {
+          "name": "Clarity",
+          "score": 85,
+          "notes": "Explanations were mostly clear with minor jargon"
+        }
+      ]
+    },
+    {
+      "name": "Problem Resolution",
+      "weight": 50,
+      "score": 78,
+      "criteria": [
+        {
+          "name": "Issue Identified",
+          "score": 95,
+          "notes": "Correctly identified the problem"
+        },
+        {
+          "name": "Solution Provided",
+          "score": 65,
+          "notes": "Solution was partial, didn't address root cause"
+        }
+      ]
+    },
+    {
+      "name": "Compliance",
+      "weight": 20,
+      "score": 85,
+      "criteria": [
+        {
+          "name": "Required Disclosures",
+          "score": 85,
+          "notes": "Provided most required information"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Score Interpretation
+
+<CardGroup cols={4}>
+  <Card title="90-100" icon="star">
+    **Excellent**
+
+    Agent performing at high level
+  </Card>
+  <Card title="80-89" icon="circle-check">
+    **Good**
+
+    Minor improvements needed
+  </Card>
+  <Card title="70-79" icon="triangle-exclamation">
+    **Needs Work**
+
+    Significant issues to address
+  </Card>
+  <Card title="Below 70" icon="circle-xmark">
+    **Failing**
+
+    Major problems, not production-ready
+  </Card>
+</CardGroup>
+
+## AI-Powered Analysis
+
+Every simulation includes automated insights:
+
+### Example Analysis
+
+```
+🔍 Key Findings:
+
+Strengths:
+✅ Agent correctly identified customer frustration early
+✅ Offered appropriate solution (refund)
+✅ Maintained professional tone throughout
+
+Issues:
+⚠️ Took too long to offer solution (3 minutes)
+⚠️ Didn't acknowledge customer's repeat call situation
+❌ Failed to explain refund timeline clearly
+
+Recommendations:
+1. Update prompt to acknowledge repeat customers earlier
+2. Add tool to check customer history automatically
+3. Include refund timeline in standard response template
+
+Similar Patterns:
+📊 This agent scores 15% lower with "Frustrated" persona vs others
+💡 Consider adding specific de-escalation training
+```
+
+## Comparing Simulations
+
+Compare results across different dimensions:
+
+### Agent Comparison
+
+```bash
+# Compare how two agents performed on same scenario
+curl https://api.chanl.ai/v1/simulations/compare \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scenario": "refund-request",
+    "agents": ["agent-v1", "agent-v2"]
+  }'
+```
+
+Results show which agent performs better:
+```
+Agent V1 vs Agent V2 on "Refund Request"
+
+Average Score:
+Agent V1: 78
+Agent V2: 87 (+9 advantage)
+
+By Persona:
+Frustrated: V1: 72, V2: 92 (+20)
+Analytical: V1: 83, V2: 85 (+2)
+Confused: V1: 79, V2: 84 (+5)
+
+Recommendation: Deploy Agent V2
+Key Advantage: Much better with frustrated customers
+```
+
+### Persona Analysis
+
+See which customer types cause issues:
+
+```bash
+curl https://api.chanl.ai/v1/simulations/persona-analysis?agent=agent-v1 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```
+Persona Performance for Agent V1:
+
+Analytical: 88 ✅ (Strength)
+Confused: 85 ✅ (Strength)
+Friendly: 84 ✅ (Strength)
+Rushed: 76 ⚠️ (Needs improvement)
+Frustrated: 72 ❌ (Weakness)
+
+Focus Area: Improve handling of emotional customers
+```
+
+### Trend Analysis
+
+Track performance over time:
+
+```bash
+curl https://api.chanl.ai/v1/simulations/trends?agent=agent-v1&days=30 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```
+Agent V1 Performance Trend (30 days)
+
+Week 1: 76
+Week 2: 79 (+3)
+Week 3: 82 (+3)
+Week 4: 85 (+3)
+
+Trend: Improving ↗️
+Recent Changes: Prompt updated on Day 8, Tool added on Day 15
+```
+
+## Using Simulations for Training
+
+Convert high-quality simulations into training data:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Find top-performing simulations
+const topSimulations = await chanl.simulations.list({
+  minScore: 90,
+  scenario: 'refund-request',
+  limit: 10
+});
+
+// Export for fine-tuning
+const trainingData = await chanl.fineTuning.prepareDataset({
+  simulations: topSimulations.map(s => s.id),
+  format: 'conversational',
+  includeAnalysis: true
+});
+
+// Use in fine-tuning process
+await chanl.fineTuning.create({
+  baseModel: 'gpt-4',
+  trainingData: trainingData,
+  name: 'Refund Expert Model'
+});
+```
+
+## Downloading Simulation Data
+
+### Audio Files
+
+```bash
+# Get audio download URL
+curl https://api.chanl.ai/v1/simulations/sim_123/audio \
+  -H "Authorization: Bearer YOUR_API_KEY"
+
+# Returns signed URL valid for 1 hour
+{
+  "url": "https://chanl-audio.s3.amazonaws.com/...",
+  "expires_at": "2024-01-15T12:00:00Z",
+  "format": "mp3",
+  "duration": 245
+}
+```
+
+### Transcripts
+
+```bash
+# Get transcript
+curl https://api.chanl.ai/v1/simulations/sim_123/transcript \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Returns formatted conversation:
+```json
+{
+  "transcript": [
+    {
+      "speaker": "agent",
+      "timestamp": 0,
+      "text": "Thank you for calling. How can I help you today?"
+    },
+    {
+      "speaker": "customer",
+      "timestamp": 3.2,
+      "text": "I need a refund. This product doesn't work."
+    },
+    ...
+  ],
+  "duration": 245,
+  "wordCount": 428
+}
+```
+
+### Bulk Export
+
+Export multiple simulations:
+
+```bash
+curl -X POST https://api.chanl.ai/v1/simulations/export \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "filters": {
+      "scenario": "refund-request",
+      "dateRange": {
+        "start": "2024-01-01",
+        "end": "2024-01-31"
+      }
+    },
+    "format": "csv",
+    "include": ["transcript", "score", "analysis"]
+  }'
+```
+
+## Filtering and Search
+
+Find specific simulations quickly:
+
+### Common Filters
+
+<Tabs>
+  <Tab title="By Score Range">
+    ```bash
+    # Find failing simulations
+    curl "https://api.chanl.ai/v1/simulations?minScore=0&maxScore=70" \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+  <Tab title="By Persona">
+    ```bash
+    # Find all frustrated customer simulations
+    curl "https://api.chanl.ai/v1/simulations?persona=frustrated" \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+  <Tab title="By Date">
+    ```bash
+    # Find last week's simulations
+    curl "https://api.chanl.ai/v1/simulations?since=7d" \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+  <Tab title="By Status">
+    ```bash
+    # Find failed simulations
+    curl "https://api.chanl.ai/v1/simulations?status=failed" \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+</Tabs>
 
 ## Best Practices
 
-- Review simulations promptly after completion
-- Compare results across different persona-agent combinations
-- Use insights to update prompts and agent configurations
-- Archive completed simulations for historical analysis
-- Set up alerts for simulations with concerning scores
+<Steps>
+  <Step title="Review Failed Simulations First">
+    Start with lowest-scoring simulations to identify critical issues quickly.
+  </Step>
+
+  <Step title="Look for Patterns">
+    Don't just review individual simulations. Look for patterns across personas, scenarios, or time periods.
+  </Step>
+
+  <Step title="Listen to Audio">
+    Reading transcripts is faster, but listening to audio catches tone and pacing issues transcripts miss.
+  </Step>
+
+  <Step title="Compare Versions">
+    When you update an agent, run the same scenarios again and compare scores to validate improvements.
+  </Step>
+
+  <Step title="Use High Performers for Training">
+    Export top-scoring simulations (90+) as examples for fine-tuning or prompt engineering.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Simulation stuck in 'In Progress'">
+    **Problem**: Simulation not completing
+
+    **Solutions**:
+    - Check if agent is responding (test manually)
+    - Verify agent hasn't hit rate limits
+    - Contact support if stuck >10 minutes
+  </Accordion>
+
+  <Accordion title="Audio not playing">
+    **Problem**: Can't listen to simulation audio
+
+    **Solutions**:
+    - Check browser allows audio playback
+    - Try downloading file directly
+    - Verify simulation completed successfully
+  </Accordion>
+
+  <Accordion title="Scores seem wrong">
+    **Problem**: Scores don't match your expectations
+
+    **Solutions**:
+    - Review scorecard criteria - are they correctly weighted?
+    - Check if recent scorecard changes affected scoring
+    - Read AI analysis for scoring rationale
+    - Test scorecard on known good/bad conversations
+  </Accordion>
+
+  <Accordion title="Missing simulations">
+    **Problem**: Can't find expected simulations
+
+    **Solutions**:
+    - Check if scenario actually ran (review schedules)
+    - Verify filters aren't hiding results
+    - Look in Failed status - may have encountered errors
+    - Check date range covers when simulation should have run
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Create Scenarios" icon="waypoints" href="/chanl/test/scenarios">
+    Build more test scenarios to generate simulations
+  </Card>
+  <Card title="Improve Agents" icon="bot" href="/chanl/optimize/agents">
+    Use simulation insights to optimize your agents
+  </Card>
+  <Card title="Fine-Tuning" icon="cog" href="/chanl/optimize/fine-tuning">
+    Convert simulations into training data
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/simulations/get">
+    Complete API documentation for simulations
+  </Card>
+</CardGroup>

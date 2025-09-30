@@ -1,150 +1,592 @@
 ---
-title: "Fine Tuning"
-description: "Model improvement through conversation feedback and training data"
+title: "Fine-Tuning"
+description: "Turn your best conversations into training data to build smarter agents"
 icon: "cog"
 ---
 
-# Fine Tuning
+# Fine-Tuning
 
-**Fine Tuning** represents Chanl's unique approach to AI agent improvement - transforming real conversation feedback into training data to create more effective, context-aware models. This process creates a continuous improvement cycle based on actual performance data.
+Fine-tuning is how you make your agent smarter over time. Instead of just tweaking prompts, you train custom AI models on your actual conversations—teaching the agent to naturally sound like your best performers.
 
-## Core Concept
+## Why Fine-Tuning Matters
 
-Fine-tuning leverages the wealth of conversation data generated through simulations and real calls to create specialized models that perform better in specific contexts and use cases.
+Prompts get you 80% of the way there. Fine-tuning gets you the last 20%. It helps you:
+- **Learn from success** - Train on conversations that went well
+- **Fix recurring issues** - Teach agent to avoid common mistakes
+- **Match your style** - Make agent sound like your company
+- **Improve over time** - Get better as you collect more data
 
-## Key Components
+<Info>
+**Example**: Your agent handles refunds well but struggles with angry customers. Fine-tune on 100 high-scoring "angry customer" conversations. New model naturally de-escalates better without needing a longer prompt.
+</Info>
 
-### Training Data Sources
-- **Conversation Feedback** - Positive and negative interaction examples
-- **Performance Insights** - Specific improvement recommendations
-- **Success Patterns** - High-scoring conversation templates
-- **Failure Analysis** - Common mistakes and how to avoid them
+## How Fine-Tuning Works
 
-### Data Processing
-- **Quality Assessment** - Evaluation of conversation quality
-- **Pattern Extraction** - Identification of successful strategies
-- **Context Annotation** - Situational information and outcomes
-- **Performance Correlation** - Link between actions and results
+```
+Collect Best Conversations → Clean & Prepare → Train Custom Model → Test → Deploy
+```
 
-## Training Data Collection
+Think of it like training a new employee by having them shadow your best performer. The AI learns patterns from successful conversations and applies them going forward.
 
-### Positive Examples
-High-quality conversations that demonstrate:
-- Successful problem resolution
-- Excellent customer satisfaction
-- Effective use of tools and resources
-- Smooth conversation flow
-- Appropriate tone and communication style
+## When to Use Fine-Tuning
 
-### Negative Examples
-Conversations with identified issues:
-- Customer dissatisfaction indicators
-- Failed problem resolution attempts
-- Inappropriate responses or tone
-- Ineffective tool usage
-- Conversation flow problems
+<CardGroup cols={2}>
+  <Card title="Don't Fine-Tune Yet">
+    - You're just starting out
+    - Have fewer than 100 quality conversations
+    - Haven't tried prompt optimization
+    - Need quick improvements
 
-### Improvement Insights
-Specific recommendations for enhancement:
-- Alternative response strategies
-- Better question formulations
-- More effective tool utilization
-- Improved conversation management
-- Enhanced customer empathy
+    **Instead**: Focus on prompts and tools first
+  </Card>
+  <Card title="Fine-Tune When">
+    - Prompts alone aren't enough
+    - You have 100+ high-quality conversations
+    - Need specific behavioral patterns
+    - Want long-term improvement
 
-## Fine-Tuning Process
+    **Result**: Better base performance across all conversations
+  </Card>
+</CardGroup>
 
-### Data Preparation
-1. **Collection** - Gather conversation data from various sources
-2. **Cleaning** - Remove sensitive information and normalize formats
-3. **Annotation** - Add context, outcomes, and quality indicators
-4. **Validation** - Ensure data quality and relevance
+## Collecting Training Data
 
-### Model Training
-1. **Baseline Establishment** - Current model performance benchmarks
-2. **Training Set Creation** - Curated examples for model learning
-3. **Training Execution** - Model fine-tuning process
-4. **Validation Testing** - Performance verification on test data
+### Finding Good Conversations
 
-### Deployment and Monitoring
-1. **Staged Rollout** - Gradual deployment to production
-2. **Performance Monitoring** - Continuous tracking of improvements
-3. **A/B Testing** - Comparison with baseline models
-4. **Feedback Integration** - Ongoing data collection for future improvements
+Look for conversations that score well on your scorecards:
 
-## Training Data Categories
+```bash
+# Get high-scoring calls for training
+curl https://api.chanl.ai/v1/call-logs?minScore=90&limit=100 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "calls": [
+    {
+      "id": "call_abc123",
+      "score": 94,
+      "category": "customer-service",
+      "duration": 183,
+      "outcome": "resolved",
+      "tags": ["refund", "empathy", "quick-resolution"]
+    }
+  ]
+}
+```
+
+### What Makes Good Training Data?
+
+<AccordionGroup>
+  <Accordion title="High-Scoring Conversations">
+    Calls that score 85+ on your scorecards
+
+    **Why**: These demonstrate your quality standards
+  </Accordion>
+
+  <Accordion title="Diverse Scenarios">
+    Mix of different customer types and situations
+
+    **Why**: Prevents overfitting to one conversation pattern
+  </Accordion>
+
+  <Accordion title="Representative of Goals">
+    Conversations that show the behavior you want
+
+    **Why**: Model learns "this is how we do things"
+  </Accordion>
+
+  <Accordion title="Clean Outcomes">
+    Clear resolution or successful interaction
+
+    **Why**: Ambiguous outcomes confuse the model
+  </Accordion>
+</AccordionGroup>
+
+### Creating a Training Dataset
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+async function buildTrainingDataset() {
+  // Get high-scoring calls from last 30 days
+  const highScoring = await chanl.callLogs.list({
+    minScore: 85,
+    days: 30,
+    limit: 200
+  });
+
+  // Get diverse scenario coverage
+  const scenarios = ['refund', 'billing', 'technical', 'general'];
+  const trainingData = [];
+
+  for (const scenario of scenarios) {
+    const calls = highScoring.filter(c => c.tags.includes(scenario));
+
+    // Take top 25 from each scenario
+    trainingData.push(...calls.slice(0, 25));
+  }
+
+  // Create dataset
+  const dataset = await chanl.fineTuning.createDataset({
+    name: 'Customer Service Excellence Q1 2024',
+    description: 'Top performing customer service calls',
+    callIds: trainingData.map(c => c.id),
+    targetBehaviors: [
+      'empathetic_responses',
+      'problem_resolution',
+      'professional_tone'
+    ]
+  });
+
+  console.log(`Created dataset with ${trainingData.length} conversations`);
+  return dataset;
+}
+```
+
+## Starting a Fine-Tuning Job
+
+<Tabs>
+  <Tab title="Via UI">
+    1. Navigate to **Fine-Tuning** in sidebar
+    2. Click "Create Training Job"
+    3. Select training dataset
+    4. Choose base model (GPT-4, Claude, etc.)
+    5. Set training parameters
+    6. Review data privacy settings
+    7. Start training
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/fine-tuning/jobs \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "Customer Service Model v2",
+        "datasetId": "dataset_abc123",
+        "baseModel": "gpt-4",
+        "parameters": {
+          "epochs": 3,
+          "learningRate": 0.0001,
+          "batchSize": 4
+        },
+        "validationSplit": 0.2
+      }'
+    ```
+
+    Response:
+    ```json
+    {
+      "jobId": "ft_job_xyz789",
+      "status": "queued",
+      "estimatedCompletion": "2024-01-15T18:00:00Z",
+      "trainingExamples": 100,
+      "validationExamples": 25
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Training Parameters
+
+```json
+{
+  "epochs": 3,
+  // How many times to train on full dataset
+  // More epochs = more learning, but risk overfitting
+  // Typical: 2-4 epochs
+
+  "learningRate": 0.0001,
+  // How much to adjust model each step
+  // Lower = more conservative, safer
+  // Typical: 0.0001 - 0.001
+
+  "batchSize": 4,
+  // Conversations processed together
+  // Larger = faster training, more memory
+  // Typical: 4-8
+
+  "validationSplit": 0.2
+  // Percentage held back for testing
+  // Typical: 0.15 - 0.25 (15-25%)
+}
+```
+
+## Monitoring Training Progress
+
+```bash
+# Check training status
+curl https://api.chanl.ai/v1/fine-tuning/jobs/ft_job_xyz789 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "jobId": "ft_job_xyz789",
+  "status": "training",
+  "progress": 67,
+  "currentEpoch": 2,
+  "totalEpochs": 3,
+  "metrics": {
+    "trainingLoss": 0.23,
+    "validationLoss": 0.31,
+    "estimatedAccuracy": 0.89
+  },
+  "estimatedCompletion": "2024-01-15T17:30:00Z"
+}
+```
+
+### What the Metrics Mean
+
+<CardGroup cols={3}>
+  <Card title="Training Loss">
+    How well model fits training data
+
+    **Lower is better**
+    **Target**: &lt;0.5
+  </Card>
+  <Card title="Validation Loss">
+    How well model generalizes to new data
+
+    **Lower is better**
+    **Should be close to training loss**
+  </Card>
+  <Card title="Accuracy">
+    Percentage of correct predictions
+
+    **Higher is better**
+    **Target**: &gt;0.85
+  </Card>
+</CardGroup>
+
+<Warning>
+If validation loss is much higher than training loss, your model is **overfitting** (memorizing training data instead of learning patterns). Use more diverse training data or fewer epochs.
+</Warning>
+
+## Testing Fine-Tuned Models
+
+Before deploying, test against baseline:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+async function compareModels(fineTunedModelId, baselineAgentId) {
+  // Create test agent with fine-tuned model
+  const testAgent = await chanl.agents.create({
+    name: 'Fine-Tuned Test Agent',
+    modelId: fineTunedModelId,
+    prompt: 'Use the same prompt as baseline',
+    tools: ['same tools as baseline']
+  });
+
+  // Run comparison scenarios
+  const comparison = await chanl.scenarios.create({
+    name: 'Fine-Tuned vs Baseline',
+    prompt: 'Customer service scenarios',
+    personas: ['polite', 'frustrated', 'confused'],
+    agents: [testAgent.id, baselineAgentId],
+    scorecard: 'customer-service-quality'
+  });
+
+  const results = await chanl.scenarios.waitForCompletion(comparison.id);
+
+  return {
+    fineTunedScore: results.agents[testAgent.id].avgScore,
+    baselineScore: results.agents[baselineAgentId].avgScore,
+    improvement: results.agents[testAgent.id].avgScore - results.agents[baselineAgentId].avgScore,
+    recommendation: results.agents[testAgent.id].avgScore > results.agents[baselineAgentId].avgScore + 5
+      ? 'Deploy fine-tuned model'
+      : 'Needs more training or data'
+  };
+}
+
+const results = await compareModels('model_ft_abc', 'agent_baseline');
+console.log(results);
+/*
+{
+  fineTunedScore: 91,
+  baselineScore: 84,
+  improvement: +7,
+  recommendation: 'Deploy fine-tuned model'
+}
+*/
+```
+
+## Deploying Fine-Tuned Models
+
+### Gradual Rollout
+
+Start with a small percentage of traffic:
+
+```bash
+# Deploy to 10% of calls initially
+curl -X POST https://api.chanl.ai/v1/agents/agent_abc123/model \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "modelId": "model_ft_xyz789",
+    "rolloutStrategy": {
+      "type": "percentage",
+      "percentage": 10
+    }
+  }'
+```
+
+### A/B Testing
+
+Run both models simultaneously:
+
+```bash
+# 50% old model, 50% new model
+curl -X POST https://api.chanl.ai/v1/agents/agent_abc123/ab-test \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "modelA": "model_baseline",
+    "modelB": "model_ft_xyz789",
+    "split": 50,
+    "duration": "7d"
+  }'
+```
+
+### Monitoring After Deployment
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Monitor performance of fine-tuned model
+const performance = await chanl.agents.analytics('agent_abc123', {
+  compareModels: ['model_baseline', 'model_ft_xyz789'],
+  timeRange: '7d',
+  metrics: ['avgScore', 'successRate', 'escalationRate']
+});
+
+console.log('Performance Comparison:');
+console.log('Baseline:', performance.models.model_baseline);
+console.log('Fine-tuned:', performance.models.model_ft_xyz789);
+
+if (performance.models.model_ft_xyz789.avgScore < performance.models.model_baseline.avgScore) {
+  console.log('⚠️ Fine-tuned model underperforming. Consider rollback.');
+}
+```
+
+## Continuous Improvement
+
+### Collecting More Data
+
+Keep training on new high-performing conversations:
+
+```javascript
+// Automated training pipeline
+async function continuousImprovement() {
+  // Every month, collect new high-scoring calls
+  const newCalls = await chanl.callLogs.list({
+    minScore: 90,
+    startDate: '2024-01-01',
+    endDate: '2024-01-31'
+  });
+
+  // Add to existing dataset
+  await chanl.fineTuning.updateDataset('dataset_abc123', {
+    addCallIds: newCalls.map(c => c.id)
+  });
+
+  // Retrain model
+  const newJob = await chanl.fineTuning.createJob({
+    name: `Customer Service Model ${new Date().toISOString().slice(0, 7)}`,
+    datasetId: 'dataset_abc123',
+    baseModel: 'model_ft_xyz789', // Train on top of previous fine-tuned model
+    parameters: {
+      epochs: 2,
+      learningRate: 0.00005 // Lower rate for refinement
+    }
+  });
+
+  return newJob;
+}
+```
+
+## Fine-Tuning Use Cases
 
 ### Customer Service Excellence
-- Empathetic response patterns
-- Effective problem-solving approaches
-- Professional communication styles
-- Escalation management techniques
+
+```javascript
+// Train model to handle frustrated customers better
+const dataset = await chanl.fineTuning.createDataset({
+  name: 'De-escalation Training',
+  callIds: await chanl.callLogs.search({
+    tags: ['frustrated', 'angry'],
+    minScore: 88,
+    outcome: 'resolved'
+  }),
+  targetBehaviors: [
+    'acknowledge_emotion_first',
+    'apologize_when_appropriate',
+    'focus_on_solution',
+    'never_defensive'
+  ]
+});
+```
 
 ### Sales Optimization
-- Persuasive conversation techniques
-- Objection handling strategies
-- Needs discovery methods
-- Closing techniques and timing
 
-### Technical Support Mastery
-- Diagnostic questioning approaches
-- Solution explanation clarity
-- Step-by-step guidance methods
-- Complex problem breakdown techniques
+```javascript
+// Train model on successful sales conversations
+const dataset = await chanl.fineTuning.createDataset({
+  name: 'High-Converting Sales Calls',
+  callIds: await chanl.callLogs.search({
+    outcome: 'sale',
+    minScore: 85
+  }),
+  targetBehaviors: [
+    'needs_discovery',
+    'objection_handling',
+    'value_proposition',
+    'closing_techniques'
+  ]
+});
+```
 
-### Compliance and Quality
-- Regulatory requirement adherence
-- Company policy compliance
-- Professional standards maintenance
-- Risk mitigation strategies
+### Compliance & Accuracy
 
-## Performance Measurement
-
-### Before/After Analysis
-- Scorecard performance improvements
-- Customer satisfaction increases
-- Resolution rate enhancements
-- Error reduction measurements
-
-### Continuous Monitoring
-- Real-time performance tracking
-- Long-term trend analysis
-- Comparative effectiveness studies
-- ROI measurement and reporting
-
-## Implementation Strategy
-
-### Incremental Approach
-- Start with high-impact, low-risk improvements
-- Gradually expand to more complex scenarios
-- Maintain fallback to baseline models
-- Continuous validation and adjustment
-
-### Quality Assurance
-- Rigorous testing before deployment
-- Multiple validation scenarios
-- Performance threshold requirements
-- Rollback procedures for issues
-
-## Unique Value Proposition
-
-### Data-Driven Optimization
-- Use real conversation outcomes to guide improvements
-- Focus on actual customer interactions rather than theoretical scenarios
-- Continuous learning from both successes and failures
-
-### Context-Specific Enhancement
-- Industry-specific model adaptations
-- Use case optimized behaviors
-- Company culture and style integration
-- Customer base specific improvements
+```javascript
+// Train model to follow compliance requirements perfectly
+const dataset = await chanl.fineTuning.createDataset({
+  name: 'Compliance Perfect Calls',
+  callIds: await chanl.callLogs.search({
+    scorecard: 'compliance-tcpa',
+    minScore: 98
+  }),
+  targetBehaviors: [
+    'required_disclosures',
+    'consent_collection',
+    'policy_adherence'
+  ]
+});
+```
 
 ## Best Practices
 
-- Maintain strict data privacy and security standards
-- Ensure diverse and representative training data
-- Regular validation against real-world performance
-- Balance automation with human oversight
-- Document training processes and outcomes
-- Continuous monitoring and improvement cycles
-- Ethical considerations in model development
+<Steps>
+  <Step title="Start with Prompt Optimization">
+    Fine-tuning is powerful but slow. Get prompts working well first, then fine-tune for the extra edge.
+  </Step>
+
+  <Step title="Collect Diverse Examples">
+    Don't just train on one type of conversation. Mix scenarios, personas, and outcomes.
+  </Step>
+
+  <Step title="Use Enough Data">
+    Minimum 100 conversations for meaningful results. 500+ is better. More diverse data beats more of the same.
+  </Step>
+
+  <Step title="Test Thoroughly Before Deploying">
+    Run extensive scenarios comparing fine-tuned vs baseline. Look for any regressions in edge cases.
+  </Step>
+
+  <Step title="Monitor in Production">
+    Watch real performance closely for first week after deployment. Be ready to rollback if needed.
+  </Step>
+
+  <Step title="Retrain Regularly">
+    Every month or quarter, add new high-quality conversations and retrain. Models improve with fresh data.
+  </Step>
+</Steps>
+
+## Data Privacy & Security
+
+<Warning>
+**Important**: Fine-tuning uses real conversation data. Ensure:
+- PII is removed or anonymized
+- You have rights to use the data
+- Customers consented (if required)
+- Data is encrypted at rest and in transit
+- Compliance with GDPR, CCPA, etc.
+</Warning>
+
+Chanl automatically removes common PII during training:
+- Credit card numbers
+- Social security numbers
+- Email addresses
+- Phone numbers
+- Specific account numbers
+
+But always review your data before training.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Training failing or stuck">
+    **Problem**: Training job not completing
+
+    **Solutions**:
+    - Check dataset has at least 50 conversations
+    - Verify all calls in dataset are accessible
+    - Reduce batch size if hitting memory limits
+    - Contact support if stuck for &gt;24 hours
+  </Accordion>
+
+  <Accordion title="Model performing worse than baseline">
+    **Problem**: Fine-tuned model scores lower
+
+    **Investigate**:
+    - Did you train on diverse enough data?
+    - Are training examples actually high-quality?
+    - Did you overtrain (too many epochs)?
+    - Test on validation set - is it overfitting?
+    - Compare on same scenarios as training data
+  </Accordion>
+
+  <Accordion title="Model too similar to baseline">
+    **Problem**: No measurable improvement
+
+    **Solutions**:
+    - Use more training examples (aim for 200+)
+    - Increase learning rate slightly
+    - Add more epochs (try 4-5)
+    - Ensure training data is different from what base model already does well
+  </Accordion>
+
+  <Accordion title="Model behaving inconsistently">
+    **Problem**: Works well sometimes, poorly others
+
+    **Solutions**:
+    - Training data may have conflicting examples
+    - Review dataset for contradictory conversations
+    - Add more examples of the edge cases
+    - Consider separate models for different use cases
+  </Accordion>
+</AccordionGroup>
+
+## Cost Considerations
+
+Fine-tuning costs depend on:
+- **Training data size** - More conversations = higher cost
+- **Base model** - GPT-4 more expensive than GPT-3.5
+- **Training duration** - More epochs = more compute time
+- **Inference** - Fine-tuned models may cost more per call
+
+<Info>
+**Typical costs**:
+- Training: $50-500 per job depending on size
+- Inference: 10-50% more per call than base model
+- ROI: Usually positive if improvement &gt;5% on key metrics
+</Info>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Optimize Agents" href="/chanl/optimize/agents">
+    Configure agents to use your fine-tuned models
+  </Card>
+  <Card title="Test Scenarios" href="/chanl/test/scenarios">
+    Validate fine-tuned model performance
+  </Card>
+  <Card title="Monitor Analytics" href="/chanl/observe/analytics">
+    Track improvement from fine-tuning
+  </Card>
+  <Card title="Improve Prompts" href="/chanl/optimize/prompts">
+    Combine fine-tuning with prompt optimization
+  </Card>
+</CardGroup>

@@ -1,116 +1,548 @@
 ---
 title: "Scorecards"
-description: "Quality evaluation framework for call assessment"
+description: "Define quality standards to evaluate and improve agent performance"
 icon: "trophy"
 ---
 
 # Scorecards
 
-**Scorecards** are the primary method for evaluating conversation quality, providing structured assessment criteria through categories and specific evaluation criteria. They can be attached to scenarios for automated testing or applied to individual calls for quality review.
+Scorecards define what "good" looks like for your AI agents. They're structured evaluation frameworks that measure conversation quality against specific criteria you care about—like empathy, problem resolution, or compliance.
 
-## Key Components
+## Why Scorecards Matter
 
-### Basic Information
-- **Name** - Descriptive scorecard identifier
-- **Description** - Purpose and scope of evaluation
+Without clear evaluation criteria, quality is subjective. Scorecards help you:
+- **Measure consistently** - Everyone evaluates using the same standards
+- **Track improvements** - See if changes actually make agents better
+- **Identify weaknesses** - Know exactly what needs fixing
+- **Compare agents** - Understand which performs better and why
 
-### Structure
-- **Categories** - Major evaluation areas (Many, at least one required)
-- **Criteria** - Specific assessment points within categories
+<Info>
+**Example**: Your "Customer Service" scorecard gives Agent V1 a 78 vs Agent V2's 92. Drilling down shows V1 scores lower on "Empathy" (65) while matching V2 on "Accuracy" (91). Now you know exactly what to improve.
+</Info>
 
-## Category Configuration
+## How Scorecards Work
 
-### Category Details
-- **Name** - Category identifier (e.g., "Customer Service", "Compliance")
-- **Weight** - Percentage contribution to overall score (0-100%)
-- **Description** - What this category evaluates
+A scorecard contains:
+1. **Categories** - Major areas to evaluate (e.g., Communication, Problem Resolution)
+2. **Criteria** - Specific things to check within each category (e.g., "Shows empathy")
+3. **Weights** - How important each category is (totals 100%)
 
-<Warning>
-Total category weights cannot exceed 100%
-</Warning>
+When you run a simulation or analyze a call, Chanl scores it against your scorecard and shows where it excelled or fell short.
 
-### Criteria Details
-- **Name** - Specific evaluation point
-- **Weight** - Percentage within the category (0-100%)
-- **Type** - Evaluation method
-- **Description** - Detailed assessment instructions
+## Creating a Scorecard
 
-<Warning>
-Total criteria weights within a category cannot exceed 100%
-</Warning>
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Scorecards** and click "Create Scorecard":
+    1. Name your scorecard
+    2. Add categories with weights
+    3. Define criteria for each category
+    4. Test on sample calls
+    5. Activate for use
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/scorecards \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "Customer Service Quality",
+        "description": "Evaluates agent performance on customer service calls",
+        "categories": [
+          {
+            "name": "Communication",
+            "weight": 30,
+            "criteria": [
+              {
+                "name": "Empathy",
+                "description": "Agent acknowledges customer emotions and shows understanding"
+              },
+              {
+                "name": "Clarity",
+                "description": "Explanations are clear and easy to understand"
+              },
+              {
+                "name": "Professionalism",
+                "description": "Maintains professional tone throughout"
+              }
+            ]
+          },
+          {
+            "name": "Problem Resolution",
+            "weight": 50,
+            "criteria": [
+              {
+                "name": "Issue Identified",
+                "description": "Correctly understands the customer problem"
+              },
+              {
+                "name": "Solution Provided",
+                "description": "Offers appropriate solution"
+              },
+              {
+                "name": "Follow-up",
+                "description": "Confirms resolution and offers additional help"
+              }
+            ]
+          },
+          {
+            "name": "Compliance",
+            "weight": 20,
+            "criteria": [
+              {
+                "name": "Required Disclosures",
+                "description": "Provides all legally required information"
+              },
+              {
+                "name": "Data Privacy",
+                "description": "Handles customer information appropriately"
+              }
+            ]
+          }
+        ]
+      }'
+    ```
+  </Tab>
+</Tabs>
 
-## Criteria Types
+## Common Scorecard Templates
 
-### Yes/No Evaluation
-Binary assessment for clear compliance or quality standards:
-- "Did the agent provide required disclosures?"
-- "Was the customer's issue resolved?"
-- "Did the conversation end professionally?"
+### Customer Service Scorecard
 
-### Quantity Scoring
-Numerical assessment for measurable elements:
-- Response time in seconds
-- Number of clarifying questions asked
-- Customer satisfaction rating (1-10)
-- Call duration appropriateness
+Evaluate support interactions:
 
-### Scale Rating
-Subjective assessment on defined scales:
-- Communication clarity (1-5)
-- Professionalism level (Poor/Fair/Good/Excellent)
-- Problem-solving effectiveness (1-10)
+<AccordionGroup>
+  <Accordion title="Communication Quality (30%)">
+    - **Empathy** - Acknowledges customer feelings
+    - **Clarity** - Uses simple, understandable language
+    - **Active Listening** - Reflects back what customer said
+    - **Tone** - Maintains friendly, professional demeanor
+  </Accordion>
 
-### Custom Evaluation
-Flexible assessment for specific needs:
-- Open-text quality notes
-- Multi-dimensional scoring
-- Contextual evaluations
+  <Accordion title="Problem Resolution (50%)">
+    - **Issue Identification** - Correctly understands the problem
+    - **Solution Quality** - Provides effective resolution
+    - **Efficiency** - Resolves in reasonable time
+    - **Confirmation** - Verifies customer satisfaction
+  </Accordion>
 
-## Common Scorecard Categories
+  <Accordion title="Compliance (20%)">
+    - **Required Disclosures** - Provides mandatory information
+    - **Policy Adherence** - Follows company guidelines
+    - **Data Handling** - Protects customer information
+  </Accordion>
+</AccordionGroup>
 
-### Customer Service
-- **Communication Quality** - Clarity, tone, professionalism
-- **Problem Resolution** - Effectiveness, efficiency, completeness
-- **Customer Experience** - Satisfaction, ease of interaction
+### Sales Scorecard
 
-### Sales Performance
-- **Needs Discovery** - Question quality, listening skills
-- **Product Knowledge** - Accuracy, relevance, depth
-- **Closing Effectiveness** - Persuasion, objection handling
+Evaluate sales conversations:
 
-### Compliance
-- **Regulatory Requirements** - Legal compliance, disclosures
-- **Company Policies** - Adherence to internal standards
-- **Data Handling** - Privacy, security, confidentiality
+<AccordionGroup>
+  <Accordion title="Discovery (25%)">
+    - **Needs Assessment** - Asks questions to understand requirements
+    - **Budget Qualification** - Determines financial fit
+    - **Timeline** - Establishes decision timeframe
+    - **Authority** - Identifies decision makers
+  </Accordion>
 
-### Technical Support
-- **Issue Diagnosis** - Problem identification, analysis
-- **Solution Quality** - Accuracy, completeness, clarity
-- **Follow-up** - Verification, documentation, escalation
+  <Accordion title="Presentation (30%)">
+    - **Value Communication** - Explains benefits clearly
+    - **Objection Handling** - Addresses concerns effectively
+    - **Proof Points** - Provides relevant examples/data
+    - **Customization** - Tailors pitch to customer needs
+  </Accordion>
 
-## Usage Scenarios
+  <Accordion title="Closing (25%)">
+    - **Call to Action** - Clear next steps
+    - **Urgency** - Creates appropriate motivation
+    - **Commitment** - Secures agreement or advance
+  </Accordion>
 
-### Automated Testing
-- Attach scorecards to scenarios for consistent evaluation
-- Generate scores for all simulation runs
-- Compare agent performance across scenarios
+  <Accordion title="Compliance (20%)">
+    - **Truthfulness** - No misleading statements
+    - **Disclosures** - Provides required information
+    - **Documentation** - Confirms details in writing
+  </Accordion>
+</AccordionGroup>
 
-### Manual Review
-- Apply scorecards to specific calls in Call Logs
-- Conduct quality assurance reviews
-- Training and coaching assessments
+### Technical Support Scorecard
 
-### Comparative Analysis
-- Use consistent scorecards across different agents
-- Track performance improvements over time
-- Benchmark against industry standards
+Evaluate technical assistance:
+
+<AccordionGroup>
+  <Accordion title="Technical Accuracy (40%)">
+    - **Problem Diagnosis** - Identifies root cause
+    - **Solution Correctness** - Provides accurate fix
+    - **Technical Knowledge** - Demonstrates expertise
+  </Accordion>
+
+  <Accordion title="Communication (30%)">
+    - **Jargon-Free** - Explains without technical terms
+    - **Step-by-Step** - Provides clear instructions
+    - **Patience** - Allows customer time to follow along
+  </Accordion>
+
+  <Accordion title="Efficiency (30%)">
+    - **Resolution Time** - Solves within acceptable timeframe
+    - **Tools Used** - Leverages available resources
+    - **Escalation** - Knows when to involve specialists
+  </Accordion>
+</AccordionGroup>
+
+## Scorecard Categories & Weights
+
+### Setting Weights
+
+Weights determine how much each category impacts the overall score:
+
+```json
+{
+  "categories": [
+    {
+      "name": "Communication",
+      "weight": 30  // 30% of total score
+    },
+    {
+      "name": "Problem Resolution",
+      "weight": 50  // 50% of total score
+    },
+    {
+      "name": "Compliance",
+      "weight": 20  // 20% of total score
+    }
+  ]
+}
+```
+
+Total weights must equal 100%.
+
+**When to weight higher**:
+- **Compliance** - If regulatory consequences are severe
+- **Problem Resolution** - For support where solving issues is primary goal
+- **Communication** - For brand-sensitive interactions
+
+## Criteria Best Practices
+
+### Write Clear, Specific Criteria
+
+❌ **Too vague**: "Agent was good"
+
+✅ **Clear and measurable**:
+```json
+{
+  "name": "Empathy Demonstrated",
+  "description": "Agent acknowledges customer frustration with phrases like 'I understand that's frustrating' or 'I can see why you're concerned' within first 30 seconds"
+}
+```
+
+### Include Examples
+
+```json
+{
+  "name": "Professional Tone",
+  "description": "Maintains friendly, professional language throughout",
+  "examples": {
+    "good": [
+      "I'd be happy to help you with that",
+      "Let me look into this for you"
+    ],
+    "bad": [
+      "That's not my problem",
+      "You should have read the instructions"
+    ]
+  }
+}
+```
+
+### Make Them Actionable
+
+Criteria should guide improvement:
+
+```json
+{
+  "name": "Clear Next Steps",
+  "description": "Agent ends call by summarizing what will happen next and when customer can expect resolution",
+  "passingExample": "I've processed your refund, and you'll see the credit in 3-5 business days. Is there anything else I can help with today?"
+}
+```
+
+## Using Scorecards
+
+### In Test Scenarios
+
+Assign a scorecard when creating scenarios:
+
+```bash
+curl -X POST https://api.chanl.ai/v1/scenarios \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Refund Request Test",
+    "prompt": "Customer wants refund for defective product",
+    "personas": ["frustrated", "analytical"],
+    "agents": ["agent-v1"],
+    "scorecard": "customer-service-quality"
+  }'
+```
+
+Every simulation from this scenario will be scored using that scorecard.
+
+### For Live Call Analysis
+
+Analyze real calls using a scorecard:
+
+```bash
+curl -X POST https://api.chanl.ai/v1/call-logs/call_abc123/analyze \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scorecard": "customer-service-quality"
+  }'
+```
+
+### Bulk Analysis
+
+Score multiple calls at once:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Score last week's calls
+const results = await chanl.callLogs.batchAnalyze({
+  filters: {
+    dateRange: {
+      start: '2024-01-08',
+      end: '2024-01-15'
+    }
+  },
+  scorecard: 'customer-service-quality'
+});
+
+console.log(`Analyzed ${results.count} calls`);
+console.log(`Average score: ${results.avgScore}`);
+console.log(`Top weakness: ${results.lowestCategory}`);
+```
+
+## Understanding Scorecard Results
+
+### Reading Category Scores
+
+```json
+{
+  "overallScore": 87,
+  "categories": [
+    {
+      "name": "Communication",
+      "weight": 30,
+      "score": 92,
+      "contributionToTotal": 27.6,
+      "criteria": [
+        {
+          "name": "Empathy",
+          "score": 95,
+          "passed": true,
+          "notes": "Excellent acknowledgment of customer frustration"
+        },
+        {
+          "name": "Clarity",
+          "score": 88,
+          "passed": true,
+          "notes": "Clear explanations with minor jargon"
+        }
+      ]
+    },
+    {
+      "name": "Problem Resolution",
+      "weight": 50,
+      "score": 85,
+      "contributionToTotal": 42.5,
+      "criteria": [
+        {
+          "name": "Solution Provided",
+          "score": 80,
+          "passed": true,
+          "notes": "Solution worked but took longer than ideal"
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Key insights**:
+- Overall score (87) is good but has room for improvement
+- Communication (92) is a strength
+- Problem Resolution (85) drags down overall score despite 50% weight
+- Focus improvement efforts on "Solution Provided" criterion
+
+### Comparing Across Agents
+
+```bash
+curl https://api.chanl.ai/v1/analytics/scorecard-comparison \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scorecard": "customer-service-quality",
+    "agents": ["agent-v1", "agent-v2"],
+    "timeRange": "30d"
+  }'
+```
+
+```json
+{
+  "scorecard": "customer-service-quality",
+  "comparison": {
+    "agent-v1": {
+      "overallScore": 82,
+      "categoryScores": {
+        "Communication": 88,
+        "Problem Resolution": 78,
+        "Compliance": 84
+      }
+    },
+    "agent-v2": {
+      "overallScore": 91,
+      "categoryScores": {
+        "Communication": 93,
+        "Problem Resolution": 92,
+        "Compliance": 87
+      }
+    }
+  },
+  "insights": [
+    "Agent V2 outperforms across all categories",
+    "Biggest gap is in Problem Resolution (+14 points)",
+    "Both agents strong on Communication"
+  ]
+}
+```
+
+## Refining Scorecards
+
+### Iterate Based on Data
+
+After using a scorecard for a while:
+
+<Steps>
+  <Step title="Review Score Distribution">
+    Are most calls scoring 90+? Criteria might be too easy. All below 70? Too strict.
+  </Step>
+
+  <Step title="Check Criterion Relevance">
+    Which criteria consistently score well/poorly? Remove ones that don't differentiate quality.
+  </Step>
+
+  <Step title="Adjust Weights">
+    If a high-weight category rarely varies, consider reducing its weight.
+  </Step>
+
+  <Step title="Add Missing Criteria">
+    If agents fail in ways not captured by scorecard, add new criteria.
+  </Step>
+
+  <Step title="Test Changes">
+    Run sample calls through updated scorecard before deploying broadly.
+  </Step>
+</Steps>
+
+### A/B Test Scorecards
+
+Compare different evaluation approaches:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Run same calls through two scorecards
+const results = await chanl.scorecards.compare({
+  calls: ['call_1', 'call_2', 'call_3'],
+  scorecards: ['scorecard-v1', 'scorecard-v2']
+});
+
+console.log('V1 avg:', results.v1.avgScore);
+console.log('V2 avg:', results.v2.avgScore);
+console.log('Correlation:', results.correlation);
+```
 
 ## Best Practices
 
-- Design scorecards with clear, measurable criteria
-- Balance objective and subjective evaluation elements
-- Test scorecards with sample conversations before deployment
-- Regularly review and update criteria based on business needs
-- Ensure weights accurately reflect business priorities
-- Train evaluators on consistent scoring methods
-- Use multiple scorecards for different conversation types
+<Steps>
+  <Step title="Start Simple">
+    Begin with 3 categories and 2-3 criteria each. Add complexity as you learn what matters.
+  </Step>
+
+  <Step title="Get Team Input">
+    QA team, sales managers, and compliance should all contribute criteria.
+  </Step>
+
+  <Step title="Test Before Production">
+    Run scorecard on 20-30 sample calls to validate it produces useful scores.
+  </Step>
+
+  <Step title="Document Examples">
+    For each criterion, include clear examples of passing and failing behavior.
+  </Step>
+
+  <Step title="Review Quarterly">
+    Business priorities change. Update scorecards to match current goals.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="All scores are too high/low">
+    **Problem**: Every call scores above 90 or below 50
+
+    **Solutions**:
+    - Criteria are too lenient/strict - adjust thresholds
+    - Review criterion descriptions for clarity
+    - Test scorecard on known good and bad calls
+    - Consider if weights are appropriate
+  </Accordion>
+
+  <Accordion title="Scores don't match intuition">
+    **Problem**: Calls you think are good score low and vice versa
+
+    **Solutions**:
+    - Review which specific criteria are failing
+    - Criteria descriptions may not capture what you actually value
+    - Check if AI is misinterpreting criteria
+    - Provide more explicit examples in criterion descriptions
+  </Accordion>
+
+  <Accordion title="Can't distinguish between agents">
+    **Problem**: All agents score similarly on scorecard
+
+    **Solutions**:
+    - Criteria aren't specific enough to capture differences
+    - Add more granular criteria
+    - Check if weights are masking category differences
+    - May need different scorecards for different agent types
+  </Accordion>
+
+  <Accordion title="Scoring takes too long">
+    **Problem**: Analysis timing out or very slow
+
+    **Solutions**:
+    - Reduce number of criteria (aim for &lt;15 total)
+    - Simplify criterion descriptions
+    - Contact support for optimization help
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Run Scenarios" href="/chanl/test/scenarios">
+    Use your scorecard to test agents
+  </Card>
+  <Card title="Analyze Call Logs" href="/chanl/observe/call-logs">
+    Score historical calls with your scorecard
+  </Card>
+  <Card title="View Analytics" href="/chanl/observe/analytics">
+    See scorecard performance trends
+  </Card>
+  <Card title="Improve Prompts" href="/chanl/optimize/prompts">
+    Update agents based on scorecard insights
+  </Card>
+</CardGroup>

@@ -1,126 +1,642 @@
 ---
 title: "Agents"
-description: "AI agent management and configuration"
+description: "Manage and improve your AI voice agents with testing, monitoring, and optimization"
 icon: "bot"
 ---
 
 # Agents
 
-**Agents** are the core focus of the platform - AI-powered conversation systems that you aim to improve through testing, monitoring, and optimization. Agents are fetched from their respective providers and can be configured and enhanced through the platform.
+Agents are your AI-powered conversation systems. Whether you built them on VAPI, Bland, or another platform, Chanl helps you test, monitor, and continuously improve them.
 
-## Key Components
+## Why Agent Management Matters
 
-### Basic Information
-- **Name** - Agent identifier and display name
-- **Description** - Purpose and capabilities overview
-- **Provider** - Source platform (VAPI, Bland, etc.)
+You built an AI agent, but how do you know it's actually working well? Agent management helps you:
+- **Connect easily** - Sync agents from VAPI, Bland, or custom platforms
+- **Test thoroughly** - Validate behavior before customers interact
+- **Monitor continuously** - Track real-time performance
+- **Improve systematically** - Use data to make agents better
 
-### Configuration
-- **Prompt** - Core behavioral instructions
-- **Tools** - Available actions and capabilities
-- **Model Settings** - AI model configuration
+<Info>
+**Example**: Connect your VAPI agent to Chanl. Run it through 10 test scenarios. Discover it struggles with angry customers. Update the prompt. Test again. Deploy with confidence.
+</Info>
 
-## Model Configuration
+## How Agents Work in Chanl
 
-### Provider Settings
-- **Provider** - AI service provider (OpenAI, Anthropic, etc.)
-- **Model** - Specific model version (GPT-4, Claude, etc.)
-- **Temperature** - Creativity/consistency balance (0.0-1.0)
-- **Tokens** - Maximum response length
+When you connect an agent to Chanl, we sync its configuration and give you tools to improve it:
 
-### Performance Tuning
-- **Response Speed** - Optimization for quick responses
-- **Quality Settings** - Balance between speed and quality
-- **Context Management** - Conversation memory handling
+```
+Connect Agent → Test with Scenarios → Monitor Live Calls → Analyze Results → Optimize → Repeat
+```
 
-## Prompt Management
+Think of Chanl as your agent's quality assurance and improvement platform.
 
-### Core Instructions
-- Behavioral guidelines and personality
-- Communication style and tone
-- Knowledge base and expertise areas
-- Conversation flow management
+## Connecting Your First Agent
 
-### Specialized Prompts
-- Scenario-specific instructions
-- Customer type adaptations
-- Error handling procedures
-- Escalation protocols
+<Tabs>
+  <Tab title="VAPI">
+    Connect a VAPI agent using your API credentials:
 
-### Prompt Optimization
-- A/B testing different prompt versions
-- Performance-based improvements
-- Library integration for proven prompts
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/agents/connect \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "provider": "vapi",
+        "agent_id": "vapi-agent-123",
+        "credentials": {
+          "api_key": "YOUR_VAPI_API_KEY"
+        }
+      }'
+    ```
 
-## Tool Integration
+    Chanl will automatically sync:
+    - Agent name and description
+    - System prompt and instructions
+    - Voice and model settings
+    - Tool configurations
+    - Phone numbers
+  </Tab>
+  <Tab title="Bland">
+    Connect a Bland agent:
 
-### Available Tool Types
-- **API Requests** - External service integrations
-- **MCP (Model Context Protocol)** - Advanced context management
-- **Routing** - Call transfer and escalation
-- **Data Lookup** - Information retrieval systems
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/agents/connect \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "provider": "bland",
+        "agent_id": "bland-agent-456",
+        "credentials": {
+          "api_key": "YOUR_BLAND_API_KEY"
+        }
+      }'
+    ```
+  </Tab>
+  <Tab title="Custom API">
+    Connect a custom agent via webhook:
 
-### Tool Configuration
-- Authentication and security settings
-- Response formatting and parsing
-- Error handling and fallbacks
-- Performance monitoring
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/agents/connect \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "provider": "custom",
+        "name": "My Custom Agent",
+        "endpoint": "https://your-api.com/agent/webhook",
+        "auth": {
+          "type": "bearer",
+          "token": "YOUR_TOKEN"
+        }
+      }'
+    ```
+  </Tab>
+</Tabs>
 
-## Provider Integration
+### What Gets Synced?
 
-### Supported Platforms
-- **VAPI** - Voice AI platform integration
-- **Bland** - Conversational AI service
-- **Custom APIs** - Direct integrations
+<CardGroup cols={2}>
+  <Card title="Configuration">
+    - System prompt
+    - Model settings (provider, temperature, max tokens)
+    - Voice configuration
+    - Language settings
+  </Card>
+  <Card title="Capabilities">
+    - Integrated tools and functions
+    - API connections
+    - Knowledge bases
+    - Call routing rules
+  </Card>
+  <Card title="Identity">
+    - Agent name and description
+    - Provider information
+    - Phone numbers
+    - Metadata
+  </Card>
+  <Card title="Performance">
+    - Call history
+    - Quality metrics
+    - Usage statistics
+    - Error logs
+  </Card>
+</CardGroup>
 
-### Synchronization
-- Automatic agent discovery
-- Configuration sync
-- Performance data collection
-- Real-time updates
+## Managing Agent Configuration
 
-## Performance Monitoring
+### Viewing Agent Details
 
-### Key Metrics
-- Conversation success rates
-- Average response times
-- Customer satisfaction scores
-- Error and escalation rates
+Check your agent's current configuration:
 
-### Optimization Insights
-- Common failure patterns
-- Improvement opportunities
-- Configuration impact analysis
-- Comparative performance data
+```bash
+curl https://api.chanl.ai/v1/agents/agent_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
 
-## Agent Lifecycle
+Response includes everything about your agent:
+```json
+{
+  "id": "agent_abc123",
+  "name": "Customer Service Agent",
+  "provider": "vapi",
+  "status": "active",
+  "configuration": {
+    "model": {
+      "provider": "openai",
+      "name": "gpt-4",
+      "temperature": 0.7,
+      "maxTokens": 250
+    },
+    "voice": {
+      "provider": "elevenlabs",
+      "voiceId": "21m00Tcm4TlvDq8ikWAM",
+      "stability": 0.5,
+      "similarityBoost": 0.75
+    },
+    "prompt": "You are a helpful customer service agent...",
+    "tools": [
+      {
+        "name": "lookup_order",
+        "description": "Retrieves order information",
+        "endpoint": "https://api.company.com/orders"
+      }
+    ]
+  },
+  "stats": {
+    "totalCalls": 1247,
+    "avgScore": 87.3,
+    "successRate": 94.2
+  }
+}
+```
 
-### Development
-1. Initial configuration and prompt setup
-2. Tool integration and testing
-3. Scenario-based validation
+### Updating Configuration
 
-### Testing
-1. Simulation runs with various personas
-2. Performance evaluation against scorecards
-3. Iterative improvements based on results
+Changes made in VAPI or Bland automatically sync to Chanl. You can also update directly:
 
-### Production
-1. Live call monitoring
-2. Continuous performance tracking
-3. Ongoing optimization based on real data
+```bash
+curl -X PATCH https://api.chanl.ai/v1/agents/agent_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "configuration": {
+      "model": {
+        "temperature": 0.8
+      }
+    }
+  }'
+```
 
-### Optimization
-1. Prompt refinement based on insights
-2. Tool configuration improvements
-3. Model parameter adjustments
+<Warning>
+Changes made in Chanl won't automatically sync back to your provider (VAPI, Bland, etc.). Use Chanl for testing configurations, then apply them in your provider's platform.
+</Warning>
+
+## Testing Agents Before Production
+
+Before deploying to customers, test your agent thoroughly:
+
+### Create a Test Scenario
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Test your agent with different customer types
+const scenario = await chanl.scenarios.create({
+  name: 'Customer Service Quality Check',
+  prompt: 'Customer has a billing question about their recent charge',
+  personas: ['polite-customer', 'frustrated-customer', 'confused-customer'],
+  agents: ['agent_abc123'],
+  scorecard: 'customer-service-quality'
+});
+
+// Wait for results
+const results = await chanl.scenarios.waitForCompletion(scenario.id);
+
+if (results.avgScore < 80) {
+  console.log('⚠️ Agent needs improvement');
+  console.log('Lowest scoring area:', results.weakestCategory);
+} else {
+  console.log('✅ Agent ready for production');
+}
+```
+
+### Common Test Scenarios
+
+<AccordionGroup>
+  <Accordion title="Happy Path">
+    Test standard conversations where everything goes smoothly:
+
+    ```json
+    {
+      "name": "Standard Order Inquiry",
+      "prompt": "Customer wants to check order status",
+      "personas": ["polite-customer"],
+      "expectedOutcome": "Agent provides accurate order information"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Edge Cases">
+    Test difficult situations:
+
+    ```json
+    {
+      "name": "Angry Customer Escalation",
+      "prompt": "Customer is furious about late delivery and wants refund",
+      "personas": ["angry-customer"],
+      "expectedOutcome": "Agent de-escalates and offers solution"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Compliance Checks">
+    Verify regulatory requirements:
+
+    ```json
+    {
+      "name": "TCPA Compliance Check",
+      "prompt": "Outbound sales call",
+      "personas": ["skeptical-customer"],
+      "scorecard": "compliance-tcpa",
+      "expectedOutcome": "All required disclosures provided"
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Monitoring Agent Performance
+
+### Real-Time Monitoring
+
+Watch your agent handle live calls:
+
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Live Calls** to see:
+    - Active conversations in real-time
+    - Transcript as it happens
+    - Current score and quality indicators
+    - Option to intervene if needed
+  </Tab>
+  <Tab title="Via API">
+    Stream live call data:
+
+    ```javascript
+    const chanl = require('@chanl/sdk');
+
+    // Monitor all active calls for an agent
+    const stream = chanl.liveCalls.stream({
+      agentId: 'agent_abc123'
+    });
+
+    stream.on('call_started', (call) => {
+      console.log(`New call: ${call.id}`);
+    });
+
+    stream.on('transcript_update', (data) => {
+      console.log(`[${data.role}]: ${data.message}`);
+    });
+
+    stream.on('quality_alert', (alert) => {
+      console.log(`⚠️ Quality issue: ${alert.type}`);
+      // Trigger intervention if needed
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Key Performance Metrics
+
+<CardGroup cols={3}>
+  <Card title="Quality Score">
+    Average score across all calls based on your scorecards
+
+    **Target**: &gt;85 for production agents
+  </Card>
+  <Card title="Success Rate">
+    Percentage of calls that achieve desired outcome
+
+    **Target**: &gt;90% for most use cases
+  </Card>
+  <Card title="Average Call Time">
+    How long conversations typically last
+
+    **Target**: Depends on use case, track trends
+  </Card>
+  <Card title="Escalation Rate">
+    How often agent transfers to human
+
+    **Target**: &lt;10% for well-tuned agents
+  </Card>
+  <Card title="Customer Satisfaction">
+    Sentiment analysis from conversations
+
+    **Target**: &gt;80% positive sentiment
+  </Card>
+  <Card title="Tool Success Rate">
+    How often agent tools execute correctly
+
+    **Target**: &gt;95% for critical integrations
+  </Card>
+</CardGroup>
+
+## Comparing Agent Versions
+
+Test different configurations to find what works best:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Create two versions with different prompts
+const v1 = await chanl.agents.duplicate('agent_abc123', {
+  name: 'Customer Agent V1 - Formal',
+  configuration: {
+    prompt: 'You are a professional customer service representative. Maintain a formal, courteous tone...'
+  }
+});
+
+const v2 = await chanl.agents.duplicate('agent_abc123', {
+  name: 'Customer Agent V2 - Friendly',
+  configuration: {
+    prompt: 'You are a friendly customer service agent. Be warm, conversational, and helpful...'
+  }
+});
+
+// Test both versions
+const comparison = await chanl.scenarios.create({
+  name: 'Prompt Comparison Test',
+  prompt: 'Customer has a billing question',
+  personas: ['polite', 'frustrated', 'confused'],
+  agents: [v1.id, v2.id],
+  scorecard: 'customer-service'
+});
+
+// View results
+const results = await chanl.scenarios.waitForCompletion(comparison.id);
+console.log('V1 avg score:', results.agents[v1.id].avgScore);
+console.log('V2 avg score:', results.agents[v2.id].avgScore);
+console.log('Winner:', results.agents[v2.id].avgScore > results.agents[v1.id].avgScore ? 'V2' : 'V1');
+```
+
+## Optimizing Agent Performance
+
+### Using Performance Data
+
+Identify what to improve:
+
+```bash
+# Get performance breakdown by category
+curl https://api.chanl.ai/v1/agents/agent_abc123/analytics?breakdown=category \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response shows where agent excels and struggles:
+```json
+{
+  "agent": "agent_abc123",
+  "timeRange": "30 days",
+  "overallScore": 82,
+  "categoryBreakdown": [
+    {
+      "category": "Communication",
+      "score": 91,
+      "trend": "stable",
+      "status": "good"
+    },
+    {
+      "category": "Problem Resolution",
+      "score": 78,
+      "trend": "declining",
+      "status": "needs_improvement",
+      "commonIssues": [
+        "Takes too long to identify root cause",
+        "Doesn't always confirm resolution"
+      ]
+    },
+    {
+      "category": "Compliance",
+      "score": 87,
+      "trend": "improving",
+      "status": "good"
+    }
+  ],
+  "recommendations": [
+    "Add explicit problem identification step to prompt",
+    "Include confirmation checklist at end of calls",
+    "Test with more analytical personas"
+  ]
+}
+```
+
+### Common Optimization Patterns
+
+<Steps>
+  <Step title="Identify Weakness">
+    Use analytics to find lowest scoring category or most common failure
+  </Step>
+
+  <Step title="Form Hypothesis">
+    Review failing call transcripts to understand why issues occur
+  </Step>
+
+  <Step title="Make Targeted Change">
+    Update prompt, adjust temperature, add tool, or modify configuration
+  </Step>
+
+  <Step title="Test Change">
+    Run scenarios comparing old vs new configuration
+  </Step>
+
+  <Step title="Validate Improvement">
+    Ensure new version scores better without breaking other areas
+  </Step>
+
+  <Step title="Deploy and Monitor">
+    Roll out change and watch for impact on live calls
+  </Step>
+</Steps>
+
+## Agent Tools and Capabilities
+
+### Viewing Agent Tools
+
+See what your agent can do:
+
+```bash
+curl https://api.chanl.ai/v1/agents/agent_abc123/tools \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "tools": [
+    {
+      "name": "lookup_order",
+      "description": "Retrieves customer order information",
+      "type": "api",
+      "endpoint": "https://api.company.com/orders/{orderId}",
+      "method": "GET",
+      "auth": "bearer_token",
+      "successRate": 97.3,
+      "avgResponseTime": 234
+    },
+    {
+      "name": "process_refund",
+      "description": "Initiates refund for order",
+      "type": "api",
+      "endpoint": "https://api.company.com/refunds",
+      "method": "POST",
+      "auth": "bearer_token",
+      "successRate": 99.1,
+      "avgResponseTime": 412
+    }
+  ]
+}
+```
+
+### Tool Performance
+
+Monitor how well tools work:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Get tool usage statistics
+const toolStats = await chanl.agents.toolAnalytics('agent_abc123', {
+  timeRange: '7d'
+});
+
+toolStats.tools.forEach(tool => {
+  console.log(`${tool.name}:`);
+  console.log(`  Uses: ${tool.callCount}`);
+  console.log(`  Success rate: ${tool.successRate}%`);
+  console.log(`  Avg response time: ${tool.avgResponseTime}ms`);
+
+  if (tool.successRate < 95) {
+    console.log(`  ⚠️ Success rate below target`);
+  }
+  if (tool.avgResponseTime > 1000) {
+    console.log(`  ⚠️ Response time slow`);
+  }
+});
+```
+
+## Managing Multiple Agents
+
+### Listing All Agents
+
+```bash
+curl https://api.chanl.ai/v1/agents \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+### Organizing by Tags
+
+Group agents logically:
+
+```bash
+# Tag agents by purpose
+curl -X PATCH https://api.chanl.ai/v1/agents/agent_abc123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tags": ["customer-service", "billing", "production"]
+  }'
+
+# Find all production agents
+curl https://api.chanl.ai/v1/agents?tags=production \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
 
 ## Best Practices
 
-- Start with clear, specific prompts and refine iteratively
-- Test agents thoroughly with diverse personas before production
-- Monitor performance continuously and adjust based on data
-- Use version control for prompt and configuration changes
-- Document successful configurations for replication
-- Regular review and updates based on business needs
-- Maintain security best practices for API integrations
+<Steps>
+  <Step title="Start with Clear Prompts">
+    Write specific instructions about behavior, tone, and goals. Vague prompts lead to inconsistent behavior.
+  </Step>
+
+  <Step title="Test with Diverse Personas">
+    Don't just test happy paths. Include difficult customers, edge cases, and compliance scenarios.
+  </Step>
+
+  <Step title="Monitor from Day One">
+    Enable alerts and live monitoring immediately. Catch issues before they become patterns.
+  </Step>
+
+  <Step title="Make Small, Measured Changes">
+    Change one thing at a time. Test the impact. Avoid changing multiple variables simultaneously.
+  </Step>
+
+  <Step title="Keep a Changelog">
+    Document what you changed and why. Makes it easy to understand performance shifts.
+  </Step>
+
+  <Step title="Review Performance Weekly">
+    Set a recurring time to review analytics, alerts, and improvement opportunities.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent not syncing from provider">
+    **Problem**: Connected agent but configuration not appearing in Chanl
+
+    **Solutions**:
+    - Verify API credentials are correct and have proper permissions
+    - Check if agent exists in provider platform (VAPI, Bland)
+    - Trigger manual sync: `chanl.agents.sync('agent_id')`
+    - Review error logs in sync history
+    - Contact support if provider integration is down
+  </Accordion>
+
+  <Accordion title="Low scores across all scenarios">
+    **Problem**: Agent consistently scoring below 70
+
+    **Investigate**:
+    - Review failing call transcripts to identify patterns
+    - Check if scorecard criteria are too strict
+    - Verify prompt is clear and specific
+    - Ensure tools are working (check success rates)
+    - Test with simpler personas first
+    - Compare against baseline agent if available
+  </Accordion>
+
+  <Accordion title="High escalation rate">
+    **Problem**: Agent frequently transfers to human
+
+    **Solutions**:
+    - Review escalation triggers in prompt
+    - Add more specific handling instructions
+    - Provide additional tools or knowledge
+    - Test with personas that trigger escalations
+    - Adjust confidence thresholds if too conservative
+  </Accordion>
+
+  <Accordion title="Inconsistent behavior">
+    **Problem**: Agent responses vary wildly between similar calls
+
+    **Solutions**:
+    - Lower temperature setting (try 0.5-0.7)
+    - Make prompt instructions more explicit
+    - Add examples of desired responses
+    - Review if tools are returning inconsistent data
+    - Check for conflicting instructions in prompt
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Build Better Prompts" href="/chanl/optimize/prompts">
+    Use the prompt library to improve agent instructions
+  </Card>
+  <Card title="Add Agent Tools" href="/chanl/optimize/tools">
+    Give your agent new capabilities and integrations
+  </Card>
+  <Card title="Fine-Tune Models" href="/chanl/optimize/fine-tuning">
+    Train custom models on your best conversations
+  </Card>
+  <Card title="Run Test Scenarios" href="/chanl/test/scenarios">
+    Validate agent behavior before deployment
+  </Card>
+</CardGroup>

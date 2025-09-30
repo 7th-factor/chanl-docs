@@ -1,58 +1,401 @@
 ---
 title: "Scenarios"
-description: "Define test situations and conditions for AI agent evaluation"
+description: "Create automated test situations to validate your AI agents before they talk to customers"
 icon: "waypoints"
 ---
 
-# Scenarios
+# Test Scenarios
 
-**Scenarios** consist of a situation (base scenario prompt) that will happen between a group of **Personas** and **Agents**, resulting in **N** simulations, where **N** is the number of combinations of **Personas** and **Agents**.
+Scenarios let you test how your AI agents handle different situations before going live. Think of them as automated quality assurance tests that run realistic conversations with your agents.
+
+## Why Use Scenarios?
+
+Before deploying an AI agent to handle real customer calls, you need to know:
+- Will it handle angry customers appropriately?
+- Can it process refund requests correctly?
+- Does it follow your company's policies?
+- Will it maintain quality across different customer types?
+
+Scenarios answer these questions by automatically testing your agent against multiple customer behaviors and measuring the results.
+
+## How Scenarios Work
+
+A scenario defines a specific situation (like "customer requesting refund") and automatically tests it across different customer personalities and agent configurations.
 
 <Info>
-For example: 2 *Personas* × 5 *Agents* = 10 *Simulations*
+**Example**: Create one "Refund Request" scenario with 5 customer personas and 3 agent variants. Chanl automatically runs 15 conversations (5 × 3) and scores each one.
 </Info>
 
-## Key Components
+### The Core Formula
 
-### Basic Information
-- **Name** - Descriptive scenario identifier
-- **Prompt** - Base situation description
-- **Prompt Variables** - Dynamic elements in the scenario
-  - *Name* - Variable identifier
-  - *Type* - Data type (string, number, etc.)
-  - *Default Value* - Fallback value
+```
+Scenario + Personas + Agents = Simulations
 
-### Configuration
-- **Personas** - Customer behavior profiles (Many, at least one)
-- **Target Agents** - AI agents to test (Many, at least one)
-- **Scorecard** - Evaluation criteria (1 required)
-- **Schedule** - Execution timing
+1 scenario × 3 personas × 2 agents = 6 automated test conversations
+```
 
-## Scheduling Options
+Each combination runs as a separate simulation, giving you comprehensive test coverage with minimal setup.
 
-### Frequency
-- **Once** - Single execution (can be re-run manually)
-- **Daily** - Runs every day
-- **Weekly** - Runs weekly
-- **Monthly** - Runs monthly
+## Creating Your First Scenario
 
-### End Conditions
-- **Never** - Runs indefinitely according to frequency
-- **End Date** - Stops after specified date
-- **After N Runs** - Stops after specified number of executions
+### Step 1: Define the Situation
 
-## Prompt Composition
+Start with a clear description of what's happening in this test:
 
-The full scenario prompt is created by merging:
-1. **Scenario prompt** - Base situation
-2. **Persona prompt** - Customer behavior context
+```json
+{
+  "name": "Product Refund Request",
+  "prompt": "Customer purchased a wireless headphone 2 weeks ago. The Bluetooth connection keeps dropping. They want a full refund.",
+  "personas": ["frustrated-customer", "analytical-customer"],
+  "agents": ["prod-agent-v1", "prod-agent-v2"],
+  "scorecard": "customer-service-quality"
+}
+```
 
-This combination creates a complete context for each simulation, ensuring consistent yet varied testing conditions.
+### Step 2: Add Prompt Variables (Optional)
+
+Make scenarios reusable with variables:
+
+```json
+{
+  "name": "Product Refund Request",
+  "prompt": "Customer purchased a {{product}} {{timeframe}} ago. {{issue}}. They want a {{resolution}}.",
+  "variables": [
+    {
+      "name": "product",
+      "type": "string",
+      "default": "wireless headphone"
+    },
+    {
+      "name": "timeframe",
+      "type": "string",
+      "default": "2 weeks"
+    },
+    {
+      "name": "issue",
+      "type": "string",
+      "default": "The Bluetooth keeps dropping"
+    },
+    {
+      "name": "resolution",
+      "type": "string",
+      "default": "full refund"
+    }
+  ]
+}
+```
+
+Now you can run the same scenario with different products and issues without creating duplicates.
+
+### Step 3: Select Your Personas
+
+Choose which customer behaviors to test:
+
+<Tabs>
+  <Tab title="Via UI">
+    Select personas from your library in the scenario builder. Start with at least 2-3 different personality types.
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/scenarios \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "Refund Request",
+        "prompt": "Customer wants refund for defective product",
+        "personas": ["frustrated", "analytical", "confused"],
+        "agents": ["agent-123"],
+        "scorecard": "service-quality"
+      }'
+    ```
+  </Tab>
+</Tabs>
+
+### Step 4: Choose Agents to Test
+
+Select which agent versions or configurations to test:
+- Test new prompts against production baseline
+- Compare different AI models (GPT-4 vs Claude)
+- Validate configuration changes before deployment
+
+### Step 5: Assign a Scorecard
+
+Pick evaluation criteria that match your test goals:
+- **Customer Service** - Empathy, problem resolution, professionalism
+- **Sales** - Needs discovery, objection handling, closing
+- **Compliance** - Required disclosures, policy adherence
+
+## Scheduling Automated Tests
+
+Run scenarios automatically to catch issues before customers do.
+
+### Scheduling Options
+
+<CardGroup cols={2}>
+  <Card title="Once" icon="circle-play">
+    Run immediately, then manually trigger again when needed
+  </Card>
+  <Card title="Daily" icon="calendar-day">
+    Perfect for testing production agents every night
+  </Card>
+  <Card title="Weekly" icon="calendar-week">
+    Good for regression testing major scenarios
+  </Card>
+  <Card title="Monthly" icon="calendar">
+    Useful for comprehensive quality audits
+  </Card>
+</CardGroup>
+
+### Setting End Conditions
+
+Control when scheduled tests stop:
+
+```json
+{
+  "schedule": {
+    "frequency": "daily",
+    "time": "02:00 AM EST",
+    "endCondition": "after_runs",
+    "maxRuns": 30
+  }
+}
+```
+
+<Accordion title="End Condition Options">
+  - **Never** - Runs indefinitely (useful for continuous monitoring)
+  - **End Date** - Stops after a specific date (good for limited testing periods)
+  - **After N Runs** - Stops after specified executions (e.g., 30 days of daily tests)
+</Accordion>
+
+## Understanding Scenario Results
+
+After running a scenario, you'll see results for each simulation:
+
+### Reading the Results Dashboard
+
+<Columns cols={1}>
+  <Card title="Scenario: Product Refund Request">
+  Total Simulations: 6 (3 personas × 2 agents)
+
+  <Columns cols={1}>
+    <table>
+    <thead>
+      <tr>
+        <th>Combination</th>
+        <th>Score</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Frustrated + Agent V1</td>
+        <td>78</td>
+        <td>⚠️</td>
+      </tr>
+      <tr>
+        <td>Frustrated + Agent V2</td>
+        <td>92</td>
+        <td>✅</td>
+      </tr>
+      <tr>
+        <td>Analytical + Agent V1</td>
+        <td>85</td>
+        <td>✅</td>
+      </tr>
+      <tr>
+        <td>Analytical + Agent V2</td>
+        <td>88</td>
+        <td>✅</td>
+      </tr>
+      <tr>
+        <td>Confused + Agent V1</td>
+        <td>71</td>
+        <td>❌</td>
+      </tr>
+      <tr>
+        <td>Confused + Agent V2</td>
+        <td>82</td>
+        <td>✅</td>
+      </tr>
+    </tbody>
+  </table>
+  </Columns>
+
+
+  Key Finding: Agent V2 performs better with frustrated customers
+  Recommendation: Deploy V2, improve V1's empathy responses
+
+  </Card>
+</Columns>
+
+### Analyzing Patterns
+
+Look for:
+- **Persona weaknesses** - Which customer types cause issues?
+- **Agent comparisons** - Which version performs better?
+- **Consistent failures** - What scenarios always score low?
+- **Score trends** - Are agents improving over time?
+
+## Common Scenario Templates
+
+### Customer Service
+
+```json
+{
+  "name": "Angry Customer Escalation",
+  "prompt": "Customer has been on hold for 45 minutes and is extremely frustrated. They're threatening to cancel their account.",
+  "personas": ["angry", "demanding"],
+  "scorecard": "de-escalation-quality"
+}
+```
+
+### Sales
+
+```json
+{
+  "name": "Price Objection Handling",
+  "prompt": "Prospect is interested in the product but says the price is too high compared to competitors.",
+  "personas": ["price-sensitive", "skeptical"],
+  "scorecard": "sales-effectiveness"
+}
+```
+
+### Technical Support
+
+```json
+{
+  "name": "Complex Technical Issue",
+  "prompt": "Customer's software won't connect to the server. They've already tried restarting and checking their internet.",
+  "personas": ["frustrated-technical", "patient-technical"],
+  "scorecard": "technical-support-quality"
+}
+```
+
+### Compliance Verification
+
+```json
+{
+  "name": "TCPA Compliance Check",
+  "prompt": "Outbound sales call to verify agent provides all required disclosures and consent requests.",
+  "personas": ["rushed", "detail-oriented"],
+  "scorecard": "compliance-tcpa"
+}
+```
 
 ## Best Practices
 
-- Use clear, specific scenario names
-- Include relevant prompt variables for flexibility
-- Test with multiple personas to cover behavior variations
-- Set appropriate schedules based on agent update frequency
-- Choose scorecards that align with your quality objectives
+<AccordionGroup>
+  <Accordion title="Start Small, Scale Up">
+    Begin with 2-3 personas and 1-2 agents. Once you validate the scenario works, expand to cover more combinations.
+  </Accordion>
+
+  <Accordion title="Test Edge Cases">
+    Don't just test happy paths. Include difficult personas like "confused elderly customer" or "angry and rushed."
+  </Accordion>
+
+  <Accordion title="Use Descriptive Names">
+    Name scenarios clearly: "Refund Request - Defective Product" not "Scenario 1"
+  </Accordion>
+
+  <Accordion title="Version Your Scenarios">
+    When testing new agent versions, keep scenario names consistent to compare results over time.
+  </Accordion>
+
+  <Accordion title="Schedule Regression Tests">
+    Run key scenarios daily to catch when agent updates break existing functionality.
+  </Accordion>
+</AccordionGroup>
+
+## Automated Testing with API
+
+Automate scenario testing programmatically:
+
+```javascript
+// validate-agent.js - Automated quality validation
+const chanl = require('@chanl/sdk');
+
+async function validateAgent(agentId) {
+  // Create test scenario
+  const scenario = await chanl.scenarios.create({
+    name: `Quality Check - ${new Date().toISOString()}`,
+    prompt: "Customer requests refund for defective product",
+    personas: ['frustrated', 'analytical', 'confused'],
+    agents: [agentId],
+    scorecard: 'customer-service-quality'
+  });
+
+  // Wait for all simulations to complete
+  const results = await chanl.scenarios.waitForCompletion(scenario.id, {
+    timeout: 300000 // 5 minutes
+  });
+
+  // Check if quality threshold met
+  const avgScore = results.averageScore;
+  const minScore = results.minScore;
+
+  if (avgScore < 80 || minScore < 70) {
+    throw new Error(
+      `Agent quality below threshold. Average: ${avgScore}, Min: ${minScore}`
+    );
+  }
+
+  console.log(`✅ Agent passed quality tests. Average score: ${avgScore}`);
+  return results;
+}
+
+// Run validation
+validateAgent(process.env.AGENT_ID)
+  .then(() => console.log('Validation complete'))
+  .catch(err => {
+    console.error('❌ Agent validation failed:', err.message);
+    process.exit(1);
+  });
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Simulations timing out">
+    **Problem**: Simulations take too long or timeout
+
+    **Solutions**:
+    - Reduce the number of personas or agents in the scenario
+    - Check if your agent has timeout issues in production
+    - Contact support if timeouts persist
+  </Accordion>
+
+  <Accordion title="Low scores across all simulations">
+    **Problem**: All combinations scoring below 70
+
+    **Solutions**:
+    - Review your scorecard criteria - are they too strict?
+    - Check agent configuration for obvious issues
+    - Review simulation transcripts to identify common failure points
+  </Accordion>
+
+  <Accordion title="Inconsistent results">
+    **Problem**: Same scenario getting different scores on reruns
+
+    **Solutions**:
+    - This is normal with AI - some variation expected
+    - Look at trends over multiple runs, not single scores
+    - If variation is extreme (±20 points), review agent configuration
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Create Personas" icon="users" href="/chanl/test/personas">
+    Build customer behavior profiles to test against
+  </Card>
+  <Card title="Review Simulations" icon="play" href="/chanl/test/simulations">
+    Analyze your scenario results in detail
+  </Card>
+  <Card title="Build Scorecards" icon="trophy" href="/chanl/observe/scorecards">
+    Define quality criteria for evaluating scenarios
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/scenarios/create">
+    Complete API documentation for scenarios
+  </Card>
+</CardGroup>

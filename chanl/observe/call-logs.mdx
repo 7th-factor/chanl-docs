@@ -1,104 +1,542 @@
 ---
 title: "Call Logs"
-description: "Historical analysis and review of completed conversations"
+description: "Analyze historical conversations to identify patterns and improve agent performance"
 icon: "phone"
 ---
 
 # Call Logs
 
-**Call Logs** provides comprehensive historical analysis of completed conversations, including both simulations and real customer interactions. This is where you can review past performance and run detailed analysis for improvement insights.
+Call logs give you access to every conversation your agents have had—whether from test simulations or real customer calls. Use them to analyze performance, identify training opportunities, and understand what's working (and what's not).
 
-## Key Components
+## Why Call Logs Matter
 
-### Call Information
-- **Source** - Platform origin (VAPI, Bland, etc.)
-- **From** - Originating phone number
-- **To** - Destination phone number
-- **Date** - When the call occurred
-- **Duration** - Length of the conversation
+Historical call data helps you:
+- **Identify patterns** - See recurring issues across many conversations
+- **Validate improvements** - Compare performance before and after changes
+- **Train better agents** - Use successful calls as training examples
+- **Ensure compliance** - Audit conversations for regulatory requirements
 
-### Content
-- **Audio** - Complete call recording
-- **Transcript** - Full conversation text
-- **Metadata** - Call context and system information
+<Info>
+**Example**: Searching call logs reveals that 80% of escalations happen when customers mention "refund policy." You update the agent's prompt to address this proactively.
+</Info>
 
-### Analysis
-- **Score** - Performance rating (if analyzed)
-- **Analysis Report** - Detailed evaluation results
-- **Insights** - Key findings and recommendations
+## What's in a Call Log?
 
-## Analysis Features
+Each call log contains:
 
-### Automated Analysis
-Run comprehensive analysis on historical calls to:
-- Evaluate conversation quality
-- Identify improvement opportunities
-- Generate performance scores
-- Extract key insights
+<CardGroup cols={2}>
+  <Card title="Call Metadata">
+    - Source (VAPI, Bland, etc.)
+    - Phone numbers (from/to)
+    - Date and duration
+    - Agent that handled it
+    - Simulation vs real call
+  </Card>
+  <Card title="Content & Analysis">
+    - Full audio recording
+    - Complete transcript
+    - Quality score (if analyzed)
+    - AI-powered insights
+    - Tags and categories
+  </Card>
+</CardGroup>
 
-### Custom Scoring
-Apply different scorecards to:
-- Evaluate calls against specific criteria
-- Compare performance across time periods
-- Benchmark against standards
+## Viewing Call Logs
 
-### Batch Processing
-Analyze multiple calls simultaneously:
-- Process entire date ranges
-- Evaluate specific agent performance
-- Generate aggregate reports
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Call Logs** to see:
+    - Searchable list of all historical calls
+    - Filter by date, agent, score, or source
+    - Sort by most recent, lowest score, or longest duration
+    - Click any call for detailed view
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    # List recent calls
+    curl https://api.chanl.ai/v1/call-logs \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "limit": 50,
+        "sortBy": "date",
+        "order": "desc"
+      }'
+    ```
+
+    Response:
+    ```json
+    {
+      "calls": [
+        {
+          "id": "call_abc123",
+          "source": "vapi",
+          "from": "+1234567890",
+          "to": "+1987654321",
+          "agent": "agent-v1",
+          "date": "2024-01-15T14:30:00Z",
+          "duration": 245,
+          "score": 87,
+          "analyzed": true,
+          "isSimulation": false
+        }
+      ],
+      "total": 1247,
+      "page": 1
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Analyzing Call Logs
+
+### Run Analysis on Historical Calls
+
+Analyze calls that weren't evaluated when they occurred:
+
+```bash
+curl -X POST https://api.chanl.ai/v1/call-logs/call_abc123/analyze \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scorecard": "customer-service-quality"
+  }'
+```
+
+This generates:
+- Quality score based on scorecard criteria
+- AI-powered analysis of strengths and weaknesses
+- Specific recommendations for improvement
+- Comparison to similar calls
+
+### Batch Analysis
+
+Analyze multiple calls at once:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Analyze all unscored calls from last week
+const results = await chanl.callLogs.batchAnalyze({
+  filters: {
+    dateRange: {
+      start: '2024-01-08',
+      end: '2024-01-15'
+    },
+    analyzed: false
+  },
+  scorecard: 'customer-service-quality'
+});
+
+console.log(`Analyzed ${results.count} calls`);
+console.log(`Average score: ${results.avgScore}`);
+```
 
 ## Search and Filtering
 
 ### Advanced Search
-- Text-based transcript search
-- Date range filtering
-- Source system filtering
-- Score range filtering
-- Agent-specific filtering
 
-### Categorization
-- Call type classification
-- Outcome categorization
-- Issue identification
-- Success pattern recognition
+Find specific types of calls:
 
-## Integration with Other Features
+<Tabs>
+  <Tab title="By Score Range">
+    ```bash
+    # Find failing calls
+    curl "https://api.chanl.ai/v1/call-logs?minScore=0&maxScore=70" \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+  <Tab title="By Date Range">
+    ```bash
+    # Find calls from specific period
+    curl "https://api.chanl.ai/v1/call-logs" \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "dateRange": {
+          "start": "2024-01-01",
+          "end": "2024-01-31"
+        }
+      }'
+    ```
+  </Tab>
+  <Tab title="By Agent">
+    ```bash
+    # Find all calls for specific agent
+    curl "https://api.chanl.ai/v1/call-logs?agent=agent-v1" \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+  <Tab title="By Source">
+    ```bash
+    # Find only real customer calls
+    curl "https://api.chanl.ai/v1/call-logs?isSimulation=false" \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+  </Tab>
+</Tabs>
 
-### Simulation Correlation
-- Compare real calls with simulation results
-- Validate simulation accuracy
-- Identify gaps in testing scenarios
+### Transcript Search
 
-### Agent Optimization
-- Use insights for prompt improvements
-- Identify training needs
-- Update agent configurations
+Search within conversation transcripts:
 
-### Alert Validation
-- Verify alert accuracy
-- Refine alert conditions
-- Improve monitoring systems
+```bash
+curl -X POST https://api.chanl.ai/v1/call-logs/search \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "refund policy",
+    "dateRange": "30d",
+    "minScore": 0,
+    "maxScore": 75
+  }'
+```
 
-## Reporting and Exports
+Results show calls where "refund policy" was mentioned and scored below 75:
+```json
+{
+  "results": [
+    {
+      "callId": "call_xyz789",
+      "date": "2024-01-14T10:22:00Z",
+      "score": 68,
+      "matches": [
+        {
+          "speaker": "customer",
+          "text": "What's your refund policy?",
+          "timestamp": 45
+        },
+        {
+          "speaker": "agent",
+          "text": "Our refund policy allows returns within 30 days",
+          "timestamp": 48
+        }
+      ]
+    }
+  ],
+  "totalResults": 23
+}
+```
 
-### Performance Reports
-- Agent performance summaries
-- Trend analysis over time
-- Comparative analysis across agents
-- Quality improvement tracking
+## Accessing Call Content
 
-### Data Export
-- Raw conversation data
-- Analysis results
-- Performance metrics
-- Custom report formats
+### Audio Files
+
+Download or stream call recordings:
+
+```bash
+# Get audio URL
+curl https://api.chanl.ai/v1/call-logs/call_abc123/audio \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Returns a signed URL valid for 1 hour:
+```json
+{
+  "url": "https://chanl-audio.s3.amazonaws.com/...",
+  "expiresAt": "2024-01-15T12:00:00Z",
+  "format": "mp3",
+  "duration": 245,
+  "size": 3145728
+}
+```
+
+### Transcripts
+
+Get full conversation text:
+
+```bash
+curl https://api.chanl.ai/v1/call-logs/call_abc123/transcript \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "callId": "call_abc123",
+  "transcript": [
+    {
+      "speaker": "agent",
+      "timestamp": 0,
+      "text": "Thank you for calling. How can I help you today?"
+    },
+    {
+      "speaker": "customer",
+      "timestamp": 3.2,
+      "text": "I received a damaged product and need a replacement."
+    },
+    {
+      "speaker": "agent",
+      "timestamp": 6.8,
+      "text": "I'm sorry to hear that. Let me help you with a replacement right away."
+    }
+  ],
+  "duration": 245,
+  "wordCount": 487
+}
+```
+
+## Call Analysis Reports
+
+### Individual Call Analysis
+
+View detailed AI analysis:
+
+```bash
+curl https://api.chanl.ai/v1/call-logs/call_abc123/analysis \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "callId": "call_abc123",
+  "overallScore": 87,
+  "analysis": {
+    "strengths": [
+      "Showed immediate empathy for customer's issue",
+      "Offered solution within first minute",
+      "Confirmed customer satisfaction before ending"
+    ],
+    "weaknesses": [
+      "Didn't verify customer identity before processing",
+      "Missed opportunity to upsell protection plan"
+    ],
+    "recommendations": [
+      "Add identity verification step to prompt",
+      "Train on upselling during replacement scenarios"
+    ]
+  },
+  "categoryScores": {
+    "Communication": 92,
+    "Problem Resolution": 88,
+    "Compliance": 79
+  }
+}
+```
+
+## Exporting Call Data
+
+### Bulk Export
+
+Export multiple calls for external analysis:
+
+<Tabs>
+  <Tab title="CSV Export">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/call-logs/export \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "format": "csv",
+        "dateRange": "30d",
+        "fields": ["date", "agent", "score", "duration"],
+        "filters": {
+          "minScore": 0
+        }
+      }' > calls_export.csv
+    ```
+  </Tab>
+  <Tab title="JSON Export">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/call-logs/export \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "format": "json",
+        "dateRange": "30d",
+        "includeTranscripts": true,
+        "includeAnalysis": true
+      }' > calls_export.json
+    ```
+  </Tab>
+  <Tab title="With Audio">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/call-logs/export \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "format": "zip",
+        "dateRange": "7d",
+        "includeAudio": true,
+        "includeTranscripts": true
+      }' > calls_with_audio.zip
+    ```
+  </Tab>
+</Tabs>
+
+## Finding Training Data
+
+### High-Quality Call Examples
+
+Find calls to use as training data:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Find top-performing calls
+const topCalls = await chanl.callLogs.list({
+  minScore: 90,
+  dateRange: '90d',
+  limit: 50,
+  sortBy: 'score',
+  order: 'desc'
+});
+
+// Export for fine-tuning
+const trainingData = await chanl.fineTuning.prepareDataset({
+  calls: topCalls.map(c => c.id),
+  format: 'conversational'
+});
+
+console.log(`Prepared ${topCalls.length} high-quality examples for training`);
+```
+
+### Problem Pattern Identification
+
+Find calls with recurring issues:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Find common failure patterns
+const patterns = await chanl.callLogs.analyzePatterns({
+  filters: {
+    maxScore: 70,
+    dateRange: '30d'
+  },
+  groupBy: 'issue_type'
+});
+
+console.log('Common issues:');
+patterns.forEach(p => {
+  console.log(`- ${p.issue}: ${p.count} occurrences (${p.percentage}%)`);
+});
+
+/*
+Common issues:
+- Refund policy confusion: 23 occurrences (34%)
+- Unable to verify customer: 15 occurrences (22%)
+- Tool failure: 12 occurrences (18%)
+*/
+```
+
+## Compliance & Auditing
+
+### Compliance Search
+
+Find calls for regulatory review:
+
+```bash
+curl -X POST https://api.chanl.ai/v1/call-logs/compliance-search \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "dateRange": {
+      "start": "2024-01-01",
+      "end": "2024-01-31"
+    },
+    "requiredDisclosures": [
+      "data_privacy_notice",
+      "call_recording_notice"
+    ],
+    "onlyFlagged": true
+  }'
+```
+
+Returns calls missing required disclosures:
+```json
+{
+  "flaggedCalls": [
+    {
+      "callId": "call_compliance123",
+      "date": "2024-01-15T09:30:00Z",
+      "missingDisclosures": ["call_recording_notice"],
+      "severity": "high"
+    }
+  ],
+  "totalFlagged": 3,
+  "complianceRate": 98.7
+}
+```
 
 ## Best Practices
 
-- Regularly analyze recent calls for immediate insights
-- Use historical data to identify long-term trends
-- Correlate call performance with agent configuration changes
-- Export key insights for stakeholder reporting
-- Set up automated analysis for critical call types
-- Use findings to improve both real agents and test scenarios
+<Steps>
+  <Step title="Analyze Regularly">
+    Run analysis on all calls, not just the ones with obvious issues. You'll discover patterns you didn't know existed.
+  </Step>
+
+  <Step title="Search Before Building">
+    Before creating new scenarios, search call logs to find real examples of situations you want to test.
+  </Step>
+
+  <Step title="Export for Records">
+    Regularly export call data for compliance and backup purposes. Don't rely solely on cloud storage.
+  </Step>
+
+  <Step title="Tag and Categorize">
+    Add tags to calls (e.g., "excellent_example", "training_needed") for easier filtering later.
+  </Step>
+
+  <Step title="Compare Time Periods">
+    When you make changes, compare call logs from before and after to measure impact.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Missing calls in logs">
+    **Problem**: Expected calls not appearing in call logs
+
+    **Solutions**:
+    - Verify date range filter includes when call occurred
+    - Check if call actually completed (not dropped)
+    - Confirm agent is connected and logging enabled
+    - Look in failed calls section
+  </Accordion>
+
+  <Accordion title="Can't play audio">
+    **Problem**: Audio playback fails or URL expired
+
+    **Solutions**:
+    - Audio URLs expire after 1 hour - request new URL
+    - Check browser allows audio playback
+    - Try downloading file instead of streaming
+    - Verify call has audio recording (some simulations might not)
+  </Accordion>
+
+  <Accordion title="Analysis takes too long">
+    **Problem**: Batch analysis timing out or very slow
+
+    **Solutions**:
+    - Reduce batch size to 50-100 calls at a time
+    - Run analysis during off-peak hours
+    - Consider processing in smaller date ranges
+    - Contact support for large-scale analysis needs
+  </Accordion>
+
+  <Accordion title="Search not finding calls">
+    **Problem**: Transcript search returns no results
+
+    **Solutions**:
+    - Try broader search terms (e.g., "refund" vs "refund policy")
+    - Verify spelling of search terms
+    - Check if calls have been transcribed
+    - Expand date range
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Analytics Dashboard" href="/chanl/observe/analytics">
+    See aggregate performance across all calls
+  </Card>
+  <Card title="Set Up Alerts" href="/chanl/observe/alerts">
+    Get notified about problematic calls automatically
+  </Card>
+  <Card title="Fine-Tuning" href="/chanl/optimize/fine-tuning">
+    Use call logs to create training data
+  </Card>
+  <Card title="Improve Prompts" href="/chanl/optimize/prompts">
+    Update agent instructions based on call insights
+  </Card>
+</CardGroup>

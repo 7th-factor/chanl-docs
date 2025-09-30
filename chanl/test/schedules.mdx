@@ -1,60 +1,539 @@
 ---
 title: "Schedules"
-description: "Automated execution of simulation scenarios"
+description: "Automate your agent testing to catch issues before they reach customers"
 icon: "clock"
 ---
 
-# Schedules
+# Test Schedules
 
-Schedules are programmed runs of simulations that can be configured in Scenarios. They provide automated testing capabilities to ensure consistent evaluation of your AI agents.
+Schedules let you run your test scenarios automatically on a recurring basis. Think of them as your agent's automated quality assurance system that works while you sleep.
 
-## Key Components
+## Why Automate Testing?
 
-### Schedule Information
-- **Name** - Inherited from the associated Scenario
-- **Periodicity** - How often the simulation runs
-- **Last Run Date** - Timestamp of most recent execution
-- **Next Run Date** - Calculated based on periodicity and last run
-- **Amount of Runs** - Total number of executions completed
-- **Active** - Whether the schedule is currently enabled
+Manual testing works for initial validation, but you need automation to:
+- **Catch regressions** - Know immediately when code changes break existing functionality
+- **Monitor production** - Run daily tests against live agents to detect quality degradation
+- **Save time** - Test continuously without manual effort
+- **Build confidence** - Deploy knowing your agents are consistently tested
 
-## Schedule Management
+<Info>
+**Example**: Schedule a nightly test that runs 20 scenarios against your production agent. Wake up to a report showing if everything still works perfectly.
+</Info>
 
-### Enabling/Disabling
-Schedules can be temporarily disabled without deletion. When disabled:
-- Scheduled simulations are skipped
-- No new runs are triggered
-- Schedule remains configured for easy re-activation
+## How Schedules Work
 
-### Monitoring
-Track schedule performance through:
-- Run history and timestamps
-- Success/failure rates
-- Average execution times
-- Resource usage patterns
+When you create a scenario, you can optionally add a schedule to run it automatically:
 
-## Automation Benefits
+```
+Scenario + Schedule = Automatic Testing
 
-### Consistent Testing
-- Regular evaluation of agent performance
-- Automated regression testing
-- Continuous quality monitoring
+"Refund Request" scenario
++ Daily at 2 AM
+= Automatic quality checks every night
+```
 
-### Performance Tracking
-- Trend analysis over time
-- Impact assessment of agent changes
-- Baseline performance establishment
+Each scheduled run creates new simulations that you can review in your dashboard or via API.
 
-### Resource Optimization
-- Distribute testing load across time periods
-- Avoid peak usage conflicts
-- Efficient resource utilization
+## Creating a Schedule
+
+Schedules are configured directly in your scenarios:
+
+<Tabs>
+  <Tab title="Via UI">
+    When creating or editing a scenario:
+    1. Navigate to the scenario settings
+    2. Toggle "Enable Schedule"
+    3. Choose frequency (Once, Daily, Weekly, Monthly)
+    4. Set end condition (Never, End Date, After N Runs)
+    5. Save the scenario
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    curl -X POST https://api.chanl.ai/v1/scenarios \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "Daily Production Test",
+        "prompt": "Customer requests refund for defective product",
+        "personas": ["frustrated", "analytical"],
+        "agents": ["prod-agent"],
+        "scorecard": "customer-service",
+        "schedule": {
+          "frequency": "daily",
+          "time": "02:00",
+          "timezone": "America/New_York",
+          "endCondition": "never"
+        }
+      }'
+    ```
+  </Tab>
+</Tabs>
+
+## Scheduling Options
+
+### Frequency Types
+
+<CardGroup cols={2}>
+  <Card title="Once" icon="circle-play">
+    **Use for**: One-time validation
+
+    Runs immediately when created. Can be manually triggered again later.
+
+    ```json
+    {
+      "frequency": "once"
+    }
+    ```
+  </Card>
+
+  <Card title="Daily" icon="calendar-day">
+    **Use for**: Continuous monitoring
+
+    Runs every day at specified time. Perfect for regression testing.
+
+    ```json
+    {
+      "frequency": "daily",
+      "time": "02:00",
+      "timezone": "UTC"
+    }
+    ```
+  </Card>
+
+  <Card title="Weekly" icon="calendar-week">
+    **Use for**: Regular checkpoints
+
+    Runs once per week on specified day.
+
+    ```json
+    {
+      "frequency": "weekly",
+      "day": "monday",
+      "time": "08:00",
+      "timezone": "UTC"
+    }
+    ```
+  </Card>
+
+  <Card title="Monthly" icon="calendar">
+    **Use for**: Quarterly audits
+
+    Runs once per month on specified date.
+
+    ```json
+    {
+      "frequency": "monthly",
+      "dayOfMonth": 1,
+      "time": "00:00",
+      "timezone": "UTC"
+    }
+    ```
+  </Card>
+</CardGroup>
+
+### End Conditions
+
+Control when your schedule stops running:
+
+<AccordionGroup>
+  <Accordion title="Never">
+    Schedule runs indefinitely until manually stopped.
+
+    **Use for**: Production monitoring that should run continuously
+
+    ```json
+    {
+      "endCondition": "never"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="End Date">
+    Schedule stops after a specific date.
+
+    **Use for**: Time-limited testing periods or trials
+
+    ```json
+    {
+      "endCondition": "end_date",
+      "endDate": "2024-12-31"
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="After N Runs">
+    Schedule stops after specified number of executions.
+
+    **Use for**: Fixed testing cycles (e.g., 30 days of daily tests)
+
+    ```json
+    {
+      "endCondition": "after_runs",
+      "maxRuns": 30
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Common Scheduling Patterns
+
+### Continuous Production Monitoring
+
+Run critical scenarios every night to catch issues early:
+
+```json
+{
+  "name": "Nightly Production Health Check",
+  "scenarios": [
+    "refund-request",
+    "angry-customer",
+    "complex-technical-issue"
+  ],
+  "schedule": {
+    "frequency": "daily",
+    "time": "02:00",
+    "timezone": "America/New_York",
+    "endCondition": "never"
+  },
+  "notifications": {
+    "onFailure": true,
+    "recipients": ["ops@company.com"]
+  }
+}
+```
+
+### Pre-Deployment Validation
+
+Test before each deployment:
+
+```json
+{
+  "name": "Pre-Deploy Validation",
+  "scenarios": ["smoke-tests"],
+  "schedule": {
+    "frequency": "once"
+  },
+  "notifications": {
+    "onCompletion": true,
+    "slack": "#deployments"
+  }
+}
+```
+
+### Weekly Regression Suite
+
+Comprehensive testing every weekend:
+
+```json
+{
+  "name": "Weekend Regression Suite",
+  "scenarios": [
+    "all-customer-service-scenarios",
+    "all-sales-scenarios",
+    "edge-cases"
+  ],
+  "schedule": {
+    "frequency": "weekly",
+    "day": "saturday",
+    "time": "00:00",
+    "timezone": "UTC",
+    "endCondition": "never"
+  }
+}
+```
+
+## Managing Schedules
+
+### Viewing Active Schedules
+
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Schedules** in the sidebar to see:
+    - Active schedules
+    - Next run time
+    - Last run date and status
+    - Total number of runs
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    curl https://api.chanl.ai/v1/schedules \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+
+    Response:
+    ```json
+    {
+      "schedules": [
+        {
+          "id": "sched_123",
+          "name": "Nightly Production Test",
+          "frequency": "daily",
+          "active": true,
+          "lastRun": "2024-01-15T02:00:00Z",
+          "nextRun": "2024-01-16T02:00:00Z",
+          "totalRuns": 47,
+          "avgScore": 87.3
+        }
+      ]
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Pausing a Schedule
+
+Temporarily stop a schedule without deleting it:
+
+```bash
+curl -X PATCH https://api.chanl.ai/v1/schedules/sched_123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "active": false
+  }'
+```
+
+**When to pause**:
+- During maintenance windows
+- When testing major agent changes
+- Temporarily reducing API usage
+
+### Reactivating a Schedule
+
+Resume a paused schedule:
+
+```bash
+curl -X PATCH https://api.chanl.ai/v1/schedules/sched_123 \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "active": true
+  }'
+```
+
+## Schedule Notifications
+
+Get alerted when tests complete or fail:
+
+### Email Notifications
+
+```json
+{
+  "notifications": {
+    "email": {
+      "onFailure": true,
+      "onSuccess": false,
+      "recipients": [
+        "team@company.com",
+        "oncall@company.com"
+      ]
+    }
+  }
+}
+```
+
+### Slack Integration
+
+```json
+{
+  "notifications": {
+    "slack": {
+      "webhook": "https://hooks.slack.com/...",
+      "channel": "#ai-agent-alerts",
+      "onFailure": true,
+      "scoreThreshold": 80
+    }
+  }
+}
+```
+
+### Webhook Integration
+
+Send results to your own systems:
+
+```json
+{
+  "notifications": {
+    "webhook": {
+      "url": "https://your-system.com/chanl-results",
+      "method": "POST",
+      "headers": {
+        "Authorization": "Bearer YOUR_TOKEN"
+      },
+      "onCompletion": true
+    }
+  }
+}
+```
+
+## Monitoring Schedule Performance
+
+### Key Metrics to Track
+
+<CardGroup cols={2}>
+  <Card title="Success Rate" icon="chart-line">
+    Percentage of scheduled runs that complete successfully
+  </Card>
+  <Card title="Average Score" icon="star">
+    Mean quality score across all scheduled runs
+  </Card>
+  <Card title="Score Trends" icon="chart-line-up">
+    Whether quality is improving, stable, or degrading over time
+  </Card>
+  <Card title="Run Duration" icon="clock">
+    How long tests take to complete
+  </Card>
+</CardGroup>
+
+### Analyzing Trends
+
+```bash
+curl https://api.chanl.ai/v1/schedules/sched_123/analytics?days=30 \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response shows trends over time:
+```json
+{
+  "schedule": "Nightly Production Test",
+  "period": "30 days",
+  "totalRuns": 30,
+  "successRate": 96.7,
+  "avgScore": 87.3,
+  "trend": "stable",
+  "alerts": [
+    {
+      "date": "2024-01-10",
+      "issue": "Score dropped to 72",
+      "cause": "Agent update deployed"
+    }
+  ]
+}
+```
 
 ## Best Practices
 
-- Set appropriate frequencies based on agent update cycles
-- Monitor schedule performance and adjust as needed
-- Use descriptive naming for easy identification
-- Disable schedules during maintenance windows
-- Review and clean up unused schedules regularly
-- Coordinate schedules to avoid resource conflicts
+<Steps>
+  <Step title="Start with Critical Scenarios">
+    Schedule your most important test scenarios first. Don't try to automate everything at once.
+  </Step>
+
+  <Step title="Run During Low-Traffic Periods">
+    Schedule tests for nights or weekends to avoid impacting production systems during peak hours.
+  </Step>
+
+  <Step title="Set Up Alerts">
+    Configure notifications so you know immediately when quality drops below acceptable levels.
+  </Step>
+
+  <Step title="Review Trends Weekly">
+    Don't just look at individual runs. Monitor trends over time to catch gradual degradation.
+  </Step>
+
+  <Step title="Adjust Based on Results">
+    If scenarios consistently pass, reduce frequency. If they catch issues, increase frequency.
+  </Step>
+</Steps>
+
+## Programmatic Schedule Management
+
+Create and manage schedules via API:
+
+```javascript
+// create-validation-schedule.js
+const chanl = require('@chanl/sdk');
+
+async function createValidationSchedule(agentId) {
+  // Create one-time validation schedule
+  const schedule = await chanl.schedules.create({
+    name: `Agent Validation - ${new Date().toISOString()}`,
+    scenarios: [
+      'smoke-test-scenario',
+      'critical-paths-scenario'
+    ],
+    frequency: 'once',
+    notifications: {
+      webhook: {
+        url: process.env.WEBHOOK_URL,
+        onCompletion: true
+      }
+    }
+  });
+
+  // Wait for completion
+  const results = await chanl.schedules.waitForCompletion(schedule.id, {
+    timeout: 600000 // 10 minutes
+  });
+
+  // Check results
+  if (results.avgScore < 80) {
+    throw new Error(`Validation failed. Score: ${results.avgScore}`);
+  }
+
+  console.log(`✅ Validation passed. Score: ${results.avgScore}`);
+  return results;
+}
+
+createValidationSchedule(process.env.AGENT_ID);
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Schedule not running">
+    **Problem**: Schedule shows as active but isn't executing
+
+    **Check**:
+    - Verify timezone is correct
+    - Ensure end condition hasn't been reached
+    - Check if schedule was manually paused
+    - Verify API key has necessary permissions
+  </Accordion>
+
+  <Accordion title="Tests failing consistently">
+    **Problem**: Scheduled tests suddenly showing low scores
+
+    **Investigate**:
+    - Review recent agent configuration changes
+    - Check if test scenarios need updating
+    - Verify scorecard criteria haven't changed
+    - Look for patterns (specific personas failing?)
+  </Accordion>
+
+  <Accordion title="Missing notifications">
+    **Problem**: Not receiving schedule completion alerts
+
+    **Solutions**:
+    - Verify notification settings in schedule configuration
+    - Check spam/junk folders for emails
+    - Test webhook URLs are accessible
+    - Confirm Slack integration is properly configured
+  </Accordion>
+
+  <Accordion title="High API usage">
+    **Problem**: Schedules consuming too many API calls
+
+    **Solutions**:
+    - Reduce frequency of less critical schedules
+    - Decrease number of personas/agents in scenarios
+    - Pause schedules during testing periods
+    - Contact support to discuss quota limits
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Create Scenarios" icon="waypoints" href="/chanl/test/scenarios">
+    Build scenarios to schedule for automated testing
+  </Card>
+  <Card title="Review Simulations" icon="play" href="/chanl/test/simulations">
+    Analyze results from scheduled test runs
+  </Card>
+  <Card title="Set Up Alerts" icon="bell" href="/chanl/observe/alerts">
+    Configure notifications for test failures
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/schedules/create">
+    Complete API documentation for schedules
+  </Card>
+</CardGroup>

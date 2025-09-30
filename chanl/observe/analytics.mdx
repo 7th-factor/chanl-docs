@@ -1,80 +1,515 @@
 ---
 title: "Analytics"
-description: "Main dashboard for monitoring agent performance and system metrics"
+description: "Track agent performance, identify trends, and make data-driven improvements"
 icon: "chart-no-axes-combined"
 ---
 
-# Analytics
+# Analytics Dashboard
 
-**Analytics** is the main dashboard where users can check results from **Simulations**, monitor **Alerts**, see ongoing **Live Calls**, and review overall **Agent Performance** data.
+Your analytics dashboard is your command center for monitoring AI agent performance. It aggregates data from test simulations, live calls, and alerts to give you a complete picture of how your agents are performing.
+
+## Why Analytics Matter
+
+Without data, you're flying blind. Analytics help you:
+- **Catch problems early** - See quality drops before customers complain
+- **Validate improvements** - Know if your changes actually work
+- **Identify patterns** - Understand which scenarios cause issues
+- **Make decisions** - Use data instead of guesswork
+
+<Info>
+**Example**: Your dashboard shows Agent V1 scoring 15% lower on Friday afternoons. Investigation reveals a tool integration that's slower during high-traffic periods.
+</Info>
 
 ## Dashboard Overview
 
-The Analytics dashboard provides a comprehensive view of your AI agent ecosystem, combining data from multiple sources to give you actionable insights.
+The analytics dashboard combines four key data sources:
+
+<CardGroup cols={2}>
+  <Card title="Simulations" href="/chanl/test/simulations">
+    Test results from automated scenarios
+  </Card>
+  <Card title="Live Calls" href="/chanl/observe/live-calls">
+    Real-time production conversations
+  </Card>
+  <Card title="Call Logs" href="/chanl/observe/call-logs">
+    Historical conversation analysis
+  </Card>
+  <Card title="Alerts" href="/chanl/observe/alerts">
+    Automated notifications for issues
+  </Card>
+</CardGroup>
 
 ## Key Metrics
 
-### Simulation Analytics
-- **Number of Runs** - Total simulation executions
-- **Average Score** - Performance across all simulations
-- **Trend Analysis** - Performance changes over time
-- **Success Rate** - Percentage of successful interactions
+### Agent Performance Scores
 
-### Alert Monitoring
-- **Active Alerts** - Current notifications requiring attention
-- **Alert Frequency** - How often alerts are triggered
-- **Resolution Time** - Average time to address alerts
-- **Alert Categories** - Types and distribution of alerts
+Track overall quality across all agents:
 
-### Call Analytics
-- **Ongoing Calls** - Real-time active conversations
-- **Call Volume** - Total number of calls processed
-- **Average Duration** - Typical call length
-- **Call Outcomes** - Success and failure rates
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Analytics** to see:
+    - Average scores by agent
+    - Score trends over time
+    - Performance by scenario type
+    - Comparison across agent versions
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    curl https://api.chanl.ai/v1/analytics/performance \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "timeRange": "30d",
+        "groupBy": "agent"
+      }'
+    ```
 
-### Agent Performance
-- **Individual Scores** - Performance by specific agent
-- **Comparative Analysis** - Agent-to-agent comparison
-- **Improvement Trends** - Performance changes over time
-- **Optimization Opportunities** - Areas for enhancement
+    Response:
+    ```json
+    {
+      "period": "30 days",
+      "agents": [
+        {
+          "id": "agent-v1",
+          "name": "Production Agent V1",
+          "avgScore": 87.3,
+          "totalCalls": 1243,
+          "trend": "stable",
+          "improvement": "+2.1%"
+        },
+        {
+          "id": "agent-v2",
+          "name": "Production Agent V2",
+          "avgScore": 91.5,
+          "totalCalls": 856,
+          "trend": "improving",
+          "improvement": "+5.3%"
+        }
+      ]
+    }
+    ```
+  </Tab>
+</Tabs>
 
-## Data Visualization
+### Call Volume & Success Rate
 
-### Charts and Graphs
-- Performance trends over time
-- Score distribution across agents
-- Alert frequency patterns
-- Call volume by time period
+Monitor how many calls your agents handle and how well they perform:
 
-### Real-time Displays
-- Current system status
-- Active alerts requiring attention
-- Ongoing call monitoring
-- Live performance metrics
+```bash
+curl https://api.chanl.ai/v1/analytics/volume \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "timeRange": "7d",
+    "interval": "day"
+  }'
+```
 
-## Filtering and Segmentation
+```json
+{
+  "totalCalls": 3421,
+  "successRate": 94.2,
+  "avgDuration": 4.3,
+  "byDay": [
+    {
+      "date": "2024-01-15",
+      "calls": 512,
+      "successRate": 95.1,
+      "avgScore": 88.2
+    },
+    ...
+  ]
+}
+```
 
-### Time-based Filters
-- Last 24 hours
-- Last week
-- Last month
-- Custom date ranges
+### Alert Frequency
 
-### Agent-based Filters
-- Specific agent performance
-- Agent group comparisons
-- Provider-based analysis
+Track how often alerts are triggered:
 
-### Scenario-based Filters
-- Performance by scenario type
-- Persona-specific results
-- Scorecard category analysis
+```bash
+curl https://api.chanl.ai/v1/analytics/alerts \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "timeRange": "30d"
+  }'
+```
+
+```json
+{
+  "totalAlerts": 47,
+  "byType": {
+    "quality_drop": 23,
+    "compliance_issue": 12,
+    "timeout": 8,
+    "error": 4
+  },
+  "trend": "decreasing"
+}
+```
+
+## Performance Trends
+
+### Score Over Time
+
+Visualize agent performance trends:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Get 30-day trend data
+const trends = await chanl.analytics.trends({
+  metric: 'score',
+  agents: ['agent-v1'],
+  timeRange: '30d',
+  interval: 'day'
+});
+
+console.log(trends);
+/*
+{
+  agent: "agent-v1",
+  dataPoints: [
+    { date: "2024-01-01", score: 85.2 },
+    { date: "2024-01-02", score: 86.1 },
+    { date: "2024-01-03", score: 87.3 },
+    ...
+  ],
+  trend: "improving",
+  changePercent: +4.2
+}
+*/
+```
+
+### Persona-Specific Analysis
+
+See how agents perform with different customer types:
+
+```bash
+curl https://api.chanl.ai/v1/analytics/by-persona \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "agent": "agent-v1",
+    "timeRange": "30d"
+  }'
+```
+
+Results show strengths and weaknesses:
+```json
+{
+  "agent": "agent-v1",
+  "byPersona": [
+    {
+      "persona": "Analytical Customer",
+      "avgScore": 92.1,
+      "totalInteractions": 234,
+      "status": "strength"
+    },
+    {
+      "persona": "Frustrated Customer",
+      "avgScore": 76.4,
+      "totalInteractions": 189,
+      "status": "needs_improvement"
+    },
+    {
+      "persona": "Confused Customer",
+      "avgScore": 88.3,
+      "totalInteractions": 156,
+      "status": "good"
+    }
+  ]
+}
+```
+
+## Comparative Analysis
+
+### Agent Comparison
+
+Compare multiple agents side-by-side:
+
+```bash
+curl https://api.chanl.ai/v1/analytics/compare \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "agents": ["agent-v1", "agent-v2"],
+    "timeRange": "30d",
+    "metrics": ["score", "duration", "successRate"]
+  }'
+```
+
+```json
+{
+  "comparison": {
+    "agent-v1": {
+      "avgScore": 87.3,
+      "avgDuration": 4.2,
+      "successRate": 93.1
+    },
+    "agent-v2": {
+      "avgScore": 91.5,
+      "avgDuration": 3.8,
+      "successRate": 95.7
+    }
+  },
+  "winner": "agent-v2",
+  "advantages": [
+    "+4.2 points higher score",
+    "10% faster resolution",
+    "+2.6% higher success rate"
+  ]
+}
+```
+
+### Before/After Analysis
+
+Measure impact of changes:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Compare performance before and after a change
+const impact = await chanl.analytics.compareTimeRanges({
+  agent: 'agent-v1',
+  before: {
+    start: '2024-01-01',
+    end: '2024-01-15'
+  },
+  after: {
+    start: '2024-01-16',
+    end: '2024-01-30'
+  }
+});
+
+console.log(impact);
+/*
+{
+  metric: "avgScore",
+  before: 85.2,
+  after: 89.7,
+  change: +4.5,
+  changePercent: +5.3,
+  significant: true
+}
+*/
+```
+
+## Scenario Performance
+
+### Success Rate by Scenario
+
+Identify which scenarios are most challenging:
+
+```bash
+curl https://api.chanl.ai/v1/analytics/scenarios \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "timeRange": "30d",
+    "sortBy": "successRate",
+    "order": "asc"
+  }'
+```
+
+```json
+{
+  "scenarios": [
+    {
+      "name": "Complex Technical Issue",
+      "successRate": 72.3,
+      "avgScore": 76.1,
+      "totalRuns": 134,
+      "status": "needs_improvement"
+    },
+    {
+      "name": "Price Objection",
+      "successRate": 86.7,
+      "avgScore": 84.2,
+      "totalRuns": 298,
+      "status": "good"
+    },
+    {
+      "name": "Simple Refund",
+      "successRate": 96.4,
+      "avgScore": 93.8,
+      "totalRuns": 456,
+      "status": "excellent"
+    }
+  ]
+}
+```
+
+## Custom Reports
+
+### Creating Reports
+
+Generate custom analytics reports:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+const report = await chanl.analytics.createReport({
+  name: "Weekly Quality Report",
+  timeRange: "7d",
+  metrics: [
+    "avgScore",
+    "successRate",
+    "totalCalls",
+    "alertCount"
+  ],
+  groupBy: ["agent", "scenario"],
+  filters: {
+    minScore: 0,
+    includeSimulations: true,
+    includeLiveCalls: true
+  }
+});
+
+// Schedule recurring report
+await chanl.analytics.scheduleReport({
+  reportId: report.id,
+  frequency: "weekly",
+  dayOfWeek: "monday",
+  time: "09:00",
+  recipients: ["team@company.com"]
+});
+```
+
+### Export Options
+
+Export data for external analysis:
+
+<Tabs>
+  <Tab title="CSV">
+    ```bash
+    curl https://api.chanl.ai/v1/analytics/export \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "format": "csv",
+        "timeRange": "30d",
+        "metrics": ["score", "duration", "persona", "scenario"]
+      }' \
+      > analytics_export.csv
+    ```
+  </Tab>
+  <Tab title="JSON">
+    ```bash
+    curl https://api.chanl.ai/v1/analytics/export \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "format": "json",
+        "timeRange": "30d",
+        "includeRawData": true
+      }' \
+      > analytics_export.json
+    ```
+  </Tab>
+  <Tab title="Excel">
+    ```bash
+    curl https://api.chanl.ai/v1/analytics/export \
+      -H "Authorization: Bearer YOUR_API_KEY" \
+      -d '{
+        "format": "xlsx",
+        "timeRange": "30d",
+        "includeCharts": true
+      }' \
+      > analytics_export.xlsx
+    ```
+  </Tab>
+</Tabs>
+
+## Real-Time Monitoring
+
+### Live Metrics
+
+Monitor current performance in real-time:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Subscribe to real-time metrics
+const stream = chanl.analytics.stream({
+  agents: ['agent-v1'],
+  metrics: ['currentCalls', 'avgScore', 'alerts']
+});
+
+stream.on('update', (data) => {
+  console.log('Current calls:', data.currentCalls);
+  console.log('Current avg score:', data.avgScore);
+  console.log('Active alerts:', data.alerts.length);
+});
+
+stream.on('alert', (alert) => {
+  console.log('🚨 New alert:', alert.message);
+});
+```
 
 ## Best Practices
 
-- Review analytics daily for performance trends
-- Set up custom dashboards for different stakeholders
-- Use comparative analysis to identify top-performing agents
-- Monitor alert patterns to prevent recurring issues
-- Export data for deeper analysis and reporting
-- Correlate performance data with agent configuration changes
+<Steps>
+  <Step title="Review Daily">
+    Check your dashboard every morning to catch issues early.
+  </Step>
+
+  <Step title="Set Baselines">
+    Establish what "good" looks like for each metric so you can spot anomalies.
+  </Step>
+
+  <Step title="Track Trends, Not Points">
+    Don't panic over single data points. Look at trends over days or weeks.
+  </Step>
+
+  <Step title="Correlate Events">
+    When you see changes in metrics, check what changed in your agent configuration.
+  </Step>
+
+  <Step title="Export Regularly">
+    Keep historical exports for long-term analysis and reporting to stakeholders.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Missing data in dashboard">
+    **Problem**: Analytics showing incomplete or no data
+
+    **Solutions**:
+    - Verify agents are connected and active
+    - Check if simulations or calls are actually running
+    - Confirm date range filter includes relevant data
+    - Try refreshing or clearing browser cache
+  </Accordion>
+
+  <Accordion title="Conflicting metrics">
+    **Problem**: Different dashboards showing different numbers
+
+    **Solutions**:
+    - Check time zone settings across dashboards
+    - Verify filters are consistent
+    - Ensure comparing same time ranges
+    - Review what's included (simulations vs live calls vs both)
+  </Accordion>
+
+  <Accordion title="Slow dashboard loading">
+    **Problem**: Analytics taking too long to load
+
+    **Solutions**:
+    - Reduce date range to last 30 days instead of all-time
+    - Limit number of agents being analyzed
+    - Use API with specific filters instead of UI
+    - Contact support if performance issues persist
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Live Calls" href="/chanl/observe/live-calls">
+    Monitor ongoing conversations in real-time
+  </Card>
+  <Card title="Call Logs" href="/chanl/observe/call-logs">
+    Analyze historical conversation data
+  </Card>
+  <Card title="Set Up Alerts" href="/chanl/observe/alerts">
+    Configure automated notifications
+  </Card>
+  <Card title="API Reference" href="/api-reference/workspaces/stats">
+    Complete API documentation for analytics
+  </Card>
+</CardGroup>

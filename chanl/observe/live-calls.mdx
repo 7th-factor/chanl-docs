@@ -1,95 +1,438 @@
 ---
 title: "Live Calls"
-description: "Real-time monitoring and management of ongoing conversations"
+description: "Monitor and manage ongoing conversations in real-time"
 icon: "eye"
 ---
 
-# Live Calls
+# Live Call Monitoring
 
-**Live Calls** provides real-time monitoring capabilities for ongoing conversations, allowing you to observe, manage, and take action on active calls as they happen.
+Live call monitoring lets you watch conversations as they happen, intervene when needed, and ensure your AI agents maintain quality standards with every customer interaction.
 
-## Key Components
+## Why Monitor Live Calls?
 
-### Call Information
-- **From** - Originating phone number
-- **To** - Destination phone number
-- **Duration** - Current call length
-- **Status** - Call state and progress
+Real-time monitoring helps you:
+- **Catch issues immediately** - Fix problems before they escalate
+- **Provide instant support** - Help agents when they get stuck
+- **Ensure compliance** - Verify agents follow required procedures
+- **Learn quickly** - See how agents handle unexpected situations
 
-### Alert Integration
-- **Demands Action** - Calls flagged by alert system
-- **Alert Type** - Specific alert that was triggered
-- **Urgency Level** - Priority of required action
+<Info>
+**Example**: You notice an agent struggling with a complex refund request. You can transfer the call to a human agent immediately, preventing customer frustration.
+</Info>
 
-### Call Origin
-- **Simulation** - Calls from automated testing scenarios
-- **Real Call** - Actual customer interactions
-- **Source System** - Originating platform or service
+## What You See
+
+Each live call displays:
+
+<CardGroup cols={2}>
+  <Card title="Call Information">
+    - From/To phone numbers
+    - Call duration (live timer)
+    - Agent handling the call
+    - Customer scenario/context
+  </Card>
+  <Card title="Real-Time Data">
+    - Live transcription
+    - Current quality score
+    - Active alerts
+    - Agent actions/tools used
+  </Card>
+</CardGroup>
+
+## Viewing Live Calls
+
+<Tabs>
+  <Tab title="Via UI">
+    Navigate to **Live Calls** to see:
+    - List of all active calls
+    - Filter by agent, alert status, or duration
+    - Click any call for detailed real-time view
+    - See transcription updating live
+  </Tab>
+  <Tab title="Via API">
+    ```bash
+    # List all active calls
+    curl https://api.chanl.ai/v1/live-calls \
+      -H "Authorization: Bearer YOUR_API_KEY"
+    ```
+
+    Response:
+    ```json
+    {
+      "activeCalls": [
+        {
+          "id": "call_abc123",
+          "from": "+1234567890",
+          "to": "+1987654321",
+          "agent": "agent-v1",
+          "duration": 142,
+          "status": "in_progress",
+          "currentScore": 87,
+          "alerts": ["none"],
+          "isSimulation": false
+        }
+      ],
+      "totalActive": 1
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Live Call Sources
+
+Calls come from two sources:
+
+### Real Customer Calls
+
+Production calls from actual customers:
+- Connected via VAPI, Bland, or other providers
+- Appear with `"isSimulation": false`
+- Can have immediate business impact
+- Require faster intervention
+
+### Test Simulations
+
+Automated test calls from scenarios:
+- Appear with `"isSimulation": true`
+- Running as part of scheduled testing
+- Lower priority for monitoring
+- Good for training and practice
 
 ## Available Actions
 
-### Monitoring
-- **Listen** - Real-time audio monitoring
-- **View Transcript** - Live conversation transcription
-- **Monitor Alerts** - Active alert notifications
+### Monitor & Observe
 
-### Intervention
-- **Transfer** - Route call to human agent
-- **End Call** - Terminate the conversation
-- **Send Message** - Provide real-time guidance to agent
+Watch without intervening:
 
-### Documentation
-- **Add Notes** - Record observations and actions
-- **Flag for Review** - Mark for post-call analysis
-- **Create Alert** - Set up monitoring for similar situations
+```bash
+# Get live transcription updates
+curl https://api.chanl.ai/v1/live-calls/call_abc123/transcript \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
 
-## Alert-Triggered Actions
+```json
+{
+  "callId": "call_abc123",
+  "transcript": [
+    {
+      "speaker": "agent",
+      "timestamp": 0,
+      "text": "Thank you for calling. How can I help?"
+    },
+    {
+      "speaker": "customer",
+      "timestamp": 3.2,
+      "text": "I need to return a product."
+    }
+  ],
+  "lastUpdate": "2024-01-15T10:30:42Z"
+}
+```
 
-### Automatic Responses
-- Escalation to human oversight
-- Real-time coaching prompts
-- Conversation redirection
+### Transfer to Human
 
-### Manual Interventions
-- Supervisor takeover
-- Call termination
-- Customer service escalation
+Hand off to a live agent when needed:
 
-## Real-time Insights
+```bash
+curl -X POST https://api.chanl.ai/v1/live-calls/call_abc123/transfer \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "transferTo": "human-agent-queue",
+    "reason": "Complex issue requiring human judgment",
+    "context": "Customer requesting exception to return policy"
+  }'
+```
 
-### Performance Indicators
-- Conversation quality score
-- Customer sentiment analysis
-- Compliance monitoring
-- Response time tracking
+**When to transfer**:
+- Agent is clearly failing to resolve issue
+- Customer is extremely frustrated
+- Compliance or legal concerns arise
+- Request falls outside agent's capabilities
 
-### Risk Assessment
-- Potential escalation indicators
-- Compliance violations
-- Customer satisfaction risks
+### End Call
 
-## Use Cases
+Terminate the call if necessary:
 
-### Quality Assurance
-- Monitor call quality in real-time
-- Identify coaching opportunities
-- Ensure compliance standards
+```bash
+curl -X POST https://api.chanl.ai/v1/live-calls/call_abc123/end \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "reason": "Abusive customer",
+    "note": "Customer using inappropriate language"
+  }'
+```
 
-### Customer Experience
-- Prevent negative interactions
-- Provide immediate support
-- Maintain service quality
+<Warning>
+Use this sparingly. Ending calls abruptly creates poor customer experience.
+</Warning>
 
-### Agent Training
-- Real-time coaching opportunities
-- Performance observation
-- Skill development
+### Add Notes
+
+Document observations during the call:
+
+```bash
+curl -X POST https://api.chanl.ai/v1/live-calls/call_abc123/notes \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "note": "Agent handled objection well, good empathy shown",
+    "timestamp": 145,
+    "category": "positive"
+  }'
+```
+
+## Alert-Triggered Calls
+
+Calls that trigger alerts need immediate attention:
+
+### Alert Types
+
+<AccordionGroup>
+  <Accordion title="Quality Drop">
+    Real-time score falls below threshold (e.g., below 70)
+
+    **Action**: Review conversation and consider intervention
+  </Accordion>
+
+  <Accordion title="Compliance Issue">
+    Agent misses required disclosure or violates policy
+
+    **Action**: Intervene immediately if legally required
+  </Accordion>
+
+  <Accordion title="Customer Frustration">
+    Sentiment analysis detects anger or dissatisfaction
+
+    **Action**: Monitor closely, prepare to transfer
+  </Accordion>
+
+  <Accordion title="Agent Stuck">
+    Agent repeating same responses or making no progress
+
+    **Action**: Transfer to human or provide guidance
+  </Accordion>
+</AccordionGroup>
+
+### Viewing Alert Calls
+
+Filter to see only calls with active alerts:
+
+```bash
+curl https://api.chanl.ai/v1/live-calls?hasAlerts=true \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "activeCalls": [
+    {
+      "id": "call_xyz789",
+      "from": "+1234567890",
+      "agent": "agent-v1",
+      "duration": 287,
+      "currentScore": 68,
+      "alerts": [
+        {
+          "type": "quality_drop",
+          "severity": "high",
+          "message": "Score dropped below 70",
+          "triggeredAt": 245
+        },
+        {
+          "type": "customer_frustration",
+          "severity": "medium",
+          "message": "Customer expressing dissatisfaction",
+          "triggeredAt": 267
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Real-Time Streaming
+
+Subscribe to live updates via WebSocket:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Connect to live call stream
+const stream = chanl.liveCalls.stream({
+  agents: ['agent-v1', 'agent-v2'],
+  includeTranscript: true,
+  alertsOnly: false
+});
+
+stream.on('call_started', (call) => {
+  console.log(`📞 New call started: ${call.id}`);
+  console.log(`Agent: ${call.agent}, From: ${call.from}`);
+});
+
+stream.on('call_updated', (update) => {
+  console.log(`Call ${update.id} - Score: ${update.currentScore}`);
+  if (update.transcript) {
+    console.log(`Latest: ${update.transcript.text}`);
+  }
+});
+
+stream.on('alert_triggered', (alert) => {
+  console.log(`🚨 Alert on call ${alert.callId}: ${alert.message}`);
+
+  // Auto-notify team
+  if (alert.severity === 'high') {
+    notifyTeam(alert);
+  }
+});
+
+stream.on('call_ended', (call) => {
+  console.log(`Call ended: ${call.id}, Final score: ${call.finalScore}`);
+});
+```
+
+## Monitoring Multiple Agents
+
+Track all agents from a single dashboard:
+
+```javascript
+const chanl = require('@chanl/sdk');
+
+// Get overview of all active calls
+const overview = await chanl.liveCalls.overview({
+  groupBy: 'agent'
+});
+
+console.log(overview);
+/*
+{
+  agents: [
+    {
+      id: "agent-v1",
+      activeCalls: 3,
+      avgScore: 88.2,
+      activeAlerts: 1
+    },
+    {
+      id: "agent-v2",
+      activeCalls: 5,
+      avgScore: 91.7,
+      activeAlerts: 0
+    }
+  ],
+  totalActiveCalls: 8,
+  avgScoreAcrossAll: 90.3
+}
+*/
+```
+
+## Performance Tracking
+
+Monitor how calls are progressing:
+
+### Call Duration Tracking
+
+```bash
+curl https://api.chanl.ai/v1/live-calls/stats \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "activeCalls": 12,
+  "avgDuration": 4.2,
+  "longestCall": {
+    "id": "call_long123",
+    "duration": 847,
+    "agent": "agent-v1"
+  },
+  "callsWithAlerts": 3,
+  "callsOverThreshold": 2
+}
+```
 
 ## Best Practices
 
-- Set up proactive alerts for common issues
-- Train staff on intervention procedures
-- Document actions taken for continuous improvement
-- Monitor call patterns to identify systemic issues
-- Balance monitoring with privacy considerations
-- Use insights to improve agent configurations
+<Steps>
+  <Step title="Set Up Alerts First">
+    Configure automated alerts so you only need to monitor flagged calls, not every single one.
+  </Step>
+
+  <Step title="Define Intervention Rules">
+    Create clear guidelines for when to transfer vs when to let the agent continue.
+  </Step>
+
+  <Step title="Document Interventions">
+    Always add notes when you take action so you can analyze patterns later.
+  </Step>
+
+  <Step title="Use for Training">
+    Watch live calls to understand how agents handle real situations and identify training needs.
+  </Step>
+
+  <Step title="Monitor Peak Hours">
+    Pay extra attention during high-volume periods when issues are more likely.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Not seeing any live calls">
+    **Problem**: Live calls list is empty
+
+    **Solutions**:
+    - Verify agents are actually receiving calls
+    - Check agent connection status
+    - Confirm you have permission to view live calls
+    - Try refreshing the page
+  </Accordion>
+
+  <Accordion title="Transcription lagging behind">
+    **Problem**: Text updates delayed from actual conversation
+
+    **Solutions**:
+    - This is normal - expect 2-5 second delay
+    - Check your internet connection
+    - Try refreshing if delay exceeds 10 seconds
+    - Contact support if issue persists
+  </Accordion>
+
+  <Accordion title="Can't transfer call">
+    **Problem**: Transfer action fails
+
+    **Solutions**:
+    - Verify human agent queue is available
+    - Check if transfer is configured for this agent
+    - Ensure call is still active
+    - Try again or end call if critical
+  </Accordion>
+
+  <Accordion title="Alerts not appearing">
+    **Problem**: Expected alerts not showing on live calls
+
+    **Solutions**:
+    - Verify alert rules are configured and active
+    - Check if alert thresholds are set correctly
+    - Confirm agents are linked to alert rules
+    - Review alert configuration in settings
+  </Accordion>
+</AccordionGroup>
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Set Up Alerts" href="/chanl/observe/alerts">
+    Configure automated notifications for issues
+  </Card>
+  <Card title="Review Call Logs" href="/chanl/observe/call-logs">
+    Analyze completed calls in detail
+  </Card>
+  <Card title="Analytics Dashboard" href="/chanl/observe/analytics">
+    See performance trends across all calls
+  </Card>
+  <Card title="Improve Agents" href="/chanl/optimize/agents">
+    Use insights to optimize agent behavior
+  </Card>
+</CardGroup>
