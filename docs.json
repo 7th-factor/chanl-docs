@@ -59,28 +59,6 @@
             ]
           },
           {
-            "group": "Authentication",
-            "pages": [
-              "api-reference/auth/refresh",
-              "api-reference/auth/validate",
-              "api-reference/auth/switch-workspace",
-              "api-reference/auth/revoke"
-            ]
-          },
-          {
-            "group": "Workspaces",
-            "pages": [
-              "api-reference/workspaces/list",
-              "api-reference/workspaces/create",
-              "api-reference/workspaces/get",
-              "api-reference/workspaces/update",
-              "api-reference/workspaces/delete",
-              "api-reference/workspaces/members",
-              "api-reference/workspaces/settings",
-              "api-reference/workspaces/stats"
-            ]
-          },
-          {
             "group": "Personas",
             "pages": [
               "api-reference/personas/list",
@@ -122,6 +100,15 @@
               "api-reference/simulations/get",
               "api-reference/simulations/audio",
               "api-reference/simulations/transcription"
+            ]
+          },
+          {
+            "group": "Authentication",
+            "pages": [
+              "api-reference/auth/refresh",
+              "api-reference/auth/validate",
+              "api-reference/auth/switch-workspace",
+              "api-reference/auth/revoke"
             ]
           }
         ]
